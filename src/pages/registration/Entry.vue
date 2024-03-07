@@ -1,0 +1,224 @@
+<template>
+    <v-row class="container pa-0 ma-0" justify="center" align="center">
+        <v-col align="center">
+            <img src="../../assets/img/logos/itnt.svg" />
+            <div class="mt-12 pl-2 pr-2">
+                <!-- <div @click="dialog = !dialog">
+          <UiButton :bgColor="'purple'" :imgSrc="'img/icons/white-purse.svg'"
+            >Войти, используя кошелёк</UiButton
+          >
+        </div> -->
+                <!-- <p class="button-purse-subtitle ma-0 mt-2 text-center">
+          Зачем нужен кошелёк и где его взять? <br />
+          <router-link class="button-purse-subtitle-href" to=""
+            >Узнать</router-link
+          >
+        </p> -->
+                <div style="margin-top: 48px" @click="$router.push('/reg')">
+                    <UiButton bgColor="blue">{{ $t('entry.phone') }}</UiButton>
+                </div>
+                <v-col class="mt-6">
+                    <v-row class="social" justify="center">
+                        <!-- <UiButton @click="googleLogin" onlyIcon imgSrc="../src/assets/icons/companies/google.svg" /> -->
+                        <!-- <UiButton onlyIcon imgSrc="../src/assets/icons/companies/apple.svg" /> -->
+
+                        <!-- <vue-apple-login
+                            type="sign in"
+                            color="black"
+                            :border="true"
+                            :radius="15"
+                            logoSize="medium"
+                            :onSuccess="onSuccess"
+                            :onFailure="onFailure"
+                        ></vue-apple-login> -->
+                    </v-row>
+                </v-col>
+            </div>
+        </v-col>
+    </v-row>
+    <!-- Диалоговое окно при нажатии на выбор входа по кошельку -->
+    <!-- <v-dialog v-model="dialog">
+    <v-card class="dialog pt-2 pb-5">
+      <v-col class="pr-4">
+        <v-row justify="end">
+          <v-btn @click="dialog = false" icon>
+            <v-icon color="#9E9E9E">mdi-close</v-icon>
+          </v-btn>
+        </v-row>
+      </v-col>
+      <p class="dialog-title ma-0 text-center">Выбор кошелька</p>
+      <div class="pl-6 pr-6 mt-5 mb-5">
+        <v-btn
+          @click="check_wallet"
+          color="#7BB3E3"
+          class="button-wallet font-weight-regular text-capitalize mb-3"
+          block
+          outlined
+          x-large
+        >
+          <v-row>
+            <div class="mr-6 ml-4">
+              <v-img src="@/assets/icons/tonkeeper.svg"></v-img>
+            </div>
+            <p class="button-wallet-text ma-0">Tonkeeper</p>
+          </v-row>
+        </v-btn>
+        <v-btn
+          @click="check_wallet"
+          color="#7BB3E3"
+          class="button-wallet button-metamask font-weight-regular text-capitalize mb-3"
+          block
+          outlined
+          x-large
+        >
+          <v-row>
+            <div class="mr-6 ml-4">
+              <v-img src="@/assets/icons/metamask.svg"></v-img>
+            </div>
+            <p class="button-wallet-text ma-0">Metamask</p>
+          </v-row>
+        </v-btn>
+        <v-btn
+          @click="check_wallet"
+          color="#7BB3E3"
+          class="button-wallet font-weight-regular text-capitalize"
+          block
+          outlined
+          x-large
+        >
+          <v-row>
+            <div class="mr-6 ml-4">
+              <v-img src="@/assets/icons/walletconnect.svg"></v-img>
+            </div>
+            <p class="button-wallet-text ma-0">Walletconnect</p>
+          </v-row>
+        </v-btn>
+      </div>
+      <v-col>
+        <v-row justify="center">
+          <a class="dialog-href" href="#">Мне нужна помощь</a>
+        </v-row>
+      </v-col>
+    </v-card>
+  </v-dialog> -->
+    <!-- Диалоговое окно загрузки -->
+    <!-- <v-dialog v-model="loader">
+    <v-card class="loader-card mx-auto pl-6 pr-6 pt-3" width="253" height="56">
+      <v-col>
+        <v-row align="center">
+          <v-progress-circular
+            indeterminate
+            color="#29B6F6"
+            width="3"
+            class="mr-12"
+          ></v-progress-circular>
+          <p class="ma-0">Подождите</p>
+        </v-row>
+      </v-col>
+    </v-card>
+  </v-dialog> -->
+</template>
+
+<script setup lang="ts">
+import UiButton from '~/components/ui-kit/UiButton.vue'
+// import { googleTokenLogin } from 'vue3-google-login'
+
+// const googleLogin = () => {
+//     googleTokenLogin().then((response) => {
+//         console.log('Handle the response', response)
+//     })
+// }
+
+// function onSuccess(data) {
+//     console.log(data)
+// }
+// function onFailure(error) {
+//     console.log(error)
+// }
+</script>
+
+<style lang="scss" scoped>
+.container {
+    height: 100vh;
+}
+.button-purse {
+    background: linear-gradient(96.78deg, #ce0efe -0.02%, #9012de 94.31%) !important;
+    box-shadow: 0 22px 22px -17px rgba(145, 18, 222, 0.51) !important;
+    border-radius: 12px !important;
+    font-size: 18px;
+    line-height: 22px;
+    color: #ffffff;
+}
+.button-purse-subtitle {
+    font-size: 13px;
+    line-height: 14px;
+    letter-spacing: 0.01em;
+    color: #9e9e9e;
+}
+.button-purse-subtitle-href {
+    color: #29b6f6;
+    text-decoration: none;
+}
+.button-phone {
+    background: linear-gradient(96.78deg, #13d5ff -0.02%, #12a1de 94.31%) !important;
+    border: 1px solid #12b7ec !important;
+    box-shadow: 0 22px 22px -17px #29b6f6 !important;
+    border-radius: 12px !important;
+    font-size: 18px !important;
+    line-height: 22px;
+    color: #ffffff;
+}
+.social {
+    gap: 24px;
+}
+.social-button {
+    background: #ffffff !important;
+    border: 1px solid rgba(158, 158, 158, 0.2) !important;
+    box-shadow: 0 9px 9px -9px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.2) !important;
+    border-radius: 12px !important;
+}
+.dialog {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 12px !important;
+}
+.dialog-title {
+    font-size: 18px;
+    line-height: 22px;
+    color: #263238;
+}
+.button-wallet {
+    border: 1px solid !important;
+    border-radius: 12px !important;
+}
+.button-metamask {
+    border: 1px solid #f89d35 !important;
+    border-radius: 12px;
+}
+.button-wallet-text {
+    font-size: 18px;
+    line-height: 22px;
+    color: #263238;
+}
+.dialog-href {
+    font-size: 16px;
+    line-height: 18px;
+    color: #29b6f6;
+    text-decoration: none;
+}
+.loader-card {
+    border: 1px solid #e0e0e0 !important;
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.19), 0 0 3px rgba(0, 0, 0, 0.039) !important;
+    border-radius: 8px !important;
+}
+
+button.login-button {
+    background-color: white;
+    height: 32px;
+    width: 200px;
+    border-radius: 5px;
+    border: 0px;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 5px;
+}
+</style>

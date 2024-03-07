@@ -1,0 +1,107 @@
+<script lang="ts">
+export default {
+    name: 'ProjectHeader',
+}
+</script>
+
+<template>
+    <div class="projectHeader">
+        <!-- TODO: READONLY PROJECT PICTURE -->
+        <img style="width: 100%" src="../../assets/demo/project-head.svg" />
+
+        <!-- READONLY -->
+        <div class="projectHeader__container" v-if="props.readOnly">
+            <div class="mt-5 mb-7">
+                <div class="d-flex justify-space-between">
+                    <h2>{{ props.prjName }}</h2>
+                    <div v-show="props.prjType" class="projectHeader__capital txt-body1">{{ props.prjType }}</div>
+                </div>
+                <p class="txt-body1">{{ props?.prjSlogan }}</p>
+            </div>
+            <div class="projectHeader__controls">
+                <div class="d-flex justify-space-between mb-4">
+                    <UiButton bgColor="blue" style="max-width: 152px">Подписаться</UiButton>
+                    <UiButton @click="shareProject()" imgSrc="../src/assets/icons/share-black.svg" onlyIcon />
+                    <Fire :id="props.prjID" />
+                </div>
+                <UiButton bgColor="def" imgSrc="../src/assets/icons/message-black.svg">Обсуждение проекта</UiButton>
+            </div>
+        </div>
+
+        <!-- EDITABLE -->
+        <div class="projectHeader__edit" v-else>
+            <UiInput label="Название проекта*" v-model="prjObject.name" />
+            <UiInput label="Слоган" v-model="prjObject.slogan" />
+            <UiInput label="id проекта" v-model="prjObject.nickName" />
+        </div>
+    </div>
+</template>
+
+<script lang="ts" setup>
+import { computed } from 'vue'
+import Fire from '../Fire.vue'
+import UiButton from '../ui-kit/UiButton.vue'
+import UiInput from '../ui-kit/UiInput.vue'
+
+import { storeToRefs } from 'pinia'
+import { useProjectStore } from '~/store/projectStore'
+
+const { prjObject } = storeToRefs(useProjectStore())
+
+// const onlyENGletters = computed(() => {
+//     var reg = /^[a-z]+$/i
+//     return '+' + prjObject.nickName.match(reg)[0]
+// })
+
+const props = defineProps({
+    readOnly: {
+        type: Boolean,
+        default: false,
+    },
+    prjName: {
+        type: String,
+    },
+    prjSlogan: {
+        type: String,
+    },
+    prjType: {
+        type: String,
+    },
+    prjID: {
+        type: Number,
+    },
+})
+
+function shareProject() {
+    try {
+        navigator.share({
+            title: 'ITNT',
+            text: 'Откройте для себя ITNT.',
+            url: 'http://62.113.105.220/',
+        })
+    } catch (error) {
+        console.log('error :' + error)
+    }
+}
+</script>
+
+<style lang="scss" scoped>
+.projectHeader {
+    padding-top: 18px;
+    &__container {
+        padding: 20px;
+    }
+    &__edit {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 20px;
+    }
+    &__capital {
+        padding: 5px 15px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        background: $def-white;
+    }
+}
+</style>

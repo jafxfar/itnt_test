@@ -1,0 +1,70 @@
+{
+    "entry": {
+        "phone": "Log in by phone number"
+    },
+    "user": {
+        "agreement": "user agreement"
+    },
+    "continue": "Continue",
+    "i": {
+        "agree": "I agree, continue"
+    },
+    "back": "Go back",
+    "skip": "Skip",
+    "chose": {
+        "avatar": "Select avatar"
+    },
+    "prompts": {
+        "title": "Hint",
+        "topProjects": {
+            "top": "In this section, you can see which projects users found most interesting. \n\n By giving “Fire” and showing any activity, you help projects move up the rating.",
+            "fresh": "Projects, after creation, first of all fall into this section"
+        }
+    },
+    "projectStages": {
+        "PRE-SEED": "At this stage, the creators invest their own funds. There is no need to talk about the time frame and funding limits. Startups strive to raise as much money as possible as quickly as possible.",
+        "SEED": "At this stage, they attract from 25 thousand to 1 million dollars. The money is needed in order to complete the development of a prototype or bring it up to market requirements. The main product is the program, the final release of the program should be the result of this round. The main difficulty is to show investors the prospects of the project and correctly assess the required amount of financing.",
+        "A-1": "The main feature of the angel round is that startups attract mentors rather than investors. The help of business angels in organizing all processes can be so significant that finances often go by the wayside. The angel round can also be called a kind of seed round. The main difficulty here is to understand in time that your startup needs not only money, but also organizational support. And, of course, it can be difficult to find an investor and a mentor in one person.",
+        "A-2": "",
+        "B-1": "",
+        "C": "The company and its creators face the task of achieving self-sufficiency. A startup becomes profitable only at the stage of round C. After this round, the company is able to exist independently. The main difficulty is to finally turn a bold experiment into a stable and predictable business project. Not all startups reach this stage. Many people do not achieve success due to lack of knowledge and experience, inability to think like a businessman, and not just to be creative.",
+        "D": "This is financing before selling to a strategic investor or going public. The main difficulty for companies is to attract a strategic investor, show their value to buyers."
+    },
+    "me": {
+        "skills": "Skills",
+        "add": "Add",
+        "cancel": "Cancel"
+    },
+    "search": {
+        "searchDetail": "Detailed search",
+        "vacancee": "Are there any open vacancies?",
+        "NoNeed": "It doesn't matter",
+        "Insearch": "Looking for investments?",
+        "Yes": "Yes"
+    },
+    "feed": {
+        "time": "5 hours ago",
+        "feedBack": "We are currently in the process of collecting feedback from testers to finalize the product and release the application. Open for investment.",
+        "invest": "Attracting investments",
+        "GoTo": "Go to the project",
+        "comments": "Look into the comments",
+        "today": "Today",
+        "yesterday": "Yesterday"
+    },
+    "feedPanels": {
+        "time": "5 hours ago",
+        "addToProject": "Joined the project",
+        "specialist": "specialist",
+        "back": "back"
+    },
+    "feedCardType": {
+        "newProjectDiscussed": "The project is actively discussed",
+        "newProjectVacancies": "The project requires specialists",
+        "newProjectStage": "Moved to a new stage:",
+        "newProjectPhotos": "Photos have been updated in the project:",
+        "newFile": "Attachment added:"
+    },
+    "location": "Russia, Krasnodar",
+    "create": "Create a project",
+    "post": "Publish a project"
+}

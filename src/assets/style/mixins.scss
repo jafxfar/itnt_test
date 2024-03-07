@@ -1,0 +1,15 @@
+@mixin btn-green-gradient {
+    background: linear-gradient(#0efe51 0%, #12dea1 100%);
+}
+
+@mixin btn-blue-gradient {
+    background: linear-gradient(173deg, #13d5ff 0%, #12a1de 100%);
+}
+
+@mixin btn-orange-gradient {
+    background: linear-gradient(#ffaf13 0%, #ff7313 100%);
+}
+
+@mixin btn-purple-gradient {
+    background: linear-gradient(173deg, #ce0efe 0%, #9012de 100%);
+}
