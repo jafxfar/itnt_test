@@ -52,9 +52,9 @@ export default {
     </v-dialog>
 
     <vue-bottom-sheet :full-screen="true" ref="modalState">
-        <div class="txt-body1">Выбрано : {{ chosenSkills.length }}</div>
-        <UiInput label="Введите навык для поиска" />
-        <div class="ui-skills__choser" v-for="(skillObj, skill, id) in skills" :key="id">
+        <div class="txt-body1 p-2">Выбрано : {{ chosenSkills.length }}</div>
+        <UiInput class="p-2" label="Введите навык для поиска" />
+        <div class="ui-skills__choser p-2" v-for="(skillObj, skill, id) in skills" :key="id">
             <div class="ui-skills__choser" v-for="(skill, id) in skillObj" :key="id">
                 <p v-if="skill.title" class="txt-cap1 ui-skills__choser__title">
                     {{ skill.title }}

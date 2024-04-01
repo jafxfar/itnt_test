@@ -22,14 +22,13 @@
         <div v-else>
             <!-- Фотографии проекта -->
             <div class="projectCard__editable__pics">
-                <p>Презентация 7 / 10</p>
-
-                <div class="projectCard__editable__pics__grid">
+                <ProjectAddPhoto/>
+                <!-- <div class="projectCard__editable__pics__grid">
                     <img v-for="i in 7" width="73" height="106" src="@/assets/demo/projectSmallCard.svg" />
                     <div @click="addProjectPhoto" class="projectCard__editable__pics__adder">
                         <v-icon icon="mdi-plus" />
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <!-- Теги проекта -->
@@ -69,7 +68,7 @@
 import UiPrompt from '../ui-kit/UiPrompt.vue'
 import UiInput from '../ui-kit/UiInput.vue'
 import UiTextArea from '../ui-kit/UiTextArea.vue'
-
+import ProjectAddPhoto from './ProjectAddPhoto.vue';
 // import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '~/store/projectStore'

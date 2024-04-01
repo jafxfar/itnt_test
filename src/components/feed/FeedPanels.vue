@@ -106,21 +106,25 @@ const demoInfo = [
     .v-expansion-panel-text__wrapper {
         padding: 16px 14px;
         border-top: 1px solid #e0e0e0;
+        
     }
 }
 
 .v-expansion-panel-title {
     border-radius: 12px;
+    
 }
 
 .v-expansion-panel-text {
     &:last-child {
         border-radius: 2px 2px 12px 12px;
+        
     }
 }
 
 .v-expansion-panel-title--active {
     border-radius: 12px 12px 2px 2px !important;
+    
 }
 
 .back-messages {
@@ -135,7 +139,7 @@ const demoInfo = [
 
 .back-messages-after {
     right: 11px;
-    top: 28px;
+    top: 24px;
     width: 44px;
     height: 22px;
     position: absolute;

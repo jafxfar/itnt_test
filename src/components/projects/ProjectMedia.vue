@@ -27,7 +27,7 @@
             <div
                 @click="modalState.open()"
                 v-if="props.readOnly === false"
-                class="projectMedia__item projectMedia__item--adder"
+                class="projectMedia__item projectMedia__item--adder cursor-pointer"
             >
                 <v-icon icon="mdi-plus" />
                 <vue-bottom-sheet ref="modalState">

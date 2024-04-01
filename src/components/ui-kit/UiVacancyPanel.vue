@@ -154,12 +154,12 @@ const editableModalItems: modalActionsList[] = [
         padding: 23px 20px;
         padding-top: 8px;
     }
-    // .v-expansion-panel-title__overlay {
-    //     border-radius: 12px;
-    //     background: $def-white;
-    //     // padding: 23px 20px !important;
-    //     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
-    // }
+    .v-expansion-panel-title__overlay {
+        border-radius: 12px;
+        background: $def-white;
+        padding: 23px 20px !important;
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
+    }
 }
 .v-expansion-panel--active {
     border-radius: 12px !important;

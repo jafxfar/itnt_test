@@ -4,9 +4,17 @@
             <p v-show="props.readOnly" style="color: #263238" class="txt-cap2">Наша команда:</p>
             <p v-show="!props.readOnly" style="color: #263238" class="txt-cap2">Участники проекта:</p>
 
-            <UiButton fit style="height: 36px; padding: 11px 16px" bgColor="smBlue" isSmall>
+            <UiButton @click="joinTeam.open()" fit style="height: 36px; padding: 11px 16px" bgColor="smBlue" isSmall>
                 <p class="txt-cap2">Заявки</p>
             </UiButton>
+            <vue-bottom-sheet max-height="115px" full-screen ref="modalState">
+                <div class="modalList">
+                    <div v-for="(item, id) in joinTeamModalItems" :key="id" class="modalList__item">
+                        <img :src="`../src/assets/icons/footer/${item.icon}.svg`" alt="" />
+                        <p :class="item.name === 'Пожаловаться' && 'error-txt'" class="txt-body1">{{ item.name }}</p>
+                    </div>
+                </div>
+            </vue-bottom-sheet>
         </div>
 
         <!-- READONLY -->
@@ -43,13 +51,8 @@
                     <div class="projectTeam__item--edit d-flex justify-space-between">
                         <div class="projectTeam__item__header--edit">
                             <div class="d-flex">
-                                <img
-                                    class="mr-7"
-                                    width="37"
-                                    height="37"
-                                    src="../../assets/demo/ava-small-header.svg"
-                                    alt=""
-                                />
+                                <img class="mr-7" width="37" height="37" src="../../assets/demo/ava-small-header.svg"
+                                    alt="" />
 
                                 <p class="txt-body2">Нейромонах Феофан</p>
                             </div>
@@ -103,6 +106,57 @@
                 </div>
             </div>
         </vue-bottom-sheet>
+
+        <vue-bottom-sheet ref="joinTeam">
+            <p class="mb-2 p-4">К команде iTalent хотят присоединиться пользователи:</p>
+            <div class="searchTeammateModal__items" v-for="item in editableModalItems">
+                <v-expansion-panels>
+                    <v-expansion-panel class="feedPanel">
+                        <v-expansion-panel-title class="feedPanel__head">
+                            <template v-slot:actions="{ expanded }">
+                                <div class="">
+                                    <UiButton class="w-[80px] p-5 mr-24" v-if="!expanded" isxSmall
+                                        @click="modalState.open()" bg-color="def">Чат</UiButton>
+                                </div>
+
+                                <v-icon :class="expanded ? 'px-6 py-3 rounded-xl' : ''" class="bg-[#e1f5fe] px-6 mt-[18px] py-3 rounded-xl" color="#1769AA"
+                                    :icon="expanded ? 'mdi-chevron-up' : ' mdi-chevron-down'"></v-icon>
+                            </template>
+                            <img width="30" height="30" class="mr-3" src="../../assets/demo/ava-small-header.svg"
+                                alt="" />
+
+                            <div>
+                                <div class="feedPanel__card__title align-center d-flex">
+                                    <p class="txt-body3">Danger Flower</p>
+                                    <img class="mx-2" src="../../assets/icons/singeDot-gray.svg" />
+                                    <span style="color: #9e9e9e" class="txt-cap1">{{ $t('feedPanels.time') }}</span>
+                                </div>
+                                <p class="color-gray txt-body2">Team mood</p>
+                            </div>
+                            <v-spacer></v-spacer>
+
+                            <v-spacer></v-spacer>
+                            <div class="back-messages-after"></div>
+                        </v-expansion-panel-title>
+
+                        <v-expansion-panel-text v-for="(info, id) in demoInfo" :key="id">
+                            <div class="feedPanel__card d-flex align-center">
+                                <div class="ui-vacancyPanel__head mb-2">
+                                    Здравствуйте! Кажется я тот, кого вы ищете!
+                                </div>
+
+                                <v-spacer />
+                            </div>
+                            <div class="flex flex-row gap-8">
+                                <UiButton isSmall @click="modalState.open()" bg-color="def">Отклонить</UiButton>
+                                <UiButton isxSmall @click="modalState.open()" bg-color="def">Чат</UiButton>
+                                <UiButton isSmall @click="modalState.open()" bg-color="smBlue">Одобрить</UiButton>
+                            </div>
+                        </v-expansion-panel-text>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+            </div>
+        </vue-bottom-sheet>
     </div>
 </template>
 
@@ -126,7 +180,15 @@ const props = defineProps({
 
 const modalState = ref(null)
 const searchTeammateModal = ref(null)
+const joinTeam = ref(null)
+const demoInfo = [
+    {
+        name: 'Евгений Анисимов',
+        time: '3ч',
+        spec: 'Младший Шеф-Повар',
+    },
 
+]
 const demoTeam = [
     {
         name: 'Евгений Анисимов',
@@ -136,6 +198,7 @@ const demoTeam = [
         name: 'Евгений Анисимов',
         role: 'Database ninja',
     },
+
 ]
 
 const readOnlyModalItems: modalActionsList[] = [
@@ -146,6 +209,12 @@ const readOnlyModalItems: modalActionsList[] = [
 ]
 
 const editableModalItems: modalActionsList[] = [
+    {
+        name: 'Открыть профиль',
+        icon: 'account',
+    },
+]
+const joinTeamModalItems: modalActionsList[] = [
     {
         name: 'Открыть профиль',
         icon: 'account',
@@ -172,16 +241,19 @@ const editableModalItems: modalActionsList[] = [
         flex-direction: column;
         gap: 1px;
     }
+
     &__item {
         align-items: center;
         padding: 16px 9px 15px 16px;
         border-radius: 12px 12px 2px 2px;
         background: #fff;
+
         &--edit {
             display: flex;
             flex-direction: column;
             background: white;
         }
+
         &__header {
             &--edit {
                 display: flex;
@@ -191,6 +263,7 @@ const editableModalItems: modalActionsList[] = [
                 padding-right: 8px;
             }
         }
+
         &__body {
             &--edit {
                 display: flex;
@@ -213,16 +286,19 @@ const editableModalItems: modalActionsList[] = [
         margin-top: 20px;
         min-height: 350px;
     }
+
     &__item {
         display: flex;
         align-items: center;
         gap: 16px;
     }
 }
+
 .isCEO {
     color: #29b6f6;
     font-weight: 400;
 }
+
 .modalList {
     padding: 0 20px;
 }
