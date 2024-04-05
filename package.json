@@ -20,7 +20,7 @@
         "maska": "^2.1.9",
         "pinia": "^2.1.4",
         "prettier": "^2.8.8",
-        "vite-plugin-vuetify": "^1.0.2",
+        "vite-plugin-vuetify": "^2.0.3",
         "vue": "^3.2.47",
         "vue-apple-login": "2.x",
         "vue-cookies": "^1.8.3",
@@ -32,13 +32,13 @@
     },
     "devDependencies": {
         "@types/node": "^20.3.2",
-        "@vitejs/plugin-vue": "^4.1.0",
+        "@vitejs/plugin-vue": "^5.0.4",
         "autoprefixer": "^10.4.17",
         "postcss": "^8.4.35",
         "sass": "^1.63.6",
         "tailwindcss": "^3.4.1",
         "typescript": "^5.0.2",
-        "vite": "^4.3.9",
+        "vite": "^5.2.8",
         "vite-plugin-pwa": "^0.16.4",
         "vue-tsc": "^1.4.2"
     }

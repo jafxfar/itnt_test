@@ -7,7 +7,14 @@ import vuetify from 'vite-plugin-vuetify'
 
 export default defineConfig({
     plugins: [vue(), vuetify(), VitePWA()],
-
+    server:{
+        watch:{
+            usePolling:true,
+        },
+        host:true,
+        strictPort:true,
+        port:8080
+    },
     // TODO: поменять пути динамических иконок
     build: {
         minify: true,
