@@ -2,7 +2,7 @@
     <div class="userPics">
         <div class="userPics__bg"></div>
         <div class="userPics__ava">
-            <img :src="`https://moltore.ru/var/itnt-files/${props.avaPic}`" />
+            <img :src="`http://62.217.181.172:8080/var/itnt-files/${props.avaPic}`" />
         </div>
     </div>
 </template>

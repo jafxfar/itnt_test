@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const API = axios.create({
-    baseURL: 'https://moltore.ru:8080/api',
+    baseURL: 'http://62.217.181.172:8080/api',
     responseType: 'json',
     headers: {
         'X-Custom-Header': 'foobar',

@@ -34,7 +34,7 @@ const putUser = (user: Object) => {
 
 // PATCH
 const patchUser = (data: any) => {
-    return API.patch(`${prefix}/`, { ...data })
+    return API.patch(`${prefix}/`, { data })
 }
 
 export { getUserByID, postAddUserPicture, postUserConfirm, postUserLoginCode, putUser, patchUser }
