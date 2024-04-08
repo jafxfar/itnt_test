@@ -1,60 +1,190 @@
 <template>
-    <div class="py-2 flex justify-center time">
-        <p class="date px-[20px] py-[6px] rounded-[20px] text-white bg-optional">Сегодня</p>
-    </div>
-    <div class=" rounded-[12px] bg-white ">
-        <RouterLink to="/blog">
-            <div class="flex flex-row  rounded-t-[12px] blog_header">
-                <div class="p-4">
-                    <p>2 часа назад</p>
-                    <h1>Мы запустили собственный сервер!</h1>
+    <div class="feedCard mb-4">
+        <!-- head -->
+        <div class="feedCard__head"
+            :style="{ 'background-image': 'url(' + backgroundImageUrl + ')', 'height': imageHeight, 'color' : Color }">
+            <div class="d-flex align-center">
+                <div>
+                    <div class="d-flex align-center">
+                        <span style="color: #9e9e9e" class="txt-cap1">{{ $t('feed.time') }}</span>
+                    </div>
+                    <p class="txt-body3 mb-2">Save and Brave</p>
                 </div>
-                <img src="" alt="1">
             </div>
-            <div class="mt-16 p-4">
-                <h2>Вчера наша талантливая команда прошла очередной рубеж! Мы выходим на IPO!<br />
-                    <br />
-                    В ближайший год ожидаем тонны новой работы. Больше кофе - Богу кофе!
-                </h2>
+            <v-icon icon="mdi-dots-vertical" />
+        </div>
+
+        <!-- body -->
+        <div class="feedCard__body">
+            <!-- Новый этап проекта -->
+            <div v-if="props.feedCardType === 'newProjectStage'">
+                <p class="txt-cap1">
+                    {{ $t('feed.feedBack') }}
+                </p>
+                 <p class="txt-cap1 mt-4">
+                    192.168.0.1:27015
+                </p>
+                <p class="txt-body3 mt-1">
+                    Заходи, будет весело!
+                </p>
             </div>
-        </RouterLink>
-        <div class="flex flex-row justify-start  gap-[29.5px] mb-[16px] p-4">
-            <div class="">
-                <button class=" px-[19px] py-[17px] share_button"><img src="@/assets/share.svg" alt=""></button>
+            
+
+            <!-- Слайдер -->
+            <div class="feedCard__body__slider" v-if="props.feedCardType === 'newProjectPhotos'">
+                <img width="135" v-for="i in 5" height="204" src="../../assets/demo/demo-rec1.png" />
             </div>
-            <RouterLink to="/blog">
-                <button class="px-[19px] text-xs py-[6px] chat_button"><img src="@/assets/project_chat.svg">2</button>
-            </RouterLink>
-            <div class="flex-1 flex justify-end">
-                <button class=" flame_btn"><img src="@/assets/flame.svg" alt=""></button>
+
+           
+            <div v-if="props.feedCardType === 'newProjectDiscussed'"> Проект активно обсуждается</div>
+        </div>
+
+        <!-- footer -->
+        <div class="feedCard__footer">
+            <div class="d-flex align-center">
+                <UiButton
+                    v-if="props.feedCardType != 'newProjectDiscussed'"
+                    bgColor="def"
+                    class="mr-3"
+                    imgSrc="../src/assets/icons/share-black.svg"
+                    style="padding: 10px 13px 9px 14px"
+                    onlyIcon
+                />
+                <UiButton
+                    v-if="props.feedCardType != 'newProjectDiscussed'"
+                    bgColor="def"
+                    class="mr-3"
+                    imgSrc="../src/assets/icons/share-black.svg"
+                    style="padding: 10px 13px 9px 14px"
+                    onlyIcon
+                />
             </div>
+            <Fire />
         </div>
     </div>
 </template>
 
+<script lang="ts" setup>
+import Fire from '../Fire.vue'
+import UiButton from '../ui-kit/UiButton.vue'
+import { computed, ref } from 'vue'
 
-<style>
-.blog_header {
+const props = defineProps({
+    feedCardType: {
+        type: String,
+        default: '',
+    },
+})
+
+const backgroundImageUrl = ref("/src/assets/Frame221.png");
+
+const hasImage = computed(() => {
+    return backgroundImageUrl.value !== "/src/assets/Frame221.png";
+});
+
+const imageHeight = computed(() =>{
+    return hasImage.value ? '0' : '120px';
+})
+const Color = computed(() => {
+    return hasImage.value ? 'black' : 'white;'
+})
+
+
+const feedCardSubtitle = computed(() => {
+    if (props.feedCardType === 'newProjectDiscussed') {
+        return 'Проект активно обсуждается'
+    } else if (props.feedCardType === 'newProjectVacancies') {
+        return 'Проекту требуются специалисты'
+    } else if (props.feedCardType === 'newProjectStage') {
+        return ' Перешли на новый этап:'
+    } else if (props.feedCardType === 'newProjectPhotos') {
+        return ' В проекте обновились фото: '
+    } else if (props.feedCardType === 'newFile') {
+        return 'Добавили вложение: '
+    }
+})
+</script>
+
+<style scoped lang="scss">
+.feedCard {
+    // padding: 16px 14px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
     display: flex;
-    justify-content: space-between;
-    /* Распределение контента внутри по вертикали */
-    /* Радиус скругления углов */
-    color: white;
-    /* Цвет текста */
-    background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
-    /* Градиент начинается с темного сверху и становится прозрачным снизу */
-    /* Высота элемента */
-    width: auto;
-    height: auto;
-    /* Ширина элемента */
+    flex-direction: column;
+    gap: 16px;
+    &__head {
+        padding: 16px 6px 16px 19px;
+        background-size: cover;
+        // height: 128px;
+        background-position: center;
+        display: flex;
+        border-radius: 12px 12px 2px 2px;
+        align-items:flex-start;
+        color: #ffffff;
+        justify-content: space-between;
+        &__subtitle {
+            color: #9e9e9e;
+            margin-top: 1px;
+            text-align: initial;
+        }
+    }
+    &__body {
+        padding: 0px 14px;
+
+        text-align: left;
+        &__slider {
+            display: flex;
+            gap: 16px;
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+            scrollbar-width: none;
+            overflow-x: scroll;
+            &::-webkit-scrollbar {
+                display: none; /* Safari and Chrome */
+            }
+        }
+    }
+    &__vacancy {
+        &__head {
+            padding: 10px 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            max-width: fit-content;
+            border-radius: 8px;
+            background: #e1f5fe;
+        }
+    }
+    &__footer {
+        padding: 12px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        &__button {
+            padding: 14.5px 20px;
+            box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.2) inset, 0px 23px 10px -23px rgba(0, 0, 0, 0.15);
+        }
+    }
 }
 
-.share_button {
-    border-radius: 12px;
-    border: 1px solid rgba(158, 158, 158, 0.20);
-    background: var(--Background-Surface, #FFF);
+.feedCard__panel :deep() {
+    border: 1px solid $def-white;
 
-    /* Button Smooth Shadow */
-    box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.20) inset, 0px 23px 10px -23px rgba(0, 0, 0, 0.15);
+    .v-expansion-panel__shadow {
+        display: none;
+    }
+    .v-expansion-panel-title__overlay {
+        opacity: 0;
+    }
+    .v-expansion-panel-text__wrapper {
+        padding: 23px 20px;
+        padding-top: 8px;
+    }
+}
+.v-expansion-panel--active {
+    border-radius: 12px !important;
+    background: #ffffff;
+    border: #c7edff 1px solid !important;
 }
 </style>

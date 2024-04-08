@@ -39,7 +39,6 @@ export default {
 <style scoped>
 .btn {
     padding: 4rem 4rem 4rem 4rem;
-    background-color: blue;
     color: white;
 }
 .active{

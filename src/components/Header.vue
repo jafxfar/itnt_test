@@ -22,7 +22,7 @@ export default {
             src="../assets/demo/ava-small-header.svg"
         />
 
-        <img style="padding: 10px" v-if="props.showControlDots" src="../assets/icons/dots-black.svg" />
+        <img @click="toggleUserModal" style="padding: 10px" v-if="props.showControlDots" src="../assets/icons/dots-black.svg" />
 
         <div v-if="props.search" class="d-flex align-center">
             <UiInput noStyle v-model="searchBarValue" />
@@ -30,11 +30,13 @@ export default {
             <v-icon @click="searchValueByHeader" icon="mdi-magnify" />
         </div>
     </v-app-bar>
+    <UserModal v-if="user.userModalState === true" />
 
     <TopModal v-if="user.topModalState === true" />
 </template>
 
 <script lang="ts" setup>
+import UserModal from './UserModal.vue'
 import TopModal from './TopModal.vue'
 import UiInput from './ui-kit/UiInput.vue'
 
@@ -86,6 +88,9 @@ async function searchValueByHeader() {
 
 function toggleTopModal() {
     user.topModalState = !user.topModalState
+}
+function toggleUserModal(){
+    user.userModalState = !user.userModalState
 }
 
 const chosenId = computed(() => {

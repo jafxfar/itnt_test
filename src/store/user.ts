@@ -5,6 +5,7 @@ export const useUserStore = defineStore('user', {
         userToken: '',
         isAuth: false,
         topModalState: false,
+        userModalState:false,
         searchBarValue: '',
         searchBarResponse: {},
     }),

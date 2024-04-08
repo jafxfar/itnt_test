@@ -1,7 +1,7 @@
 <template>
     <Header showID showUserMinify />
-    <ProfileHeader :ava-pic="userInfo.pictureUrl" />
-
+    <ProfileHeader :bg-pic="userInfo.pictureUrl" :ava-pic="userInfo.pictureUrl" />
+    
     <v-container style="padding: 0 20px; margin-bottom: 48px">
         <ProfileInfo
             :userName="userInfo.firstName"
@@ -9,7 +9,10 @@
             :userDescription="userInfo.fullDescription"
         />
         <UiSkills />
-
+        <div class="my-4">
+            <h1>Что у меня нового:</h1>
+            <UiInput  class="mt-2" label="Расскажите, чем запомнился день"/>
+        </div>
         <!-- <ProjectsList :projects="userInfo.projects" /> -->
         <ProjectsList class="mt-12" :projects="userInfo.projects" />
         <!-- <UiButton bgColor="blue">Создать проект </UiButton> -->
@@ -25,7 +28,7 @@ import UiSkills from '~/components/ui-kit/UiSkills.vue'
 import ProfileInfo from '~/components/profile/ProfileInfo.vue'
 import ProjectsList from '~/components/profile/ProjectsList.vue'
 import ProfileHeader from '~/components/profile/ProfileHeader.vue'
-
+import UiInput from '~/components/ui-kit/UiInput.vue'
 import { onMounted, ref } from 'vue'
 import { getUserByID } from '~/API/ways/user.ts'
 import { isAuth } from '~/helpers/routerHandler'

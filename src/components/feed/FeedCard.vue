@@ -1,9 +1,3 @@
-<script lang="ts">
-export default {
-    name: 'FeedCard',
-}
-</script>
-
 <template>
     <div class="feedCard">
         <!-- head -->
@@ -189,3 +183,8 @@ const feedCardSubtitle = computed(() => {
     border: #c7edff 1px solid !important;
 }
 </style>
+<script lang="ts">
+export default {
+    name: 'FeedCard',
+}
+</script>
