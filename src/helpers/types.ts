@@ -9,3 +9,10 @@ export interface skillList {
     title?: string
     name?: string
 }
+export default interface ComplaintData {
+    resource: string;
+    owner: string;
+    code: number;
+    severity: number;
+    message: string;
+}

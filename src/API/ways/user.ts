@@ -1,5 +1,5 @@
 import { API } from '../main'
-
+import ComplaintData from "~/helpers/types"
 const prefix = '/user'
 
 const postUserLoginCode = (phone: String) => {
@@ -19,6 +19,17 @@ const postAddUserPicture = (picLink: FormData) => {
     return API.post(`${prefix}/addUserPicture`, picLink)
 }
 
+const postAddBackgroundPicture = (picLink: FormData) => {
+    return API.post(`${prefix}/addBackgroundPicture`, picLink)
+}
+
+const postAddComplaint = (complaintData: ComplaintData[]) => {
+    return API.post(`${prefix}/addComplaint`, complaintData);
+}
+
+
+
+
 const getUserByID = (id: string) => {
     if (id) {
         return API.get(`${prefix}/${id}`)
@@ -37,4 +48,7 @@ const patchUser = (data: any) => {
     return API.patch(`${prefix}/`, { data })
 }
 
-export { getUserByID, postAddUserPicture, postUserConfirm, postUserLoginCode, putUser, patchUser }
+export { getUserByID,
+     postAddUserPicture,postAddBackgroundPicture, 
+     postUserConfirm, postUserLoginCode, putUser, 
+     patchUser, postAddComplaint }

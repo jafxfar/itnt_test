@@ -30,4 +30,8 @@ const delLike = (projectID: number) => {
     return API.delete(`${prefix}/${projectID}/delLike`, projectID)
 }
 
-export { getProjectsByValue, getProjectByID, getAllProjects, addLike, delLike, postProject, patchProject }
+const addFollow = (projectID: number) => {
+    return API.post(`${prefix}/${projectID}/addFollow`, projectID)
+}
+
+export { getProjectsByValue, getProjectByID, getAllProjects, addLike, delLike, postProject, patchProject, addFollow }

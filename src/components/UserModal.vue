@@ -10,9 +10,9 @@ export default {
 
         <div class="modal__list modalList">
             <template v-for="(item, id) in modalItems" :key="id">
-                <div @click="onModalClick(item.route)" class="modal__list__item">
+                <div @click="onModalClick(item)" class="modal__list__item">
                     <img :src="`../src/assets/icons/${item.icon}.svg`" alt="" />
-                    <p :class="item.name === 'Сообщить о нарушении' && 'error-txt'" class="txt-body1">{{ item.name }}</p>
+                    <p  :class="item.name === 'Сообщить о нарушении' && 'error-txt'" class="txt-body1">{{ item.name }}</p>
                 </div>
             </template>
 
@@ -21,8 +21,7 @@ export default {
 </template>
 
 <script setup lang="ts">
-
-import UiShortProjectCard from './ui-kit/UiShortProjectCard.vue'
+import { postAddComplaint } from "~/API/ways/user" // Импорт функции отправки жалобы на сервер
 
 import { modalActionsList } from '~/helpers/types'
 import { useRouter } from 'vue-router'
@@ -35,9 +34,25 @@ function onClickOutside() {
     user.topModalState = false
 }
 
-function onModalClick(route: string) {
-    user.topModalState = false
-    router.push(route)
+function onModalClick(item) {
+    user.topModalState = false;
+    if (item.name === 'Сообщить о нарушении') {
+        const complaintText = 'Сообщить о нарушении'; // Текст жалобы
+        sendComplaint(complaintText);
+    } else {
+        router.push(item.route);
+    }
+}
+
+async function sendComplaint(text) {
+    try {
+        const response = await postAddComplaint({ complaintInfo: text });
+        console.log('Жалоба успешно отправлена:', response);
+        // Обработка успешного ответа...
+    } catch (error) {
+        console.error('Ошибка отправки жалобы:', error);
+        // Обработка ошибки...
+    }
 }
 
 const modalItems: modalActionsList[] = [

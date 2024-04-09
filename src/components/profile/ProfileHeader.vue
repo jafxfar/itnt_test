@@ -1,42 +1,39 @@
 <template>
     <div class="userPics">
-        <div class="userPics__bg" v-if="props.bgPic">
-            <img :src="`http://62.217.181.172:8080/var/itnt-files/${props.bgPic}`" />
-        </div>
-        <div class="userPics__ava" v-if="props.avaPic">
-            <img alt="ava" :src="`http://62.217.181.172:8080/var/itnt-files/${props.avaPic}`" />
+        <!-- Отображение загруженного баннера -->
+        <div v-if="uploadedBgImageUrl || props.bgPic" class="userPics__bg">
+            <img v-if="props.bgPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.bgPic}`" />
+            <img v-if="uploadedBgImageUrl" :src="uploadedBgImageUrl" />
         </div>
 
-        <!-- Загрузка банера -->
+        <!-- Отображение загруженной аватарки -->
+        <div v-if="uploadedAvaImageUrl || props.avaPic" class="userPics__ava">
+            <img v-if="props.avaPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.avaPic}`" />
+            <img v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" />
+        </div>
 
-        <div class="userPics__upload bg-[FAFAFA] px-[20px]" v-if="!props.bgPic && !uploadedBgImage">
-            <input type="file" ref="fileInput" style="display: none;" @change="handleFileInputChange">
+        <!-- Загрузка баннера -->
+        <div v-if="!uploadedBgImageUrl && !props.bgPic" class="userPics__upload">
+            <input type="file" ref="bgFileInput" style="display: none;" @change="handleFileInputChange">
             <button class="userPics__btn" @click="uploadBg">
                 <img src="/src/assets/Profile/icons.svg" alt="">
             </button>
         </div>
-        <!--  -->
 
         <!-- Загрузка аватарки -->
-        <div class="userPics__ava" v-if="!props.avaPic && !uploadedAvaImage">
-            <input type="file" ref="fileInput" style="display: none;" @change="handleFileAva">
+        <div v-if="!uploadedAvaImageUrl && !props.avaPic" class="userPics__ava">
+            <input type="file" ref="avaFleInput" style="display: none;" @change="handleFileAva">
             <button class="" @click="uploadAva">
                 <img src="/src/assets/Profile/Photo.svg" alt="">
             </button>
         </div>
-        <!-- Отоброжение банера -->
-        <div v-if="uploadedBgImage" :style="{ backgroundImage: `url(${uploadedBgImage})` }" class="userPics__bg"></div>
-
-        <!-- Отоброжение аватарки -->
-        <div v-if="uploadedAvaImage" :style="{ backgroundImage: `url(${uploadedAvaImage})` }" class="userPics__ava">
-            <img :src="`url(${uploadedAvaImage})`" alt="">
-        </div>
-
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { postAddUserPicture, postAddBackgroundPicture } from '~/API/ways/user';
+
 const props = defineProps({
     avaPic: {
         type: String,
@@ -49,39 +46,60 @@ const props = defineProps({
         default: false,
     },
 })
-const fileInput = ref<HTMLInputElement | null>(null);
-const uploadedBgImage = ref<string>('');
-const uploadedAvaImage = ref<string>('');
+const bgFileInput = ref<HTMLInputElement | null>(null);
+const uploadedBgImageUrl = ref<string>('');
+
+const avaFleInput = ref<HTMLInputElement | null>(null);
+const uploadedAvaImageUrl = ref<string>('');
 
 const handleFileInputChange = () => {
-    const files = fileInput.value?.files;
+    const files = bgFileInput.value?.files;
     if (files && files.length > 0) {
         const selectedFile = files[0];
         const reader = new FileReader();
-        reader.onload = () => {
-            uploadedBgImage.value = reader.result as string;
+        reader.readAsDataURL(selectedFile); // Асинхронное чтение файла
+        reader.onload = async () => {
+            uploadedBgImageUrl.value = reader.result as string;
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                const response = await postAddBackgroundPicture(formData);
+                console.log('success:', response);
+            } catch (error) {
+                console.error('error:', error);
+            }
         };
-        reader.readAsDataURL(selectedFile);
     }
-}
-const uploadBg = () => {
-    fileInput.value?.click();
 }
 
 const handleFileAva = () => {
-    const files = fileInput.value?.files;
+    const files = avaFleInput.value?.files;
     if (files && files.length > 0) {
         const selectedFile = files[0];
         const reader = new FileReader();
-        reader.onload = () => {
-            uploadedAvaImage.value = reader.result as string;
+        reader.readAsDataURL(selectedFile); // Асинхронное чтение файла
+        reader.onload = async () => {
+            uploadedAvaImageUrl.value = reader.result as string;
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                const response = await postAddUserPicture(formData);
+                console.log('success:', response);
+            } catch (error) {
+                console.error('error:', error);
+            }
         };
-        reader.readAsDataURL(selectedFile);
     }
 }
-const uploadAva = () => {
-    fileInput.value?.click();
+
+const uploadBg = async () => {
+    bgFileInput.value?.click();
 }
+
+const uploadAva = async () => {
+    avaFleInput.value?.click();
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -101,7 +119,7 @@ const uploadAva = () => {
 
     &__ava {
         position: absolute;
-        left: 36%;
+        left: 50%;
         right: 50%;
         top: 33px;
         width: 104px;
@@ -123,6 +141,7 @@ const uploadAva = () => {
         align-items: end;
         justify-content: end;
         // width: 100%;
+        padding: 0px 20px;
         height: 120px;
         display: flex;
     }

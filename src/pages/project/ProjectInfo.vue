@@ -18,7 +18,6 @@ import { useRoute } from 'vue-router'
 
 let data = ref({})
 const route = useRoute()
-
 onMounted(async () => {
     await getProjectByID(route.params.ID).then((response) => {
         try {

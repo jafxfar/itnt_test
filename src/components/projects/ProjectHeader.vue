@@ -20,7 +20,7 @@ export default {
             </div>
             <div class="projectHeader__controls">
                 <div class="d-flex justify-space-between mb-4">
-                    <UiButton bgColor="blue" style="max-width: 152px">Подписаться</UiButton>
+                    <UiButton bgColor="blue" @click="follow" style="max-width: 152px">Подписаться</UiButton>
                     <UiButton @click="shareProject()" imgSrc="../src/assets/icons/share-black.svg" onlyIcon />
                     <Fire :id="props.prjID" />
                 </div>
@@ -42,6 +42,7 @@ import { computed } from 'vue'
 import Fire from '../Fire.vue'
 import UiButton from '../ui-kit/UiButton.vue'
 import UiInput from '../ui-kit/UiInput.vue'
+import { addFollow } from '~/API/ways/project'
 
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '~/store/projectStore'
@@ -83,6 +84,16 @@ function shareProject() {
         console.log('error :' + error)
     }
 }
+async function follow() {
+    try {
+        const response = await addFollow(props.prjID);
+        console.log(response);
+    } catch (error) {
+        console.error('Ошибка при подписке на проект:', error);
+        // Дополнительная обработка ошибки...
+    }
+}
+
 </script>
 
 <style lang="scss" scoped>

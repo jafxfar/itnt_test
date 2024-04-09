@@ -8,7 +8,7 @@ export default {
     <v-app-bar class="px-4" :elevation="0" height="46" color="white">
         <v-icon class="mr-3" @click="$router.back()" icon="mdi-arrow-left" />
 
-        <img v-show="props.showLogo" src="../assets/img/logos/itntLogoHeader.svg" />
+        <img v-show="props.showLogo" :src="`http://62.217.181.172:8080/var/itnt-files/${props.avaPic}`" />
 
         <h2 @click="copyID" v-show="props.showID">{{ chosenId }}</h2>
 
