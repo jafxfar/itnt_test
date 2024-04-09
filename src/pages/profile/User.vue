@@ -8,6 +8,9 @@
             :userSurname="userInfo.lastName"
             :userDescription="userInfo.fullDescription"
         />
+        <div class="mb-6">
+            <UiButton bgColor="smOutlined" isNormal> Открыт к предложениям </UiButton>
+        </div>
         <UiSkills />
         <div class="my-4">
             <h1>Что у меня нового:</h1>
@@ -15,7 +18,7 @@
         </div>
         <!-- <ProjectsList :projects="userInfo.projects" /> -->
         <ProjectsList class="mt-12" :projects="userInfo.projects" />
-        <!-- <UiButton bgColor="blue">Создать проект </UiButton> -->
+        <UiButton @click="$router.push('/project/new')" bgColor="blue">Создать проект</UiButton>
     </v-container>
     <Footer />
 </template>
@@ -24,6 +27,7 @@
 import Header from '~/components/Header.vue'
 import Footer from '~/components/Footer.vue'
 
+import UiButton from '~/components/ui-kit/UiButton.vue'
 import UiSkills from '~/components/ui-kit/UiSkills.vue'
 import ProfileInfo from '~/components/profile/ProfileInfo.vue'
 import ProjectsList from '~/components/profile/ProjectsList.vue'

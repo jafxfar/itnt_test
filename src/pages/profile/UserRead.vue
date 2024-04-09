@@ -8,6 +8,9 @@
             :userSurname="userInfo.lastName"
             :userDescription="userInfo.fullDescription"
         />
+        <div class="mb-6">
+            <UiButton bgColor="smOutlined" isNormal> Открыт к предложениям </UiButton>
+        </div>
         <UiSkills readOnly />
 
         <!-- <ProjectsList :projects="userInfo.projects" /> -->
@@ -15,13 +18,21 @@
 
         <div class="my-8">
             <h1>Что у меня нового:</h1>
-            <UiInput  class="mt-2" label="Расскажите, чем запомнился день"/>
+            <UiButton  @click="joinTeam.open()"  bgColor="blue" class="mt-2">Расскажите, чем запомнился день</UiButton>
+            <vue-bottom-sheet min-height="115px" full-screen ref="joinTeam">
+                <div class="modalList">
+                    <div v-for="(item, id) in joinTeamModalItems" :key="id" class="modalList__item">
+                        <img :src="`../src/assets/icons/footer/${item.icon}.svg`" alt="" />
+                        <p :class="item.name === 'Пожаловаться' && 'error-txt'" class="txt-body1">{{ item.name }}</p>
+                    </div>
+                </div>
+            </vue-bottom-sheet>
         </div>
         <div class="date color-white mb-4 rounded-xl d-inline-block">{{ $t('feed.today') }}</div>
 
-        <ProjectBlog feedCardType="newProjectStage"/>
+        <ProjectBlog userType="user" feedCardType="newProjectStage"/>
 
-        <ProjectBlog feedCardType="newProjectPhotos"/>
+        <ProjectBlog user-type="user" feedCardType="newProjectPhotos"/>
 
     </v-container>
     <Footer />
@@ -32,20 +43,22 @@
 // import UiButton from '~/components/ui-kit/UiButton.vue'
 import UiInput from '~/components/ui-kit/UiInput.vue'
 import UiSkills from '~/components/ui-kit/UiSkills.vue'
-
+import UiButton from '~/components/ui-kit/UiButton.vue'
 // page components
 import Header from '~/components/Header.vue'
 import Footer from '~/components/Footer.vue'
 import ProfileInfo from '~/components/profile/ProfileInfo.vue'
 import ProjectsList from '~/components/profile/ProjectsList.vue'
 import ProfileHeader from '~/components/profile/ProfileHeader.vue'
-import ProjectBlog from '~/components/ProjectPage/ProjectBlog.vue'
+import ProjectBlog from '~/components/projects/ProjectBlog.vue'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { getUserByID } from '~/API/ways/user.ts'
-
+import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
+import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 let userInfo = ref({})
 const router = useRoute()
+const joinTeam = ref(null)
 
 onMounted(async () => {
     await getUserByID(router.params.ID).then((response) => {
@@ -56,6 +69,13 @@ onMounted(async () => {
         }
     })
 })
+
+const joinTeamModalItems= [
+    { 
+        name: 'Открыть профиль',
+        icon: 'account',
+    },
+]
 </script>
 
 <style scoped>

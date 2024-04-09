@@ -4,7 +4,9 @@
     <v-container>
         <ProjectCard />
 
-        <UiButton @click="postNewProject" class="mt-12" bgColor="blue">Опубликовать проект</UiButton>
+        <div @click=" $router.push('/me')" class="">
+            <UiButton @click="postNewProject" class="mt-12" bgColor="blue">Опубликовать проект</UiButton>
+        </div>
     </v-container>
     <Footer />
 </template>

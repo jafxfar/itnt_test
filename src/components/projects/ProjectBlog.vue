@@ -11,7 +11,9 @@
                     <p class="txt-body3 mb-2">Save and Brave</p>
                 </div>
             </div>
-            <v-icon icon="mdi-dots-vertical" />
+            <button @click="modalState.open()">
+                <v-icon icon="mdi-dots-vertical" />
+            </button>
         </div>
 
         <!-- body -->
@@ -62,10 +64,41 @@
             <Fire />
         </div>
     </div>
+
+    <vue-bottom-sheet v-if="props.userType =='user'" ref="modalState">
+        <div class="modal"  >
+            <div class="modal__list">
+                <div v-for="(item, id) in userModal" :key="id" class="modal__list__item">
+                    <img :src="`../src/assets/icons/footer/${item.icon}.svg`" alt="" />
+                    <p class="txt-body1 text-[#FF3D00]">
+                        {{ item.name }}
+                    </p>
+                </div>
+            </div>
+            
+        </div>
+    </vue-bottom-sheet>
+
+    <vue-bottom-sheet v-if="props.userType =='me'" ref="modalState">
+        <div class="modal"  >
+            <div class="modal__list">
+                <div v-for="(item, id) in me" :key="id" class="modal__list__item">
+                    <img :src="`../src/assets/icons/footer/${item.icon}.svg`" alt="" />
+                    <p class="txt-body1">
+                        {{ item.name }}
+                    </p>
+                </div>
+            </div>
+            
+        </div>
+    </vue-bottom-sheet>
 </template>
 
 <script lang="ts" setup>
 import Fire from '../Fire.vue'
+import { modalActionsList } from '~/helpers/types'
+import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
+import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import UiButton from '../ui-kit/UiButton.vue'
 import { computed, ref } from 'vue'
 
@@ -74,7 +107,32 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    userType:{
+        type:String,
+        default: '',
+    }
 })
+
+
+const modalState = ref(null)
+
+const userModal: modalActionsList[] = [
+    {
+        name: 'Сообщить о нарушении',
+        icon: 'account',
+    },
+]
+
+const me: modalActionsList[] = [
+    {
+        name: 'Удалить запись',
+        icon: 'account',
+    },
+    {
+        name: 'Редактировать',
+        icon: 'account',
+    }
+]
 
 const backgroundImageUrl = ref("/src/assets/Frame221.png");
 
@@ -89,6 +147,13 @@ const Color = computed(() => {
     return hasImage.value ? 'black' : 'white;'
 })
 
+const userModalType = computed(() =>{
+    if (props.userType === 'me') {
+        return me
+    } else if (props.userType === 'user') {
+        return userModal
+    }
+})
 
 const feedCardSubtitle = computed(() => {
     if (props.feedCardType === 'newProjectDiscussed') {

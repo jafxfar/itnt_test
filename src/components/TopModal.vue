@@ -17,13 +17,11 @@ export default {
                 </div>
             </template>
 
-            <ChangeLanguage />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import ChangeLanguage from './ChangeLanguage.vue'
 
 import UiShortProjectCard from './ui-kit/UiShortProjectCard.vue'
 

@@ -2,13 +2,13 @@
     <div class="projectMedia">
         <div class="d-flex mb-3 align-center">
             <p style="color: #263238" class="txt-cap2 mr-5">Вложенные файлы и ссылки</p>
-            <div class="txt-body1" style="color: #9e9e9e">3 / 6</div>
+            <div class="txt-body1" style="color: #9e9e9e">0 / 6</div>
         </div>
 
         <div class="projectMedia__list">
             <!-- READONLY -->
 
-            <div class="projectMedia__item">
+            <!-- <div class="projectMedia__item">
                 <div style="gap: 10px" class="d-flex align-center">
                     <img src="../../assets/icons/media/video.svg" />
                     <p style="color: #9e9e9e" class="txt-cap1">12 Mb</p>
@@ -21,7 +21,7 @@
                     <p style="color: #9e9e9e" class="txt-cap1">12 Mb</p>
                 </div>
                 <p style="color: #29b6f6" class="txt-cap1">Демонстрация продукта</p>
-            </div>
+            </div> -->
 
             <!-- EDITABLE -->
             <div

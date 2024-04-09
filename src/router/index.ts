@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// Pages
-import Project from '~/pages/Project.vue'
+
 // user
 import User from '~/pages/profile/User.vue'
 import UserEdit from '~/pages/profile/UserEdit.vue'
@@ -24,7 +23,6 @@ import Search from '~/pages/Search.vue'
 import error from '~/pages/error.vue'
 
 
-import Blog from '~/components/ProjectPage/BlogPage.vue'
 
 interface routes {
     path: string
@@ -96,16 +94,6 @@ const routes: Array<routes> = [
     },
     // Ошибки
     { path: '/:pathMatch(.*)*', component: error },
-
-    {
-        path:'/projectPage',
-        component: Project
-    },
-
-    {
-        path:'/blog',
-        component: Blog
-    }
 ]
 
 export const router = createRouter({

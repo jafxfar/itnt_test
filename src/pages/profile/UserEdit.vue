@@ -60,9 +60,16 @@
 
         <div class="date mb-4 color-white rounded-xl d-inline-block">{{ $t('feed.today') }}</div>
 
-        <ProjectBlog feedCardType="newProjectStage"/>
+        <div class="my-8">
+            <h3>Что у меня нового:</h3>
+            <UiInput  class="mt-2" label="Расскажите, чем запомнился день"/>
+        </div>
+        <div class="date color-white mb-4 rounded-xl d-inline-block">{{ $t('feed.today') }}</div>
 
-        <ProjectBlog feedCardType="newProjectPhotos"/>
+
+        <ProjectBlog user-type="me" feedCardType="newProjectStage"/>
+
+        <ProjectBlog user-type="me" feedCardType="newProjectPhotos"/>
 
        
     </v-container>
@@ -80,7 +87,7 @@ import UiSkills from '~/components/ui-kit/UiSkills.vue'
 import UiTextArea from '~/components/ui-kit/UiTextArea.vue'
 import UiCoop from '~/components/ui-kit/UiCoop.vue'
 import UiSwitch from '~/components/ui-kit/UiSwitch.vue'
-import ProjectBlog from '~/components/ProjectPage/ProjectBlog.vue'
+import ProjectBlog from '~/components/projects/ProjectBlog.vue'
 import RatingProjectCard from '~/components/projects/RatingProjectCard.vue'
 import Arr from '~/helpers/set'
 import { ref, reactive, onMounted } from 'vue'

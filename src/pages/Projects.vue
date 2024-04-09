@@ -14,7 +14,7 @@
             <RatingProjectCard :listID="++id" :projectInfoSet="project" />
         </div>
 
-        <div class="" v-show="projectsType ===0" >
+        <!-- <div class="" v-show="projectsType ===0" >
             <TopNotification />
 
             <TopNotification />
@@ -24,7 +24,7 @@
 
         <div class="" v-show="projectsType ===1" >
             <RecentNotification  />
-        </div>
+        </div> -->
 
 
     </v-container>
@@ -32,8 +32,6 @@
 </template>
 
 <script setup lang="ts">
-import TopNotification from '~/components/Notification.vue'
-import RecentNotification from '~/components/Notification.vue'
 
 import Header from '~/components/Header.vue'
 import Footer from '~/components/Footer.vue'

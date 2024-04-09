@@ -12,6 +12,7 @@ export default {
             `ui-button--${props.bgColor}`,
             `ui-button--${props.onlyIcon ? 'onlyIcon' : ''}`,
             props.isDisabled && 'ui-button--disabled',
+            props.isNormal && 'ui-button__normal',
             props.isSmall && 'ui-button__small',
             props.isxSmall && 'ui-button__xSmall',
             `ui-button__small--${props.bgColor}`,
@@ -46,6 +47,10 @@ const props = defineProps({
     fit: {
         type: Boolean,
         default: false,
+    },
+    isNormal:{
+        type:Boolean,
+        default:false,
     },
     isSmall: {
         type: Boolean,
@@ -141,6 +146,25 @@ const props = defineProps({
         border-radius: 12px;
         height: 52px;
 
+        &--smOutlined {
+            color: $primary;
+            border: 1px solid $primary;
+            box-shadow: none;
+        }
+        &--smBlue {
+            background: $primary;
+            color: $def-white;
+            border: none;
+            box-shadow: none;
+        }
+    }
+    &__normal{
+        max-width: 240px;
+        width: 100%;
+        padding: 0;
+        border-radius: 12px;
+        height: 36px;
+        
         &--smOutlined {
             color: $primary;
             border: 1px solid $primary;

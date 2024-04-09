@@ -24,14 +24,12 @@ export default {
         <!-- </div> -->
     </div>
 
-    <UiButton v-else @click="$router.push('/project/new')" bgColor="blue">Создать проект</UiButton>
 </template>
 
 <script setup lang="ts">
 import ProjectCard from './ProjectCard.vue'
 import UiSwitch from '../ui-kit/UiSwitch.vue'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
-import UiButton from '../ui-kit/UiButton.vue'
 import { ref } from 'vue'
 
 const currentProjects = ref(null)
