@@ -16,7 +16,7 @@ const postUserConfirm = (phone: String, token: String) => {
 }
 
 const postAddUserPicture = (picLink: FormData) => {
-    return API.post(`${prefix}/addUserPicture`, picLink)
+    return API.post(`${prefix}/addUserPicture?mainPicture=true`, picLink)
 }
 
 const postAddBackgroundPicture = (picLink: FormData) => {

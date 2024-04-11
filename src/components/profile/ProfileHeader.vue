@@ -152,16 +152,21 @@ const imageId = ref<number>(0); // Пример инициализации, во
 
     &__bg {
         width: 100%;
-        height: 117px;
-        background-size: cover;
+        background-size:cover;
         background-position: center;
+        img{
+            width: 100%;
+            min-height: 120px;
+            max-height: 137px;
+        }
     }
+
 
     &__ava {
         position: absolute;
         left: 50%;
         right: 50%;
-        top: 33px;
+        top: 66px;
         width: 104px;
         height: 104px;
         background-size: cover;

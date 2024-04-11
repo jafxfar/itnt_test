@@ -31,7 +31,7 @@ const delLike = (projectID: number) => {
 }
 
 const addFollow = (projectID: number) => {
-    return API.post(`${prefix}/${projectID}/addFollow`, projectID)
+    return API.post(`${prefix}/addFollow`, projectID)
 }
 
 export { getProjectsByValue, getProjectByID, getAllProjects, addLike, delLike, postProject, patchProject, addFollow }
