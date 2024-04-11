@@ -1,7 +1,7 @@
 <template>
     <div class="userPics">
         <!-- Отображение загруженного баннера -->
-        <div v-if="uploadedBgImageUrl || props.bgPic" class="userPics__bg">
+        <div  v-if="uploadedBgImageUrl || props.bgPic" class="userPics__bg">
             <img v-if="props.bgPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.bgPic}`" />
             <img v-if="uploadedBgImageUrl" :src="uploadedBgImageUrl" />
         </div>
@@ -128,9 +128,10 @@ const uploadAva = async () => {
         background-position: center;
         border-radius: 100%;
         box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
-        @media (min-width:480px) {
-            left: 44%;
+        @media (max-width:567px) {
+            left: 36%;
         }
+
         img {
             // border: 1.5px solid #e0e0e0;
             border-radius: 100%;

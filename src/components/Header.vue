@@ -41,7 +41,7 @@ import TopModal from './TopModal.vue'
 import UiInput from './ui-kit/UiInput.vue'
 
 import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '~/store/user'
 
