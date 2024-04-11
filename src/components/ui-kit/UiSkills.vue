@@ -108,7 +108,7 @@ function openModal(skill: any) {
 const chosenSkills: Ref<Array<string>> = ref([])
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .ui-skills {
     padding: 16px;
     border-radius: 12px;

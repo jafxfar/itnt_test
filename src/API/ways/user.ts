@@ -27,6 +27,9 @@ const postAddComplaint = (complaintData: ComplaintData[]) => {
     return API.post(`${prefix}/addComplaint`, complaintData);
 }
 
+const deleteUserPicture = (id : number) => {
+    return API.delete(`${prefix}/delUserPicture?id=${id}`);
+}
 
 
 
@@ -51,4 +54,4 @@ const patchUser = (data: any) => {
 export { getUserByID,
      postAddUserPicture,postAddBackgroundPicture, 
      postUserConfirm, postUserLoginCode, putUser, 
-     patchUser, postAddComplaint }
+     patchUser, postAddComplaint , deleteUserPicture }

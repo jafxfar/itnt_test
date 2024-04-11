@@ -1,17 +1,40 @@
 <template>
     <div class="userPics">
         <!-- Отображение загруженного баннера -->
-        <div  v-if="uploadedBgImageUrl || props.bgPic" class="userPics__bg">
+        <div @click="openModal" v-if="uploadedBgImageUrl || props.bgPic" class="userPics__bg">
             <img v-if="props.bgPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.bgPic}`" />
-            <img v-if="uploadedBgImageUrl" :src="uploadedBgImageUrl" />
+            <img  v-if="uploadedBgImageUrl" :src="uploadedBgImageUrl" />
         </div>
 
+        <v-dialog v-model="searchModalState" width="100%">
+            <v-card class="ui-skills__search">
+                <p>
+                    <span>Изменение фонового изображения</span>
+                    <!-- <span>{{ chosenModalSkill }}</span> -->
+                </p>
+                <div class="ui-skills__search__actions">
+                    <UiButton @click="removeBackgroundPicture(imageId)" bgColor="smOutlined" isSmall>Удалить</UiButton>
+                    <UiButton bgColor="smOutlined" isSmall>Заменить</UiButton>
+                </div>
+            </v-card>
+        </v-dialog>
         <!-- Отображение загруженной аватарки -->
-        <div v-if="uploadedAvaImageUrl || props.avaPic" class="userPics__ava">
+        <div  v-if="uploadedAvaImageUrl || props.avaPic" class="userPics__ava">
             <img v-if="props.avaPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.avaPic}`" />
-            <img v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" />
+            <img 
+            v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" />
         </div>
-
+        <!-- <v-dialog v-model="searchModalState" width="100%">
+            <v-card class="ui-skills__search">
+                <p>
+                    <span>Изменение основного фото</span>
+                </p>
+                <div class="ui-skills__search__actions">
+                    <UiButton @click="searchModalState = false" bgColor="smOutlined" isSmall> Удалить </UiButton>
+                    <UiButton bgColor="smOutlined" isSmall>Заменить</UiButton>
+                </div>
+            </v-card>
+        </v-dialog> -->
         <!-- Загрузка баннера -->
         <div v-if="!uploadedBgImageUrl && !props.bgPic" class="userPics__upload">
             <input type="file" ref="bgFileInput" style="display: none;" @change="handleFileInputChange">
@@ -32,8 +55,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { postAddUserPicture, postAddBackgroundPicture } from '~/API/ways/user';
-
+import { postAddUserPicture, postAddBackgroundPicture, deleteUserPicture } from '~/API/ways/user';
+import UiButton from '../ui-kit/UiButton.vue';
 const props = defineProps({
     avaPic: {
         type: String,
@@ -46,6 +69,12 @@ const props = defineProps({
         default: false,
     },
 })
+const searchModalState = ref(false)
+
+function openModal() {
+    // chosenModalSkill.value = skill
+    searchModalState.value = true
+}
 const bgFileInput = ref<HTMLInputElement | null>(null);
 const uploadedBgImageUrl = ref<string>('');
 
@@ -100,6 +129,17 @@ const uploadAva = async () => {
     avaFleInput.value?.click();
 }
 
+const imageId = ref<number>(0); // Пример инициализации, возможно, значение придет с props
+
+    const removeBackgroundPicture = async (id: number) => {
+      try {
+        await deleteUserPicture(id);
+        console.log("Изображение успешно удалено");
+        searchModalState.value = false; // Закрывает модальное окно после удаления
+      } catch (error) {
+        console.error("Произошла ошибка при удалении изображения", error);
+      }
+    };
 </script>
 
 <style lang="scss" scoped>
@@ -128,6 +168,7 @@ const uploadAva = async () => {
         background-position: center;
         border-radius: 100%;
         box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
+
         @media (max-width:567px) {
             left: 36%;
         }
@@ -135,6 +176,7 @@ const uploadAva = async () => {
         img {
             // border: 1.5px solid #e0e0e0;
             border-radius: 100%;
+            cursor: pointer;
         }
     }
 
