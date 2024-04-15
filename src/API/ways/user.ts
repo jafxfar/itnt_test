@@ -27,7 +27,7 @@ const postAddComplaint = (complaintData: ComplaintData[]) => {
     return API.post(`${prefix}/addComplaint`, complaintData);
 }
 
-const deleteUserPicture = (id : number) => {
+const deleteUserPicture = (id: number) => {
     return API.delete(`${prefix}/delUserPicture?id=${id}`);
 }
 
@@ -41,6 +41,28 @@ const getUserByID = (id: string) => {
     }
 }
 
+const getUserSearch = (
+    cityId: number, 
+    countryId: number,
+    openedForProposition: boolean,
+    pageNumber: number,
+    pageSize: number,
+    searchString: string,
+    tags: string
+) => {
+    const params = new URLSearchParams({
+        cityId: cityId.toString(), 
+        countryId: countryId.toString(),
+        openedForProposition: openedForProposition.toString(),
+        pageNumber: pageNumber.toString(), 
+        pageSize: pageSize.toString(), 
+        searchString: searchString, 
+        tags: tags 
+    });
+
+    return API.get(`${prefix}?${params.toString()}`);
+}
+
 // PUT
 const putUser = (user: Object) => {
     return API.put(`${prefix}/`, { user })
@@ -51,7 +73,9 @@ const patchUser = (data: any) => {
     return API.patch(`${prefix}/`, { data })
 }
 
-export { getUserByID,
-     postAddUserPicture,postAddBackgroundPicture, 
-     postUserConfirm, postUserLoginCode, putUser, 
-     patchUser, postAddComplaint , deleteUserPicture }
+export {
+    getUserByID,
+    postAddUserPicture, postAddBackgroundPicture,
+    postUserConfirm, postUserLoginCode, putUser,
+    patchUser, postAddComplaint, deleteUserPicture, getUserSearch
+}

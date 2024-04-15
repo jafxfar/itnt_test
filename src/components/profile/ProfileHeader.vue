@@ -10,7 +10,6 @@
             <v-card class="ui-skills__search">
                 <p>
                     <span>Изменение фонового изображения</span>
-                    <!-- <span>{{ chosenModalSkill }}</span> -->
                 </p>
                 <div class="ui-skills__search__actions">
                     <UiButton @click="removeBackgroundPicture(imageId)" bgColor="smOutlined" isSmall>Удалить</UiButton>

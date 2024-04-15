@@ -36,9 +36,9 @@
                             Добавьте ссылку на видео-хостинг или загрузите файл в удобное облако и прикрепите ссылку на
                             него.
                         </p>
-                        <UiInput label="Ссылка*" />
+                        <UiInput id="linkInput" label="Ссылка*" />
                         <UiInput label="Описание ссылки*" class="my-8" />
-                        <UiButton bgColor="blue">Добавить</UiButton>
+                        <UiButton @click="submitProjectLink" bgColor="blue">Добавить</UiButton>
                     </div>
                 </vue-bottom-sheet>
             </div>
@@ -51,7 +51,24 @@ import { ref } from 'vue'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import UiInput from '../ui-kit/UiInput.vue'
 import UiButton from '../ui-kit/UiButton.vue'
+import { addProjectFile } from '~/API/ways/project';  // Убедитесь, что ваша функция импортирована
+const projectID = ref<number>(); // Пример ID проекта, предполагается, что это значение устанавливается где-то в вашем компоненте
 
+// Функция для отправки файла
+const submitProjectLink = async () => {
+  const linkInput = document.getElementById('linkInput') as HTMLInputElement;
+
+  if (linkInput && linkInput.value) {
+    try {
+      const response = await addProjectFile(linkInput.value, projectID.value);
+      console.log('Ссылка успешно добавлена', response);
+    } catch (error) {
+      console.error('Ошибка при добавлении ссылки', error);
+    }
+  } else {
+    alert('Пожалуйста, введите URL-ссылку.');
+  }
+};
 const modalState = ref(false)
 const props = defineProps({
     readOnly: {
@@ -59,6 +76,7 @@ const props = defineProps({
         default: false,
     },
 })
+
 </script>
 
 <style lang="scss" scoped>

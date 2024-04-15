@@ -27,11 +27,23 @@ const addLike = (projectID: number) => {
 }
 
 const delLike = (projectID: number) => {
-    return API.delete(`${prefix}/${projectID}/delLike`, projectID)
+    return API.delete(`${prefix}/${projectID}/delLike`)
 }
 
 const addFollow = (projectID: number) => {
-    return API.post(`${prefix}/addFollow`, projectID)
+    return API.post(`${prefix}/addFollow`, { projectId: projectID });
+};
+const addProjectAvatar = (picLink: FormData , projectID: number ) => {
+    return API.post(`${prefix}/addProjectAvatar`, picLink , projectID)
 }
 
-export { getProjectsByValue, getProjectByID, getAllProjects, addLike, delLike, postProject, patchProject, addFollow }
+const addProjectFile = (picLink: string, projectID: number) => {
+    return API.post(`${prefix}/addProjectFile?projectId=${projectID}`, { link: picLink });
+};
+
+const deleteComment = (projectID: number) => {
+    return API.delete(`${prefix}/addFollow`)
+}
+
+export { getProjectsByValue, getProjectByID, getAllProjects, addLike, delLike, postProject, patchProject, 
+        addFollow ,addProjectAvatar, addProjectFile , deleteComment   }

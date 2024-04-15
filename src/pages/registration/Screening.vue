@@ -104,6 +104,8 @@ import Header from '~/components/Header.vue'
 import Arr from '~/helpers/set.ts'
 import { getCountryList } from '~/API/ways/dictionary'
 
+import { getCityList } from '~/API/ways/dictionary'
+
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
@@ -152,8 +154,10 @@ onMounted(async () => {
     await getCountryList().then((response: any) => {
         console.log(response)
     })
+    await getCityList().then((response: any) => {
+        console.log(response)
+    })
 })
-
 async function saveProfile() {
     patchUser(user).then((response: any) => {
         try {

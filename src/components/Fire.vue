@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-    <div @click="funAddLike" class="fire">
+    <div @mouseleave="funDelLike" @click="funAddLike" class="fire">
         <img src="../assets/icons/fire/flame.svg" alt="" />
     </div>
 </template>
