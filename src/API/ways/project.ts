@@ -1,4 +1,5 @@
 import { API } from '../main.ts'
+import ComplaintData from "~/helpers/types"
 
 const prefix = '/project'
 
@@ -25,10 +26,16 @@ const patchProject = (prjInfo: Object) => {
 const addLike = (projectID: number) => {
     return API.post(`${prefix}/${projectID}/addLike`, projectID)
 }
-
-const delLike = (projectID: number) => {
-    return API.delete(`${prefix}/${projectID}/delLike`)
+const addComment = (projectID: number, commentText: string) => {
+    return API.post(`${prefix}/addComment`, {
+        projectId: projectID,
+        comment: commentText
+    });
+};
+const addComplaint = (complaintData: ComplaintData[]) => {
+    return API.post(`${prefix}/addComplaint`, complaintData);
 }
+
 
 const addFollow = (projectID: number) => {
     return API.post(`${prefix}/addFollow`, { projectId: projectID });
@@ -41,9 +48,13 @@ const addProjectFile = (picLink: string, projectID: number) => {
     return API.post(`${prefix}/addProjectFile?projectId=${projectID}`, { link: picLink });
 };
 
+const delLike = (projectID: number) => {
+    return API.delete(`${prefix}/${projectID}/delLike`)
+}
+
 const deleteComment = (projectID: number) => {
     return API.delete(`${prefix}/addFollow`)
 }
 
 export { getProjectsByValue, getProjectByID, getAllProjects, addLike, delLike, postProject, patchProject, 
-        addFollow ,addProjectAvatar, addProjectFile , deleteComment   }
+        addFollow ,addProjectAvatar, addProjectFile , addComment , deleteComment   }

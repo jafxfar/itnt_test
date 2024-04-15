@@ -41,26 +41,8 @@ const getUserByID = (id: string) => {
     }
 }
 
-const getUserSearch = (
-    cityId: number, 
-    countryId: number,
-    openedForProposition: boolean,
-    pageNumber: number,
-    pageSize: number,
-    searchString: string,
-    tags: string
-) => {
-    const params = new URLSearchParams({
-        cityId: cityId.toString(), 
-        countryId: countryId.toString(),
-        openedForProposition: openedForProposition.toString(),
-        pageNumber: pageNumber.toString(), 
-        pageSize: pageSize.toString(), 
-        searchString: searchString, 
-        tags: tags 
-    });
-
-    return API.get(`${prefix}?${params.toString()}`);
+const getUserSearch = () => {
+    return API.get(`${prefix}/search`);
 }
 
 // PUT

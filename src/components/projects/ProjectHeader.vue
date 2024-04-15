@@ -24,7 +24,7 @@ export default {
                     <UiButton @click="shareProject()" imgSrc="../src/assets/icons/share-black.svg" onlyIcon />
                     <Fire :id="props.prjID" />
                 </div>
-                <UiButton bgColor="def" imgSrc="../src/assets/icons/message-black.svg">Обсуждение проекта</UiButton>
+                <UiButton @click="handleAddComment" bgColor="def" imgSrc="../src/assets/icons/message-black.svg">Обсуждение проекта</UiButton>
             </div>
         </div>
 
@@ -38,14 +38,17 @@ export default {
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { ref } from 'vue'
 import Fire from '../Fire.vue'
 import UiButton from '../ui-kit/UiButton.vue'
 import UiInput from '../ui-kit/UiInput.vue'
 import { addFollow } from '~/API/ways/project'
+import { addComment } from '~/API/ways/project'; // Импортируйте addComment
 
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '~/store/projectStore'
+
+const commentText = ref(''); // Для хранения текста комментария, если нужно
 
 const { prjObject } = storeToRefs(useProjectStore())
 
@@ -93,7 +96,14 @@ async function follow() {
         // Дополнительная обработка ошибки...
     }
 }
-
+async function handleAddComment() {
+    try {
+        const response = await addComment(props.prjID, commentText.value);
+        console.log('Комментарий добавлен:', response);
+    } catch (error) {
+        console.error('Ошибка при добавлении комментария:', error);
+    }
+}
 </script>
 
 <style lang="scss" scoped>
