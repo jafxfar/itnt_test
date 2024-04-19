@@ -1,15 +1,20 @@
 <template>
     <Header showLogo />
+    <div class="flex flex-row m-4 justify-between gap-2">
+        <div v-if="pageStep === 1" class="hidden"></div>
+        <div v-else v-for="step in 4" :key="step" class="progress-bar"
+            :class="{ 'cursor-not-allowed': step > maxReachedStep }" @click="setPageStep(step)"
+            :style="getProgressBarStyle(step)">
+            <div :style="{ width: pageStep >= step ? '100%' : '0%', transition: 'width 0.5s ease' }"
+                class="progress-fill"></div>
+        </div>
+    </div>
 
     <v-col>
         <!-- Первый этап -->
-        <div v-show="pageStep === 1" class="screening__first">
-            <UiInput
-                v-model="user.firstName"
-                placeholder="Представьтесь"
-                label="Как другим участникам вас называть?"
-                prepend-icon="account-outline"
-            />
+        <div v-show="pageStep === 1" class="screening__first mt-[30s%]">
+            <UiInput v-model="user.firstName" placeholder="Представьтесь" label="Как другим участникам вас называть?"
+                prepend-icon="account-outline" />
             <!-- Кнопка активна, если длина строки больше двух символов -->
             <UiButton :is-disabled="user.firstName?.length < 2" @click="pageStep += 1" bgColor="blue">
                 Продолжить
@@ -21,20 +26,11 @@
                 <p class="ma-0">{{ user.firstName }}, хотите выглядеть особенно?</p>
             </v-col>
             <div style="display: flex; align-items: center" class="rounded-circle mx-auto mt-6">
-                <v-file-input
-                    height="200"
-                    v-model="user.pictureUrl"
-                    accept="image/png, image/jpeg, image/bmp"
-                    class="input-file"
-                >
+                <v-file-input height="200" v-model="user.pictureUrl" accept="image/png, image/jpeg, image/bmp"
+                    class="input-file">
                 </v-file-input>
-                <img
-                    src="../../assets/img/regSteps/addProfilePic.svg"
-                    v-show="user.pictureUrl == ''"
-                    class="rounded-circle mx-auto"
-                    height="208"
-                    width="208"
-                />
+                <img src="../../assets/img/regSteps/addProfilePic.svg" v-show="user.pictureUrl == ''"
+                    class="rounded-circle mx-auto" height="208" width="208" />
                 <!-- v-show="user.pictureUrl != ''" -->
                 <img v-if="blobPic" class="rounded-circle mx-auto" height="208" width="208" :src="blobPic" />
             </div>
@@ -43,32 +39,20 @@
 
             <UiButton @click="pageStep += 1" bgColor="def"> Пропустить </UiButton>
         </div>
-
         <div v-show="pageStep === 3">
             <v-col class="text-center pa-0 pt-16">
                 <p class="ma-0">Откуда вы?</p>
             </v-col>
             <v-col class="mt-6">
-                <v-select
-                    v-model="user.country"
-                    variant="outlined"
-                    label="Страна"
-                    class="rounded-lg mb-2"
-                    :items="Object.keys(list)"
-                    :item-text="'name'"
-                    :menu-props="{ bottom: true, offsetY: true }"
-                    hide-details
-                ></v-select>
-                <v-select
-                    v-model="user.city"
-                    :disabled="user.country ? false : true"
-                    variant="outlined"
-                    label="Выберите город"
-                    class="rounded-lg"
-                    :item-text="'name'"
+                <v-select v-model="user.country" color="#29b6f6" variant="outlined" label="Страна"
+                    class="rounded-lg mb-2" :items="countryItems" :item-text="'name'"
+                    :menu-props="{ bottom: true, offsetY: true }" hide-details>
+                </v-select>
+
+                <v-select v-model="user.city" color="#29b6f6" :disabled="!user.country" variant="outlined"
+                    label="Выберите город" class="rounded-lg" :item-text="'name'"
                     :menu-props="{ bottom: true, offsetY: true, maxHeight: '300' }"
-                    :items="(list as any)[user.country]"
-                ></v-select>
+                    :items="list[user.country]?.cities"></v-select>
 
                 <UiButton @click="pageStep += 1" bgColor="blue" class="mt-6"> Продолжить </UiButton>
                 <UiButton @click="pageStep += 1" bgColor="def" class="mt-4"> Пропустить </UiButton>
@@ -88,7 +72,17 @@
                 <UiButton bgColor="blue" @click="saveProfile" class="mt-6"> Продолжить </UiButton>
             </v-col>
         </div>
+        <div v-if="isLoading" class="loader-overlay loader-active">
+            <div class="loader"></div>
+        </div>
+        <div v-if="showCheckmark" class="checkmark-overlay">
+            <div class="checkmark-icon"><img src="/src/assets/LoadingIcon.svg" alt=""></div>
+        </div>
+        <transition name="fade">
+            <div v-if="showOverlay" style="background-color: #29b6f6;"></div>
+        </transition>
     </v-col>
+
 </template>
 
 <script setup lang="ts">
@@ -98,13 +92,14 @@ import UiInput from '~/components/ui-kit/UiInput.vue'
 import UiPrompt from '~/components/ui-kit/UiPrompt.vue'
 import UiSkills from '~/components/ui-kit/UiSkills.vue'
 
-import { reactive, ref, watch, onMounted } from 'vue'
+import { reactive, ref, watch, onMounted, computed } from 'vue'
 import { postAddUserPicture, patchUser } from '~/API/ways/user'
 import Header from '~/components/Header.vue'
-import Arr from '~/helpers/set.ts'
+// import Arr from '~/helpers/set.ts'
 import { getCountryList } from '~/API/ways/dictionary'
 
 import { getCityList } from '~/API/ways/dictionary'
+import { City, Country, CountryData } from '~/helpers/types'
 
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -113,7 +108,36 @@ let blobPic = ref('')
 
 const pageStep = ref(1)
 
-const list = ref(Arr)
+const maxReachedStep = ref(4);
+const isLoading = ref(false);
+const showCheckmark = ref(false);
+const showOverlay = ref(false);
+
+const setPageStep = (step: number) => {
+    if (step <= maxReachedStep.value) {
+        pageStep.value = step;
+        if (step === 4) { // Предполагаем, что 4 - это последний шаг
+            startLoading();
+        }
+    }
+};
+const startLoading = () => {
+    setTimeout(() => {
+        isLoading.value = false; // Прекратить загрузку после имитации задержки
+    }, 3000); // Задержка в миллисекундах
+};
+
+const getProgressBarStyle = (step: number) => {
+    return {
+        boxShadow: step <= maxReachedStep.value ? '0 1px 4px rgba(0, 0, 0, 0.2)' : '',
+        border: '1px solid #e0e0e0',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        width: '24%',
+        height: '10px',
+    };
+};
+
 
 const user = reactive({
     city: null,
@@ -150,20 +174,57 @@ function addAvatar() {
 }
 
 // Получаем инфу о городах
+const countryItems = computed(() => {
+    return Object.entries(list.value).map(([id, details]) => ({
+        id,
+        name: details.name
+    }));
+});
+
+let list = ref<CountryData>({});
+
 onMounted(async () => {
-    await getCountryList().then((response: any) => {
-        console.log(response)
-    })
-    await getCityList().then((response: any) => {
-        console.log(response)
-    })
-})
+    isLoading.value = true; // Начало загрузки
+    try {
+        const countryResponse = await getCountryList();
+        const cityResponse = await getCityList();
+
+        // Применяем интерфейсы к полученным данным
+        const countries: Country[] = countryResponse.data;
+        const cities: City[] = cityResponse.data;
+
+        // Создаем новый объект со странами и городами
+        list.value = countries.reduce<CountryData>((acc, country) => {
+            acc[country.id] = {
+                name: country.name,
+                cities: cities.filter(city => city.countryId === country.id)
+            };
+            return acc;
+        }, {});
+    } catch (error) {
+        console.error('Ошибка при загрузке данных:', error);
+    } finally {
+        isLoading.value = false; // Завершение загрузки
+    }
+});
 async function saveProfile() {
+    isLoading.value = true;
     patchUser(user).then((response: any) => {
         try {
             console.log(response)
             if (response.data.operationResult === 'OK') {
-                router.push('/me')
+                setTimeout(() => {
+                    isLoading.value = false;  // Прекратить показ анимации загрузки
+                    showCheckmark.value = true; // Показать галочку
+                    setTimeout(() => {
+                        showCheckmark.value = false; // Скрыть галочку
+                        showOverlay.value = true; // Начать заливку экрана
+                        setTimeout(() => {
+                            showOverlay.value = false; // Завершить заливку
+                            router.push('/me');       // Переход на страницу пользователя
+                        }, 500); // Задержка перед переходом
+                    }, 1000); // Задержка перед началом заливки
+                }, 3000);
             }
         } catch (error) {
             console.log(error)
@@ -180,32 +241,44 @@ watch(
     },
     { deep: true }
 )
+
 </script>
 
 <style lang="scss" scoped>
-.screening {
-    &__first {
-        // height: calc(100vh - $header-hight);
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-    }
+.progress-bar,
+.stepper,
+.stepper-two,
+.stepper-two-fill,
+.stepper-fo,
+.stepper-tree,
+.stepper-tree-fill {
+    height: 10px;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #29b6f6;
+}
+
+.screening__first {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 .v-sheet.v-app-bar.v-toolbar:not(.v-sheet--outlined) {
-    box-shadow: 0 2px 4px -1px rgb(0 0 0 / 5%), 0 2px 0 0 rgb(0 0 0 / 0%), 0 0 0 0 rgb(0 0 0 / 0%) !important;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05) !important;
 }
 
 .container {
     min-height: 80vh;
-    height: unset;
 }
 
-.container > div {
-    width: 100%;
-}
-
-.button {
+.button,
+.button-active {
     border-radius: 12px;
 }
 
@@ -213,7 +286,6 @@ watch(
     background: linear-gradient(96.78deg, #13d5ff -0.02%, #12a1de 94.31%);
     border: 1px solid #12b7ec;
     box-shadow: 0 22px 22px -17px #29b6f6 !important;
-    border-radius: 12px;
     color: white;
 }
 
@@ -221,151 +293,61 @@ watch(
     gap: 10px;
 }
 
-.stepper {
-    width: 20%;
-    height: 10px;
-    background-color: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-}
-
-.stepper-one {
+.stepper-two:before,
+.stepper-two-middle:before,
+.stepper-two-fill:before,
+.stepper-fo:before,
+.stepper-fo-fill:before,
+.stepper-tree:before,
+.stepper-tree-fill:before {
+    content: '';
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-shadow: 0 3px 6px rgba(41, 182, 246, 0.25) !important;
     background: #29b6f6;
-    box-shadow: 0 3px 6px -3px #29b6f6 !important;
-}
-
-.stepper-two {
-    position: relative;
-    width: 20%;
-    height: 10px;
-    background-color: white;
-    border: 1px solid #e0e0e0;
     border-radius: 12px;
 }
 
 .stepper-two:before {
-    content: '';
     width: 35%;
-    height: 10px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    box-shadow: 0 3px 6px rgba(41, 182, 246, 0.25) !important;
-    background: #29b6f6;
-    border-radius: 12px;
-}
-
-.stepper-two-middle {
-    position: relative;
 }
 
 .stepper-two-middle:before {
-    content: '';
     width: 80%;
-    height: 10px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    box-shadow: 0 3px 6px rgba(41, 182, 246, 0.25) !important;
-    background: #29b6f6;
-    border-radius: 12px;
-}
-
-.stepper-two-fill {
-    position: relative;
-    width: 20%;
-    height: 10px;
-    background-color: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
 }
 
 .stepper-two-fill:before {
-    content: '';
     width: 100%;
-    height: 10px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    box-shadow: 0 3px 6px rgba(41, 182, 246, 0.25) !important;
-    background: #29b6f6;
-    border-radius: 12px;
-}
-
-.stepper-fo {
-    position: relative;
 }
 
 .stepper-fo:before {
-    content: '';
     width: 40%;
-    height: 10px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    box-shadow: 0 3px 6px rgba(41, 182, 246, 0.25);
-    background: #29b6f6;
-    border-radius: 12px;
-}
-
-.stepper-fo-fill {
-    position: relative;
 }
 
 .stepper-fo-fill:before {
-    content: '';
     width: 80%;
-    height: 10px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    box-shadow: 0 3px 6px rgba(41, 182, 246, 0.25) !important;
-    background: #29b6f6;
-    border-radius: 12px;
-}
-
-.stepper-tree {
-    position: relative;
 }
 
 .stepper-tree:before {
-    content: '';
     width: 70%;
-    height: 10px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    box-shadow: 0 3px 6px rgba(41, 182, 246, 0.25) !important;
-    background: #29b6f6;
-    border-radius: 12px;
-}
-
-.stepper-tree-fill {
-    position: relative;
 }
 
 .stepper-tree-fill:before {
-    content: '';
     width: 100%;
-    height: 10px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    box-shadow: 0 3px 6px rgba(41, 182, 246, 0.25) !important;
-    background: #29b6f6;
-    border-radius: 12px;
 }
 
 .button-skip {
     border: 1px solid rgba(158, 158, 158, 0.2);
-    box-shadow: 0 23px 10px -23px rgba(0, 0, 0, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 23px 10px -23px rgba(0, 0, 0, 0.15) !important;
     border-radius: 12px;
 }
 
 .avatar {
-    min-width: 24px !important;
-    width: 24px !important;
-    height: 24px !important;
+    min-width: 24px;
+    width: 24px;
+    height: 24px;
 }
 
 .input-file {
@@ -375,6 +357,81 @@ watch(
     z-index: 1;
     transform: translate(-50%, -12%);
     position: absolute;
+    opacity: 0;
+}
+
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear;
+}
+
+.loader {
+    border: 3px solid #f3f3f3;
+    border-top-color: #29b6f6;
+    border-radius: 50%;
+    width: 46px;
+    height: 46px;
+    animation: spin 1s linear infinite;
+}
+
+.loader-active {
+    visibility: visible;
+    opacity: 1;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.checkmark-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    /* Подберите подходящее значение */
+}
+
+.checkmark-icon {
+    background-color: #29b6f6;
+    padding: 6px;
+    border-radius: 50%;
+    font-size: 24px;
+    color: #fff;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-to
+
+/* .fade-leave-active в версиях 2.1.8+ */
+    {
     opacity: 0;
 }
 </style>

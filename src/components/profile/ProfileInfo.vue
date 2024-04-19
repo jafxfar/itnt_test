@@ -1,19 +1,22 @@
 <template>
     <div class="userInfo">
         <div class="userInfo__head">
-            <h2 class="mb-1">{{ props.userName }} {{ props.userSurname }}</h2>
+            <h2 class="mb-1">Томас Хардов</h2>
+            <!-- <h2 class="mb-1">{{ props.userName }} {{ props.userSurname }}</h2> -->
+
             <p class="txt-body1">Россия, Краснодар</p>
         </div>
 
         <!-- Статус предложений -->
-        <!-- <div class="userInfo__status">
+        <div class="userInfo__status">
             <p class="userInfo__status__title txt-body1">Открыт к предложениям</p>
             <img src="../../assets/icons/footer/message.svg" alt="" />
-        </div> -->
+        </div>
 
         <div class="userInfo__body">
             <div class="txt-body1">
-                {{ props.userDescription }}
+                Я сюда припёрся, чтобы нормально постартапить! Ждал нормального стартапа с нормальными мужиками. © Легенда
+                <!-- {{ props.userDescription }} -->
             </div>
         </div>
     </div>

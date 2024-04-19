@@ -23,6 +23,10 @@
                 :items="(list as any)[user.country]"
             ></v-select>
         </div>
+        <div class="mb-[48px] mt-[32px]">
+            <UiCoop  @change-value="projectsType = $event" 
+            :items="['Мне не интересно сотрудничество', 'Я хочу получать предложения о сотрудничестве']" />
+        </div>
 
         <div class="about">
             <UiTextArea
@@ -31,9 +35,7 @@
                 v-model="user.fullDescription"
             />
         </div>
-        <UiCoop @change-value="projectsType = $event" 
-                :items="['Мне не интересно сотрудничество', 'Я хочу получать предложения о сотрудничестве']" />
-
+       
         <div class="userEdit__components">
             <UiSkills />
             <div>
@@ -46,7 +48,7 @@
                 </div>
                
                 <UiSwitch @change-value="projectsType = $event" :items="['Текущие', 'Прошлые']" />
-                <UserProject/>
+                <ProjectsList class="mt-12" :projects="userInfo.projects" />
             </div>
 
             <!-- <UiSwitch v-if="projectsType === 1" @change-value="topProjectsData = $event" :items="['Неделя', 'Месяц', 'Год']" /> -->
@@ -81,7 +83,7 @@
 import Header from '~/components/Header.vue'
 import UiAgree from '~/components/ui-kit/UiAgree.vue'
 import ProfileHeader from '~/components/profile/ProfileHeader.vue'
-import UserProject from '~/components/UserProject.vue'
+import ProjectsList from '~/components/profile/ProjectsList.vue'
 import UiInput from '~/components/ui-kit/UiInput.vue'
 import UiSkills from '~/components/ui-kit/UiSkills.vue'
 import UiTextArea from '~/components/ui-kit/UiTextArea.vue'
@@ -96,6 +98,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 import { getUserByID, patchUser } from '~/API/ways/user'
+let userInfo = ref({})
 
 const list = ref(Arr)
 const projectsType = ref(0)

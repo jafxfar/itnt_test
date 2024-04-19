@@ -37,8 +37,8 @@ const addComplaint = (complaintData: ComplaintData[]) => {
 }
 
 
-const addFollow = (projectID: number) => {
-    return API.post(`${prefix}/addFollow`, { projectId: projectID });
+const addFollow = (projectID: number , id:number) => {
+    return API.post(`${prefix}/addFollow`, { projectId: projectID , id:id });
 };
 const addProjectAvatar = (picLink: FormData , projectID: number ) => {
     return API.post(`${prefix}/addProjectAvatar`, picLink , projectID)

@@ -16,3 +16,20 @@ export default interface ComplaintData {
     severity: number;
     message: string;
 }
+export interface Country {
+    id: string;
+    name: string;
+}
+
+export interface City {
+    id: string;
+    name: string;
+    countryId: string;
+}
+
+export interface CountryData {
+    [key: string]: {
+        name: string;
+        cities: City[];
+    };
+}ы

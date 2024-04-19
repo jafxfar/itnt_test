@@ -52,38 +52,32 @@ export default {
     </v-dialog>
 
     <vue-bottom-sheet :full-screen="true" ref="modalState">
-        <div class="txt-body1 p-2">Выбрано : {{ chosenSkills.length }}</div>
-        <UiInput class="p-2" label="Введите навык для поиска" />
-        <div class="ui-skills__choser p-2" v-for="(skillObj, skill, id) in skills" :key="id">
-            <div class="ui-skills__choser" v-for="(skill, id) in skillObj" :key="id">
-                <p v-if="skill.title" class="txt-cap1 ui-skills__choser__title">
-                    {{ skill.title }}
-                </p>
-                <p @click="chosenSkills.push(skill.name)" v-if="skill.name" class="txt-body1 ui-skills__choser__skill">
-                    {{ skill.name }}
-                </p>
-            </div>
+    <div class="txt-body1 p-2">Выбрано: {{ chosenSkills.length }}</div>
+    <UiInput class="p-2" label="Введите навык для поиска" />
+    <div class="ui-skills__choser p-2" v-for="(category, categoryId) in skills" :key="categoryId">
+        <p v-if="category.title" class="txt-cap1 ui-skills__choser__title">
+            {{ category.title }}
+        </p>
+        <div v-for="skill in category.skills" :key="skill.id">
+            <p @click="handleSkillSelection(skill)" class="txt-body1 ui-skills__choser__skill">
+                {{ skill.name }}
+            </p>
         </div>
-        <UiAgree @click="modalState.close()" />
-    </vue-bottom-sheet>
+    </div>
+    <UiAgree @click="modalState.close()" />
+</vue-bottom-sheet>
 </template>
 
 <script lang="ts" setup>
-// ui-kit
-import UiInput from './UiInput.vue'
-import UiButton from './UiButton.vue'
-import UiAgree from './UiAgree.vue'
-import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
-import '@webzlodimir/vue-bottom-sheet/dist/style.css'
+import { ref, onMounted } from 'vue';
+import { getInterestListGrouped } from '~/API/ways/dictionary'; // Adjust the path as necessary
+import UiInput from './UiInput.vue';
+import UiButton from './UiButton.vue';
+import UiAgree from './UiAgree.vue';
+import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet';
+import '@webzlodimir/vue-bottom-sheet/dist/style.css';
 
-import { ref, Ref } from 'vue'
-import { skills } from '~/helpers/skills'
-
-// import { storeToRefs } from 'pinia'
-// import { useProjectStore } from '~/store/projectStore'
-
-// const { prjObject } = storeToRefs(useProjectStore())
-
+// Define component props
 const props = defineProps({
     readOnly: {
         type: Boolean,
@@ -92,20 +86,34 @@ const props = defineProps({
     skillsType: {
         type: String,
     },
-})
+});
 
-const deleteMode = ref(false)
-// const searchProjectTagsModalState = ref(false)
-const chosenModalSkill = ref(null)
-const modalState = ref(false)
-const searchModalState = ref(false)
-
-function openModal(skill: any) {
-    chosenModalSkill.value = skill
-    searchModalState.value = true
+const chosenSkills = ref([]);
+const deleteMode = ref(false);
+const modalState = ref(false);
+const searchModalState = ref(false);
+const chosenModalSkill = ref(null);
+const handleSkillSelection = (skill) => {
+    if (!chosenSkills.value.includes(skill.name)) {
+        chosenSkills.value.push(skill.name);
+    }
 }
-// const demoSkills: Ref<Array<string>> = ref(['User Experience Designer (UX)', 'Team Lead', 'Product Owner'])
-const chosenSkills: Ref<Array<string>> = ref([])
+// Fetch skills when the component is mounted
+onMounted(async () => {
+    try {
+        const skillsData = await getInterestListGrouped();
+        skills.value = skillsData; // Assume the API returns the structured data as required
+        // If skills are categorized in the API, assign them accordingly
+        // e.g., manageSkills.value = skillsData.manageSkills;
+    } catch (error) {
+        console.error(error.message);
+    }
+});
+
+function openModal(skill) {
+    chosenModalSkill.value = skill;
+    searchModalState.value = true;
+}
 </script>
 
 <style lang="scss">
@@ -113,6 +121,7 @@ const chosenSkills: Ref<Array<string>> = ref([])
     padding: 16px;
     border-radius: 12px;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
+
     &__head {
         display: flex;
         align-items: center;
@@ -120,6 +129,7 @@ const chosenSkills: Ref<Array<string>> = ref([])
         margin-bottom: 17.5px;
         gap: 25px;
     }
+
     &__btn {
         display: flex;
         align-items: center;
@@ -132,6 +142,7 @@ const chosenSkills: Ref<Array<string>> = ref([])
         gap: 4px;
         border-radius: 100px;
     }
+
     &__trash {
         display: flex;
         align-items: center;
@@ -142,6 +153,7 @@ const chosenSkills: Ref<Array<string>> = ref([])
         background: #ff3d00;
         box-shadow: 0px 3px 6px -3px #ff3d00;
     }
+
     &__list {
         display: flex;
         flex-wrap: wrap;
@@ -152,15 +164,18 @@ const chosenSkills: Ref<Array<string>> = ref([])
         padding: 40px 30px 30px 30px;
         border-radius: 20px !important;
         box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05) !important;
+
         p {
             margin-bottom: 24px;
             text-align: center;
         }
+
         &__actions {
             display: flex;
             justify-content: space-between;
         }
     }
+
     &__skill {
         padding: 6px 16px;
         color: $def-black;
@@ -168,13 +183,16 @@ const chosenSkills: Ref<Array<string>> = ref([])
         border: 1.5px solid $primary;
         border-radius: 8px;
     }
+
     &__choser {
         display: flex;
         flex-direction: column;
+
         &__title {
             margin-bottom: 12px;
             color: $def-gray;
         }
+
         &__skill {
             padding: 9px 0px 7px 47px;
             color: $def-black;
@@ -184,6 +202,7 @@ const chosenSkills: Ref<Array<string>> = ref([])
     &__projects {
         display: flex;
         gap: 8px;
+
         &__tag {
             padding-top: 6px;
             width: 100%;

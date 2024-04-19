@@ -1,5 +1,21 @@
 <template>
-    <div class="userPics">
+
+    <div v-if="props.readOnly" class="userPics">
+        <!-- Отображение загруженного баннера -->
+        <div  class="userPics__upload">
+            <img v-if="props.bgPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.bgPic}`" />
+            <!-- <img  v-if="uploadedBgImageUrl" :src="uploadedBgImageUrl" /> -->
+        </div>
+
+        <!-- Отображение загруженной аватарки -->
+        <div  class="userPics__ava">
+            <img v-if="props.avaPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.avaPic}`" />
+            <!-- <img 
+            v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" /> -->
+        </div>
+    </div>
+
+    <div v-else class="userPics">
         <!-- Отображение загруженного баннера -->
         <div @click="openModal" v-if="uploadedBgImageUrl || props.bgPic" class="userPics__bg">
             <img v-if="props.bgPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.bgPic}`" />
@@ -155,8 +171,8 @@ const imageId = ref<number>(0); // Пример инициализации, во
         background-position: center;
         img{
             width: 100%;
-            min-height: 120px;
-            max-height: 137px;
+            min-height: 117px;
+            max-height: 117px;
         }
     }
 
@@ -164,8 +180,7 @@ const imageId = ref<number>(0); // Пример инициализации, во
     &__ava {
         position: absolute;
         left: 50%;
-        right: 50%;
-        top: 66px;
+        top: 33px;
         width: 104px;
         height: 104px;
         background-size: cover;
@@ -174,7 +189,7 @@ const imageId = ref<number>(0); // Пример инициализации, во
         box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
 
         @media (max-width:567px) {
-            left: 36%;
+            left: 39%;
         }
 
         img {
@@ -194,6 +209,8 @@ const imageId = ref<number>(0); // Пример инициализации, во
     }
 
     &__btn {
+        position: absolute;
+        top:140px;
         background-color: white;
         padding: 7px;
         width: 30px;

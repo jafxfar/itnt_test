@@ -1,4 +1,7 @@
 <template>
+    <div class="flex justify-center">
+        <div class="w-1/4 date mb-4 rounded-xl">{{ $t('feed.today') }}</div>
+    </div>
     <div class="feedCard mb-4">
         <!-- head -->
         <div class="feedCard__head"
@@ -171,6 +174,15 @@ const feedCardSubtitle = computed(() => {
 </script>
 
 <style scoped lang="scss">
+.date {
+    display: flex;
+    justify-content: center;
+    background: rgba(224, 224, 224, 0.5);
+    font-size: 13px !important;
+    letter-spacing: 0.01em !important;
+    padding: 6px 20px;
+    line-height: 14px;
+}
 .feedCard {
     // padding: 16px 14px;
     border-radius: 12px;

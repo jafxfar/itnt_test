@@ -41,7 +41,7 @@ import UiButton from '~/components/ui-kit/UiButton.vue'
 
 <style scoped>
 .container {
-    height: 100vh;
+   height: 100vh;
 }
 .card {
     background: #ffffff !important;

@@ -1,7 +1,7 @@
 <template>
     <Header showLogo />
     <v-col class="pa-0">
-        <v-row class="container pa-0 ma-0" justify="center" align="center">
+        <v-row class="container pa-0 ma-0" justify="center"  align="center">
             <!-- phone -->
             <div v-if="pageStep === 1" class="button-container">
                 <v-form @submit.prevent>
@@ -57,6 +57,8 @@
                         :should-auto-focus="true"
                         input-type="number"
                         @on-complete="sendCode"
+                        :class="{'otp-input--has-value': !hasPhoneValue}"
+
                     />
                 </div>
                 <v-chip v-show="codeError" class="chip mt-4"> Неверный код </v-chip>
@@ -149,10 +151,13 @@ async function sendCode() {
     margin: 0 10px;
     font-size: 20px;
     border-radius: 4px;
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-bottom: 4px solid #E0E0E0;
+    box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.1), /* Тень сверху */
+                1px 0px 3px rgba(0, 0, 0, 0.1), /* Тень справа */
+                -1px 0px 3px rgba(0, 0, 0, 0.1); /* Тень слева */
     text-align: center;
     &__error {
-        border: 1px solid red !important;
+        border-bottom: 4px solid red !important;
     }
 }
 .otp-input::-webkit-inner-spin-button,

@@ -1,6 +1,6 @@
 <template>
     <Header showID showUserMinify showControlDots />
-    <ProfileHeader />
+    <ProfileHeader readOnly />
 
     <v-container class="pa-6" style="padding: 0 20px; margin-bottom: 48px">
         <ProfileInfo
@@ -8,26 +8,11 @@
             :userSurname="userInfo.lastName"
             :userDescription="userInfo.fullDescription"
         />
-        <div class="mb-6">
-            <UiButton bgColor="smOutlined" isNormal> Открыт к предложениям </UiButton>
-        </div>
         <UiSkills readOnly />
 
         <!-- <ProjectsList :projects="userInfo.projects" /> -->
         <ProjectsList class="my-8" :projects="userInfo.projects" />
 
-        <div class="my-8">
-            <h1>Что у меня нового:</h1>
-            <UiButton  @click="joinTeam.open()"  bgColor="blue" class="mt-2">Расскажите, чем запомнился день</UiButton>
-            <vue-bottom-sheet min-height="115px" full-screen ref="joinTeam">
-                <div class="modalList">
-                    <div v-for="(item, id) in joinTeamModalItems" :key="id" class="modalList__item">
-                        <img :src="`../src/assets/icons/footer/${item.icon}.svg`" alt="" />
-                        <p :class="item.name === 'Пожаловаться' && 'error-txt'" class="txt-body1">{{ item.name }}</p>
-                    </div>
-                </div>
-            </vue-bottom-sheet>
-        </div>
         <div class="date color-white mb-4 rounded-xl d-inline-block">{{ $t('feed.today') }}</div>
 
         <ProjectBlog userType="user" feedCardType="newProjectStage"/>

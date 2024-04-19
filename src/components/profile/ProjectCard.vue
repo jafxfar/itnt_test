@@ -71,7 +71,9 @@ const props = defineProps({
     width: 100%;
     background: #fff;
     margin-bottom: 2px;
-    border-radius: 2px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+
 
     &__info {
         display: flex;

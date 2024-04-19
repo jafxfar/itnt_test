@@ -1,5 +1,5 @@
 <template>
-    <div class="projectCard">
+    <div class="projectCard ">
         <!-- READONLY -->
         <div v-if="props.readOnly">
             <div class="projectCard__slider">
