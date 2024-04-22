@@ -18,7 +18,7 @@ export default {
                     <img
                         width="22"
                         height="22"
-                        :src="`../src/assets/icons/footer/${route?.icon}.svg`"
+                        :src="route?.icon"
                         :alt="route.icon"
                     />
                 </div>
@@ -28,28 +28,33 @@ export default {
 </template>
 
 <script setup lang="ts">
+import profile from "~/assets/icons/footer/account.svg"
+import lupa from "~/assets/icons/footer/lupa.svg"
+import home from "~/assets/icons/footer/home.svg"
+import rate from "~/assets/icons/footer/rate.svg"
+
 import { modalActionsList } from '~/helpers/types'
 
 const routes: modalActionsList[] = [
     {
         name: '/feed',
-        icon: 'home',
+        icon: home,
     },
     {
         name: '/projects',
-        icon: 'rate',
+        icon: rate,
     },
     // {
     //     name: '/messenger_project',
-    //     icon: 'message',
+    //     icon: message,
     // },
     {
         name: '/search',
-        icon: 'lupa',
+        icon: lupa,
     },
     {
         name: '/me',
-        icon: 'account',
+        icon: profile,
     },
 ]
 </script>

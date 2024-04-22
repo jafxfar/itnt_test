@@ -59,7 +59,7 @@
                     v-if="props.feedCardType != 'newProjectDiscussed'"
                     bgColor="def"
                     class="mr-3"
-                    imgSrc="../src/assets/icons/share-black.svg"
+                    imgSrc="../src/assets/icons/chat-black.svg"
                     style="padding: 10px 13px 9px 14px"
                     onlyIcon
                 />
@@ -71,10 +71,11 @@
     <vue-bottom-sheet v-if="props.userType =='user'" ref="modalState">
         <div class="modal"  >
             <div class="modal__list">
-                <div v-for="(item, id) in userModal" :key="id" class="modal__list__item">
-                    <img :src="`../src/assets/icons/footer/${item.icon}.svg`" alt="" />
+                <div  class="modal__list__item">
+                    <img src="../../assets/icons/warning-red.svg" alt="" />
                     <p class="txt-body1 text-[#FF3D00]">
-                        {{ item.name }}
+                        <!-- {{ item.name }} -->
+                        Сообщить об нарушении
                     </p>
                 </div>
             </div>
@@ -99,6 +100,7 @@
 
 <script lang="ts" setup>
 import Fire from '../Fire.vue'
+
 import { modalActionsList } from '~/helpers/types'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
@@ -118,13 +120,6 @@ const props = defineProps({
 
 
 const modalState = ref(null)
-
-const userModal: modalActionsList[] = [
-    {
-        name: 'Сообщить о нарушении',
-        icon: 'account',
-    },
-]
 
 const me: modalActionsList[] = [
     {

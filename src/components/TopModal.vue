@@ -12,7 +12,7 @@ export default {
         <div class="modal__list modalList">
             <template v-for="(item, id) in modalItems" :key="id">
                 <div @click="onModalClick(item.route)" class="modal__list__item">
-                    <img :src="`../src/assets/icons/${item.icon}.svg`" alt="" />
+                    <img :src="item.icon" alt="" />
                     <p :class="item.name === 'Выйти из аккаунта' && 'error-txt'" class="txt-body1">{{ item.name }}</p>
                 </div>
             </template>
@@ -24,6 +24,11 @@ export default {
 <script setup lang="ts">
 
 import UiShortProjectCard from './ui-kit/UiShortProjectCard.vue'
+import settings from "~/assets/icons/settings-blue.svg";
+import account from "~/assets/icons/account-blue.svg";
+import subscribe from "~/assets/icons/subscribe-blue.svg";
+import share from "~/assets/icons/share-blue.svg";
+import warning from "~/assets/icons/warning-red.svg";
 
 import { modalActionsList } from '~/helpers/types'
 import { useRouter } from 'vue-router'
@@ -44,27 +49,27 @@ function onModalClick(route: string) {
 const modalItems: modalActionsList[] = [
     {
         name: 'Настройки аккаунта',
-        icon: 'settings-blue',
+        icon: settings,
         route: '/me/edit',
     },
     {
         name: 'Редактировать мой профиль',
-        icon: 'account-blue',
+        icon: account,
         route: '/me/edit',
     },
     {
         name: 'Мои подписки',
-        icon: 'subscribe-blue',
+        icon: subscribe,
         route: '/me/edit',
     },
     {
         name: 'Поделиться',
-        icon: 'share-blue',
+        icon: share,
         route: '/me/edit',
     },
     {
         name: 'Выйти из аккаунта',
-        icon: 'share-blue',
+        icon: warning,
         func: () => {
             try {
                 localStorage.clear()

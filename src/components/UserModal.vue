@@ -11,7 +11,7 @@ export default {
         <div class="modal__list modalList">
             <template v-for="(item, id) in modalItems" :key="id">
                 <div @click="onModalClick(item)" class="modal__list__item">
-                    <img :src="`../src/assets/icons/${item.icon}.svg`" alt="" />
+                    <img :src="item.icon" alt="" />
                     <p  :class="item.name === 'Сообщить о нарушении' && 'error-txt'" class="txt-body1">{{ item.name }}</p>
                 </div>
             </template>
@@ -21,6 +21,11 @@ export default {
 </template>
 
 <script setup lang="ts">
+import msg_route from "~/assets/icons/msg_psuh.svg"
+import block from "~/assets/icons/block.svg"
+import complain from "~/assets/icons/coplain.svg"
+import share from "~/assets/project_modal/share.svg"
+
 import { postAddComplaint } from "~/API/ways/user" // Импорт функции отправки жалобы на сервер
 
 import { modalActionsList } from '~/helpers/types'
@@ -58,23 +63,23 @@ async function sendComplaint(text) {
 const modalItems: modalActionsList[] = [
     {
         name: 'Написать сообщение',
-        icon: 'settings-blue',
+        icon: msg_route,
         route: '/me/edit',
     },
     {
         name: 'Поделиться этим профилем',
-        icon: 'account-blue',
+        icon: share,
         route: '/me/edit',
     },
     {
         name: 'Заблокировать',
-        icon: 'subscribe-blue',
+        icon: block,
         route: '/me/edit',
     },
     {
         name: 'Сообщить о нарушении',
-        icon: 'share-blue',
-        route: '/me/edit    '
+        icon: complain,
+        route: '/me/edit'
     },
 ]
 </script>

@@ -19,7 +19,7 @@ export default {
             @click="toggleTopModal"
             style="padding: 10px"
             v-if="props.showUserMinify === true"
-            src="../assets/demo/ava-small-header.svg"
+            :src="`http://62.217.181.172:8080/var/itnt-files/${props.avaPic}`"
         />
 
         <img @click="toggleUserModal" style="padding: 10px" v-if="props.showControlDots" src="../assets/icons/dots-black.svg" />

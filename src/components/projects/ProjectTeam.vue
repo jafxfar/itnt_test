@@ -10,7 +10,7 @@
             <vue-bottom-sheet max-height="115px" full-screen ref="modalState">
                 <div class="modalList">
                     <div v-for="(item, id) in joinTeamModalItems" :key="id" class="modalList__item">
-                        <img :src="`../src/assets/icons/footer/${item.icon}.svg`" alt="" />
+                        <img :src="item.icon" alt="" />
                         <p :class="item.name === 'Пожаловаться' && 'error-txt'" class="txt-body1">{{ item.name }}</p>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
             <vue-bottom-sheet max-height="115px" full-screen ref="modalState">
                 <div class="modalList">
                     <div v-for="(item, id) in readOnlyModalItems" :key="id" class="modalList__item">
-                        <img :src="`../src/assets/icons/footer/${item.icon}.svg`" alt="" />
+                        <img :src="item.icon" alt="" />
                         <p :class="item.name === 'Пожаловаться' && 'error-txt'" class="txt-body1">{{ item.name }}</p>
                     </div>
                 </div>
@@ -80,8 +80,8 @@
             <div class="modal">
                 <div class="modal__list">
                     <div v-for="(item, id) in editableModalItems" :key="id" class="modal__list__item">
-                        <img :src="`../src/assets/icons/footer/${item.icon}.svg`" alt="" />
-                        <p :class="item.name === 'Удалить человека из проекта' && 'error-txt'" class="txt-body1">
+                        <img :src="item.icon" alt="" />
+                        <p  class="txt-body1">
                             {{ item.name }}
                         </p>
                     </div>
@@ -161,6 +161,7 @@
 </template>
 
 <script setup lang="ts">
+import account from "~/assets/icons/account-blue.svg"
 import UiButton from '../ui-kit/UiButton.vue'
 import UiInput from '../ui-kit/UiInput.vue'
 import { modalActionsList } from '~/helpers/types'
@@ -204,20 +205,20 @@ const demoTeam = [
 const readOnlyModalItems: modalActionsList[] = [
     {
         name: 'Открыть профиль',
-        icon: 'account',
+        icon: account,
     },
 ]
 
 const editableModalItems: modalActionsList[] = [
     {
         name: 'Открыть профиль',
-        icon: 'account',
+        icon: account,
     },
 ]
 const joinTeamModalItems: modalActionsList[] = [
     {
         name: 'Открыть профиль',
-        icon: 'account',
+        icon: account,
     },
     {
         name: 'Настроить полномочия',

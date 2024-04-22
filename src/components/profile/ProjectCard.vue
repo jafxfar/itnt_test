@@ -8,7 +8,7 @@ export default {
     <div @click="modalState.open()" class="project-card">
         <div :style="props.projectInfo.isAnon === false ? 'padding-left: 52px' : ''" class="project-card__info">
             <img v-if="props.projectInfo.isAnon" width="41" height="38" src="../../assets/icons/anonProject.svg" />
-            <div>
+            <div class="text-start px-[16vw]">
                 <p class="project-card__info__name">{{ props.projectInfo.project.name }}</p>
                 <p class="project-card__info__position">{{ props.projectInfo.project.slogan }}</p>
             </div>
@@ -20,15 +20,23 @@ export default {
         <div class="modal">
             <div class="modal__list">
                 <div v-for="(item, id) in modalItems" :key="id" class="modal__list__item">
-                    <img :src="`../src/assets/icons/footer/${item.icon}.svg`" alt="" />
-                    <p :class="item.name === 'Пожаловаться' && 'error-txt'" class="txt-body1">{{ item.name }}</p>
+                    <img :src="item.icon" alt="" />
+                    <p class="txt-body1">{{ item.name }}</p>
                 </div>
+                <button class="btn"><img :src="plus" alt="">Добавить проект в быстрое меню</button>
             </div>
         </div>
     </vue-bottom-sheet>
 </template>
 
 <script setup lang="ts">
+// icons
+import anonimus from "~/assets/project_modal/annonimus.svg"
+import hide from "~/assets/project_modal/hide.svg"
+import project from "~/assets/project_modal/project.svg"
+import share from "~/assets/project_modal/share.svg"
+import plus from "~/assets/project_modal/plus.svg"
+
 import { ref } from 'vue'
 import { modalActionsList } from '~/helpers/types'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
@@ -38,19 +46,19 @@ const modalState = ref(false)
 const modalItems: modalActionsList[] = [
     {
         name: 'Не показывать проект в профиле',
-        icon: 'account',
+        icon: hide,
     },
     {
         name: 'Включить анонимное участие',
-        icon: 'account',
+        icon: anonimus,
     },
     {
         name: 'Открыть проект',
-        icon: 'account',
+        icon: project,
     },
     {
         name: 'Поделиться проектом',
-        icon: 'account',
+        icon: share,
     },
 ]
 
@@ -62,6 +70,15 @@ const props = defineProps({
 </script>
 
 <style lang="scss" scoped>
+.btn{
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    border: 2px solid #29B6F6;
+    gap: 5%;
+    border-radius: 12px;
+    padding: 10px 13px;
+}
 .project-card {
     min-height: 94px;
     display: flex;
@@ -86,8 +103,9 @@ const props = defineProps({
             font-weight: 500;
         }
         &__position {
-            color: #1769aa;
-            font-size: 16px;
+            color: #1769AA;
+            opacity: 0.5;
+            font-size: 15px;
             font-weight: 400;
         }
     }

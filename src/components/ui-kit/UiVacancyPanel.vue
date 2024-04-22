@@ -34,7 +34,7 @@ export default {
         </v-expansion-panels>
 
         <vue-bottom-sheet ref="modalState">
-            <div class="ui-vacancyPanel__modal">
+            <div class="ui-vacancyPanel__modal px-4">
                 <p>Запрос на вступление в проект</p>
 
                 <div class="ui-vacancyPanel__modal__info">
@@ -69,7 +69,7 @@ export default {
             <div class="modal">
                 <div class="modal__list">
                     <div v-for="(item, id) in editableModalItems" :key="id" class="modal__list__item">
-                        <img :src="`../src/assets/icons/footer/${item.icon}.svg`" alt="" />
+                        <img :src="item.icon" alt="" />
                         <p :class="item.name === 'Удалить человека из проекта' && 'error-txt'" class="txt-body1">
                             {{ item.name }}
                         </p>
@@ -81,6 +81,9 @@ export default {
 </template>
 
 <script lang="ts" setup>
+import delate from "~/assets/demo/delate.svg"
+import archieve from "~/assets/demo/archieve.svg"
+
 import UiButton from './UiButton.vue'
 import UiInput from './UiInput.vue'
 import UiTextArea from './UiTextArea.vue'
@@ -110,11 +113,11 @@ const props = defineProps({
 const editableModalItems: modalActionsList[] = [
     {
         name: 'Удалить вакансию',
-        icon: 'account',
+        icon: delate,
     },
     {
         name: 'Архивировать',
-        icon: 'account',
+        icon: archieve,
     },
 ]
 </script>

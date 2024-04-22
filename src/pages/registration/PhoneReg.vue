@@ -57,8 +57,10 @@
                         :should-auto-focus="true"
                         input-type="number"
                         @on-complete="sendCode"
-                        :class="{'otp-input--has-value': !hasPhoneValue}"
-
+                        :class="{
+                        'otp-input--has-value': otpCode.length > 0,
+                        'blue-bottom-border': otpCode.length === inputIndex + 1
+                    }"
                     />
                 </div>
                 <v-chip v-show="codeError" class="chip mt-4"> Неверный код </v-chip>
@@ -79,7 +81,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { vMaska } from 'maska'
 import UiButton from '~/components/ui-kit/UiButton.vue'
 import UiInput from '~/components/ui-kit/UiInput.vue'
@@ -93,6 +95,7 @@ const router = useRouter()
 const user = useUserStore()
 
 const pageStep = ref(1)
+const inputIndex = ref(1); // начинаем с -1, так как счет начинается с 0
 
 const codeError = ref(false)
 const isLoading = ref(false)
@@ -106,7 +109,9 @@ const otpCode = ref('')
 const clearPhone = computed(() => {
     return '+' + phone.value.match(/\d/g).join('')
 })
-
+watch(otpCode, (newValue) => {
+    inputIndex.value = newValue.length - 1; // обновляем inputIndex при изменении otpCode
+});
 async function sendPhoneInfo() {
     if (phone.value != null)
         await postUserLoginCode(clearPhone.value).then((response) => {
@@ -144,6 +149,9 @@ async function sendCode() {
 </script>
 
 <style lang="scss">
+.blue-bottom-border input {
+  border-bottom-color:#29b6f6 !important; /* устанавливаем синюю границу */
+}
 .otp-input {
     width: 40px;
     height: 40px;
