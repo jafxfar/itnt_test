@@ -27,7 +27,7 @@ const postAddComplaint = (complaintData: ComplaintData[]) => {
     return API.post(`${prefix}/addComplaint`, complaintData);
 }
 
-const deleteUserPicture = (id: number) => {
+const deleteUserPicture = () => {
     return API.delete(`${prefix}/delUserPicture`);
 }
 

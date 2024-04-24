@@ -2,7 +2,7 @@
     <Header showUserMinify showID />
     <ProfileHeader />
     <v-container>
-        <div class="userEdit">
+        <div class="userEdit mt-4">
             <UiInput v-model="user.firstName" class="mb-4" label="Имя" />
             <UiInput v-model="user.lastName" class="mb-4" label="Фамилия" />
             <v-select
