@@ -1,6 +1,7 @@
 <template>
     <div class="m-2">
-        <p>Презентация {{ countUploadedPhotos }} / 10</p>    </div>
+     <p>Презентация {{ countUploadedPhotos }} / 10</p>    
+    </div>
     <div class="photo-upload flex w-full flex-wrap">
         <div v-for="(inputId, index) in inputIds" :key="index" class="upload-wrapper">
             <label :for="inputId"
@@ -16,40 +17,37 @@
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            inputIds: Array.from({ length: 10 }, (_, i) => `file-upload-${i}`),
-            imageUrls: Array(10).fill(null),
-            activeIndex: 0,
-        };
-    },
-    computed:{
-        countUploadedPhotos(){
-            return this.imageUrls.filter(url =>url !=null).length
-        }
-    },
-    methods: {
-        handleFileChange(event, index) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    this.imageUrls[index] = reader.result; // Update the image URL at the specified index
-                    this.setNextActive(index);
-                };
-                reader.readAsDataURL(file);
-            }
-        },
-        setNextActive(index) {
-            if (index < this.inputIds.length - 1) {
-                this.activeIndex = index + 1;
-            } else {
-                this.activeIndex = 0;
-            }
-        },
-    },
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const inputIds = Array.from({ length: 10 }, (_, i) => `file-upload-${i}`);
+const imageUrls = ref(Array(10).fill(null));
+const activeIndex = ref(0);
+
+const handleFileChange = (event: Event, index: number) => {
+  const file = (event.target as HTMLInputElement).files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (reader.result) {
+        imageUrls.value[index] = reader.result.toString(); // Update the image URL at the specified index
+        setNextActive(index);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const setNextActive = (index: number) => {
+  if (index < inputIds.length - 1) {
+    activeIndex.value = index + 1;
+  } else {
+    activeIndex.value = 0;
+  }
+};
+
+const countUploadedPhotos = () => {
+  return imageUrls.value.filter(url => url !== null).length;
 };
 </script>
 

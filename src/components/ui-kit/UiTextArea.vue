@@ -43,6 +43,7 @@ const props = defineProps({
 
 <style lang="scss" scoped>
 .ui-textArea :deep() {
+    margin: 0;
     .v-field__outline__start {
         border-top-left-radius: 8px;
         border-bottom-left-radius: 8px;

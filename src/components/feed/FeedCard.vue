@@ -64,7 +64,7 @@
                     v-if="props.feedCardType != 'newProjectDiscussed'"
                     bgColor="def"
                     class="mr-3"
-                    imgSrc="../src/assets/icons/share-black.svg"
+                    :imgSrc="share"
                     style="padding: 10px 13px 9px 14px"
                     onlyIcon
                 />
@@ -75,6 +75,7 @@
 </template>
 
 <script lang="ts" setup>
+import share from "~/assets/icons/share-black.svg";
 import Fire from '../Fire.vue'
 import UiButton from '../ui-kit/UiButton.vue'
 import UiVacancyPanel from '../ui-kit/UiVacancyPanel.vue'

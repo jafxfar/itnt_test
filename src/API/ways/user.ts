@@ -28,7 +28,7 @@ const postAddComplaint = (complaintData: ComplaintData[]) => {
 }
 
 const deleteUserPicture = (id: number) => {
-    return API.delete(`${prefix}/delUserPicture?id=${id}`);
+    return API.delete(`${prefix}/delUserPicture`);
 }
 
 

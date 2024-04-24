@@ -8,7 +8,7 @@ export default {
     <v-app-bar class="px-4" :elevation="0" height="46" color="white">
         <v-icon class="mr-3" @click="$router.back()" icon="mdi-arrow-left" />
 
-        <img v-show="props.showLogo" :src="`http://62.217.181.172:8080/var/itnt-files/${props.avaPic}`" />
+        <img v-show="props.showLogo" :src="user.pictureUrl" />
 
         <h2 @click="copyID" v-show="props.showID">{{ chosenId }}</h2>
 
@@ -24,7 +24,7 @@ export default {
 
         <img @click="toggleUserModal" style="padding: 10px" v-if="props.showControlDots" src="../assets/icons/dots-black.svg" />
 
-        <div v-if="props.search" class="d-flex align-center">
+        <div v-if="props.search" class="d-flex w-full align-center">
             <UiInput noStyle v-model="searchBarValue" />
             <v-spacer />
             <v-icon @click="searchValueByHeader" icon="mdi-magnify" />

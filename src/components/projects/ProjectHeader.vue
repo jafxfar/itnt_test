@@ -21,10 +21,10 @@ export default {
             <div class="projectHeader__controls">
                 <div class="d-flex justify-space-between mb-4">
                     <UiButton bgColor="blue" @click="follow" style="max-width: 152px">Подписаться</UiButton>
-                    <UiButton @click="shareProject()" imgSrc="../src/assets/icons/share-black.svg" onlyIcon />
+                    <UiButton @click="shareProject()" :imgSrc="share" onlyIcon />
                     <Fire :id="props.prjID" />
                 </div>
-                <UiButton @click="handleAddComment" bgColor="def" imgSrc="../src/assets/icons/message-black.svg">Обсуждение проекта</UiButton>
+                <UiButton @click="handleAddComment" bgColor="def" :imgSrc="message">Обсуждение проекта</UiButton>
             </div>
         </div>
 
@@ -38,6 +38,8 @@ export default {
 </template>
 
 <script lang="ts" setup>
+import message from "~/assets/icons/message-black.svg"
+import share from "~/assets/icons/share-black.svg"
 import { ref } from 'vue'
 import Fire from '../Fire.vue'
 import UiButton from '../ui-kit/UiButton.vue'

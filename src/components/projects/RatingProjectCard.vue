@@ -57,7 +57,7 @@ export default {
         <div class="modal">
             <div class="modal__list">
                 <div v-for="(item, id) in modalItems" @click="item?.func" :key="id" class="modal__list__item">
-                    <img :src="`../src/assets/icons/${item.icon}.svg`" alt="" />
+                    <img :src="item.icon" alt="" />
                     <p :class="item.name === 'Пожаловаться' && 'error-txt'" class="txt-body1">{{ item.name }}</p>
                 </div>
             </div>
@@ -87,6 +87,12 @@ export default {
 </template>
 
 <script setup lang="ts">
+import project from "~/assets/project_modal/project.svg"
+import share from "~/assets/icons/share-blue.svg"
+import warning from "~/assets/icons/warning-red.svg"
+
+// import statistic from "~/assets/modal_icon/statistic.svg"
+import follow from "~/assets/modal_icon/follow.svg"
 import { ref } from 'vue'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
@@ -111,18 +117,18 @@ const props = defineProps({
 const modalItems: modalActionsList[] = [
     {
         name: 'Открыть проект',
-        icon: 'journal-blue',
+        icon: project,
         func: () => {
             router.push('/project/' + props.projectInfoSet.id)
         },
     },
     {
         name: 'Подписаться',
-        icon: 'star-blue',
+        icon: follow,
     },
     {
         name: 'Поделиться',
-        icon: 'share-blue',
+        icon: share,
         func: () => {
             try {
                 navigator.share({
@@ -137,11 +143,11 @@ const modalItems: modalActionsList[] = [
     },
     // {
     //     name: 'Статистика проекта',
-    //     icon: 'statistic-blue',
+    //     icon: statistic,
     // },
     {
         name: 'Пожаловаться',
-        icon: 'warning-red',
+        icon: warning,
     },
 ]
 </script>

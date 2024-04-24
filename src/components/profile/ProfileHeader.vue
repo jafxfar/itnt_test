@@ -9,7 +9,7 @@
 
         <!-- Отображение загруженной аватарки -->
         <div  class="userPics__ava">
-            <img v-if="props.avaPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.avaPic}`" />
+            <img v-if="props.avaPic" :src="userPictureUrl" />
             <!-- <img 
             v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" /> -->
         </div>
@@ -35,7 +35,7 @@
         </v-dialog>
         <!-- Отображение загруженной аватарки -->
         <div  v-if="uploadedAvaImageUrl || props.avaPic" class="userPics__ava">
-            <img v-if="props.avaPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.avaPic}`" />
+            <img v-if="props.avaPic" :src="userPictureUrl" />
             <img 
             v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" />
         </div>
@@ -69,9 +69,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useUserStore } from '~/store/user';
+
 import { postAddUserPicture, postAddBackgroundPicture, deleteUserPicture } from '~/API/ways/user';
 import UiButton from '../ui-kit/UiButton.vue';
+
+const userStore = useUserStore();
+
 const props = defineProps({
     avaPic: {
         type: String,
@@ -84,6 +89,8 @@ const props = defineProps({
         default: false,
     },
 })
+const userPictureUrl = computed(() => userStore.pictureUrl);
+
 const searchModalState = ref(false)
 
 function openModal() {

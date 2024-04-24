@@ -173,40 +173,6 @@ function addAvatar() {
     blobPic.value = URL.createObjectURL(user.pictureUrl[0])
 }
 
-// Получаем инфу о городах
-const countryItems = computed(() => {
-    return Object.entries(list.value).map(([id, details]) => ({
-        id,
-        name: details.name
-    }));
-});
-
-let list = ref<CountryData>({});
-
-onMounted(async () => {
-    isLoading.value = true; // Начало загрузки
-    try {
-        const countryResponse = await getCountryList();
-        const cityResponse = await getCityList();
-
-        // Применяем интерфейсы к полученным данным
-        const countries: Country[] = countryResponse.data;
-        const cities: City[] = cityResponse.data;
-
-        // Создаем новый объект со странами и городами
-        list.value = countries.reduce<CountryData>((acc, country) => {
-            acc[country.id] = {
-                name: country.name,
-                cities: cities.filter(city => city.countryId === country.id)
-            };
-            return acc;
-        }, {});
-    } catch (error) {
-        console.error('Ошибка при загрузке данных:', error);
-    } finally {
-        isLoading.value = false; // Завершение загрузки
-    }
-});
 async function saveProfile() {
     isLoading.value = true;
     patchUser(user).then((response: any) => {
