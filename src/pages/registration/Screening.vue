@@ -96,10 +96,8 @@ import { reactive, ref, watch, onMounted, computed } from 'vue'
 import { postAddUserPicture, patchUser } from '~/API/ways/user'
 import Header from '~/components/Header.vue'
 // import Arr from '~/helpers/set.ts'
-import { getCountryList } from '~/API/ways/dictionary'
+// import { getCountryList ,getCityList } from '~/API/ways/dictionary'
 
-import { getCityList } from '~/API/ways/dictionary'
-import { City, Country, CountryData } from '~/helpers/types'
 
 import { useRouter } from 'vue-router'
 const router = useRouter()

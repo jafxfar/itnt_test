@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-    <v-card v-if="props.skillsType != 'Project'" class="ui-skills">
+    <v-card v-if="props.skillsType != 'Project'" class="ui-skills mt-[24px]">
         <div class="ui-skills__head" v-if="props.readOnly === false">
             <p class="txt-cap2">{{ $t('me.skills') }} </p>
             <div v-if="deleteMode === false" @click="modalState.open()" class="ui-skills__btn">
@@ -15,18 +15,22 @@ export default {
             <div v-else @click="deleteMode = false" class="ui-skills__btn">
                 <p class="txt-body1">{{ $t('me.cancel') }} </p>
             </div>
-            <div v-if="chosenSkills?.length > 0" @click="deleteMode = true" class="ui-skills__trash">
+            <div v-if="chosenSkills?.length > 0" @click="deleteMode ? deleteSelectedSkills() : deleteMode = true"
+                class="ui-skills__trash">
                 <img src="../../assets/icons/trash.svg" alt="" />
             </div>
+
         </div>
 
         <div class="ui-skills__list">
             <div v-for="(skill, id) in chosenSkills" :key="id">
-                <div @click="deleteMode ? deleteSkill(id) : openModal(skill)" class="ui-skills__skill txt-body1">
+                <div @click="toggleSkillSelection(id)"
+                    :class="{ 'ui-skills__skill': true, 'selected border-[1.5px] border-red-500': deleteMode && selectedSkills.includes(id) }">
                     {{ skill }}
                 </div>
             </div>
         </div>
+
     </v-card>
 
     <div class="ui-skills__projects" v-else>
@@ -38,6 +42,16 @@ export default {
             <v-icon size="x-small" icon="mdi-plus" />
         </div>
     </div>
+
+<!-- Диалог пот=дтверждения удаления навыков -->
+    <!-- <v-dialog v-model="showDeleteConfirmation" max-width="400">
+        <v-card>
+            <v-card-actions>
+                <v-btn color="error" @click="confirmDelete"><img :src="trash" alt=""> Навык удалён</v-btn>
+                <v-btn @click="cancelDelete" class="text-blue-500">Отмена</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog> -->
     <!-- TODO: убрать логику модалки в имзенение проекта  -->
     <v-dialog v-model="searchModalState" width="100%">
         <v-card class="ui-skills__search">
@@ -71,6 +85,7 @@ export default {
 </template>
 
 <script lang="ts" setup>
+import trash from "~/assets/modal_icon/trash-black.svg"
 // ui-kit
 import UiInput from './UiInput.vue'
 import UiButton from './UiButton.vue'
@@ -95,10 +110,39 @@ onMounted(async () => {
 function addSkill(skillName: string) {
     chosenSkills.value.push(skillName);
 }
-// import { storeToRefs } from 'pinia'
-// import { useProjectStore } from '~/store/projectStore'
 
-// const { prjObject } = storeToRefs(useProjectStore())
+const selectedSkills = ref<number[]>([]);
+
+function toggleSkillSelection(id: number) {
+    if (deleteMode.value) {
+        const index = selectedSkills.value.indexOf(id);
+        if (index === -1) {
+            // Навык еще не выбран, добавляем его
+            selectedSkills.value.push(id);
+        } else {
+            // Навык уже выбран, убираем его
+            selectedSkills.value.splice(index, 1);
+        }
+    } else {
+        // Если не в режиме удаления, открываем модальное окно для редактирования навыка
+        openModal(chosenSkills.value[id]);
+    }
+}
+
+function deleteSelectedSkills() {
+    // Удаляем выбранные навыки из основного массива chosenSkills
+    selectedSkills.value.forEach(id => {
+        chosenSkills.value.splice(id, 1);
+    });
+    // Очищаем массив выбранных навыков
+    selectedSkills.value = [];
+    // Выключаем режим удаления
+    deleteMode.value = false;
+    showDeleteConfirmation.value = true;
+
+}
+
+
 
 const props = defineProps({
     readOnly: {
@@ -113,9 +157,6 @@ const props = defineProps({
 const deleteMode = ref(false);
 const chosenSkills = ref([]);
 
-function deleteSkill(id: number) {
-    chosenSkills.value.splice(id, 1);
-}// const searchProjectTagsModalState = ref(false)
 const chosenModalSkill = ref(null)
 const modalState = ref(false)
 const searchModalState = ref(false)
@@ -124,10 +165,31 @@ function openModal(skill: any) {
     chosenModalSkill.value = skill
     searchModalState.value = true
 }
+const showDeleteConfirmation = ref(false);
+const deletedSkill = ref('');
 
+function confirmDelete() {
+    // Удаляем выбранные навыки
+    deleteSelectedSkills();
+    // Скрываем диалог подтверждения
+    setTimeout(() => {
+        showDeleteConfirmation.value = false;
+    }, 500);
+}
+
+function cancelDelete() {
+    // Просто скрываем диалог подтверждения
+    showDeleteConfirmation.value = false;
+}
 </script>
 
 <style lang="scss">
+.selected {
+    background-color: #FFEBEE;
+    border: 1px solid red;
+    color: white;
+}
+
 .ui-skills {
     padding: 16px;
     border-radius: 12px;

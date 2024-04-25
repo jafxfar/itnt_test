@@ -2,7 +2,7 @@
     <Header showID showUserMinify />
     <ProfileHeader :bg-pic="userInfo.pictureUrl" :ava-pic="userInfo.pictureUrl" />
     <v-container style="padding: 0 20px; margin-bottom: 48px">
-        <ProfileInfo :userName="userInfo.firstName" :userSurname="userInfo.lastName"
+        <ProfileInfo  :userName="userInfo.firstName" :userSurname="userInfo.lastName"
             :userDescription="userInfo.fullDescription" />
         <UiSkills />
 

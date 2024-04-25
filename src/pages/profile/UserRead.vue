@@ -4,6 +4,7 @@
 
     <v-container class="pa-6" style="padding: 0 20px; margin-bottom: 48px">
         <ProfileInfo
+            :read-only="true"
             :userName="userInfo.firstName"
             :userSurname="userInfo.lastName"
             :userDescription="userInfo.fullDescription"

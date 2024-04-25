@@ -13,9 +13,12 @@
                 <p class="userInfo__status__title txt-body1">Открыт к предложениям</p>
                 <img src="../../assets/icons/footer/message.svg" alt="" />
             </div>
-            <button @click="changeImageColor" class="bg-white p-[10px] rounded-[12px] shadow-md">
+            <button v-if="props.readOnly" @click="changeImageColor" class="bg-white p-[10px] rounded-[12px] shadow-md">
                 <img :src="imageUrl" alt="" />
             </button>
+
+            <div class="" v-else></div>
+
         </div>
 
     </div>
@@ -35,12 +38,17 @@ import star from "~/assets/modal_icon/star-filled.svg"
 import { ref } from 'vue';
 // 'userCity', 'userCountry'
 const imageUrl = ref<string>(follow);
-
+const props = defineProps({
+    readOnly: {
+        type: Boolean,
+        default: false,
+    },
+})
 function changeImageColor() {
-    imageUrl.value =star;
+    imageUrl.value = star;
 }
 
-const props = defineProps(['userName', 'userSurname', 'userDescription'])
+// const props = defineProps(['userName', 'userSurname', 'userDescription'])
 </script>
 
 <style lang="scss" scoped>

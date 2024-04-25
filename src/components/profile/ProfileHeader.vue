@@ -2,13 +2,13 @@
 
     <div v-if="props.readOnly" class="userPics">
         <!-- Отображение загруженного баннера -->
-        <div  class="userPics__upload">
+        <div class="userPics__upload">
             <img v-if="props.bgPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.bgPic}`" />
             <!-- <img  v-if="uploadedBgImageUrl" :src="uploadedBgImageUrl" /> -->
         </div>
 
         <!-- Отображение загруженной аватарки -->
-        <div  class="userPics__ava">
+        <div class="userPics__ava">
             <img v-if="props.avaPic" :src="userPictureUrl" />
             <!-- <img 
             v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" /> -->
@@ -19,7 +19,7 @@
         <!-- Отображение загруженного баннера -->
         <div @click="openModal" v-if="uploadedBgImageUrl || props.bgPic" class="userPics__bg">
             <img v-if="props.bgPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.bgPic}`" />
-            <img  v-if="uploadedBgImageUrl" :src="uploadedBgImageUrl" />
+            <img v-if="uploadedBgImageUrl" :src="uploadedBgImageUrl" />
         </div>
 
         <v-dialog v-model="searchModalState" width="100%">
@@ -28,16 +28,15 @@
                     <span>Изменение фонового изображения</span>
                 </p>
                 <div class="ui-skills__search__actions">
-                    <UiButton @click="removeBackgroundPicture(imageId)" bgColor="smOutlined" isSmall>Удалить</UiButton>
+                    <UiButton @click="removeBackgroundPicture(id)" bgColor="smOutlined" isSmall>Удалить</UiButton>
                     <UiButton bgColor="smOutlined" isSmall>Заменить</UiButton>
                 </div>
             </v-card>
         </v-dialog>
         <!-- Отображение загруженной аватарки -->
-        <div  v-if="uploadedAvaImageUrl || props.avaPic" class="userPics__ava">
+        <div v-if="uploadedAvaImageUrl || props.avaPic" class="userPics__ava">
             <img v-if="props.avaPic" :src="userPictureUrl" />
-            <img 
-            v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" />
+            <img v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" />
         </div>
         <!-- <v-dialog v-model="searchModalState" width="100%">
             <v-card class="ui-skills__search">
@@ -151,17 +150,17 @@ const uploadAva = async () => {
     avaFleInput.value?.click();
 }
 
-const imageId = ref<number>(0); // Пример инициализации, возможно, значение придет с props
+const id = ref<number>(0); // Пример инициализации, возможно, значение придет с props
 
-    const removeBackgroundPicture = async (id: number) => {
-      try {
+const removeBackgroundPicture = async (id: Number) => {
+    try {
         await deleteUserPicture(id);
         console.log("Изображение успешно удалено");
         searchModalState.value = false; // Закрывает модальное окно после удаления
-      } catch (error) {
+    } catch (error) {
         console.error("Произошла ошибка при удалении изображения", error);
-      }
-    };
+    }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -174,9 +173,10 @@ const imageId = ref<number>(0); // Пример инициализации, во
 
     &__bg {
         width: 100%;
-        background-size:cover;
+        background-size: cover;
         background-position: center;
-        img{
+
+        img {
             width: 100%;
             min-height: 117px;
             max-height: 117px;
@@ -203,6 +203,8 @@ const imageId = ref<number>(0); // Пример инициализации, во
             // border: 1.5px solid #e0e0e0;
             border-radius: 100%;
             cursor: pointer;
+            width: 104px;
+            height: 104px;
         }
     }
 
@@ -217,7 +219,8 @@ const imageId = ref<number>(0); // Пример инициализации, во
 
     &__btn {
         position: absolute;
-        top:140px;
+        top: 100px;
+        right: 7%;
         background-color: white;
         padding: 7px;
         width: 30px;
