@@ -44,15 +44,26 @@
                 <p class="ma-0">Откуда вы?</p>
             </v-col>
             <v-col class="mt-6">
-                <v-select v-model="user.country" color="#29b6f6" variant="outlined" label="Страна"
-                    class="rounded-lg mb-2" :items="countryItems" :item-text="'name'"
-                    :menu-props="{ bottom: true, offsetY: true }" hide-details>
-                </v-select>
-
-                <v-select v-model="user.city" color="#29b6f6" :disabled="!user.country" variant="outlined"
-                    label="Выберите город" class="rounded-lg" :item-text="'name'"
+                <v-select
+                    v-model="user.country"
+                    variant="outlined"
+                    label="Страна"
+                    class="rounded-lg mb-2"
+                    :items="Object.keys(list)"
+                    :item-text="'name'"
+                    :menu-props="{ bottom: true, offsetY: true }"
+                    hide-details
+                ></v-select>
+                <v-select
+                    v-model="user.city"
+                    :disabled="user.country ? false : true"
+                    variant="outlined"
+                    label="Выберите город"
+                    class="rounded-lg"
+                    :item-text="'name'"
                     :menu-props="{ bottom: true, offsetY: true, maxHeight: '300' }"
-                    :items="list[user.country]?.cities"></v-select>
+                    :items="(list as any)[user.country]"
+                ></v-select>
 
                 <UiButton @click="pageStep += 1" bgColor="blue" class="mt-6"> Продолжить </UiButton>
                 <UiButton @click="pageStep += 1" bgColor="def" class="mt-4"> Пропустить </UiButton>
@@ -92,14 +103,22 @@ import UiInput from '~/components/ui-kit/UiInput.vue'
 import UiPrompt from '~/components/ui-kit/UiPrompt.vue'
 import UiSkills from '~/components/ui-kit/UiSkills.vue'
 
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, onMounted } from 'vue'
 import { postAddUserPicture, patchUser } from '~/API/ways/user'
 import Header from '~/components/Header.vue'
-// import Arr from '~/helpers/set.ts'
-// import { getCountryList ,getCityList } from '~/API/ways/dictionary'
-
-
+import Arr from '~/helpers/set.ts'
+import { getCountryList ,getCityList } from '~/API/ways/dictionary'
 import { useRouter } from 'vue-router'
+const list = ref(Arr)
+
+onMounted(async () => {
+    await getCountryList().then((response: any) => {
+        console.log(response)
+    })
+    await getCityList().then((response: any) => {
+        console.log(response)
+    })
+})
 const router = useRouter()
 
 let blobPic = ref('')

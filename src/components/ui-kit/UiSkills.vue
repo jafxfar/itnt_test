@@ -85,7 +85,7 @@ export default {
 </template>
 
 <script lang="ts" setup>
-import trash from "~/assets/modal_icon/trash-black.svg"
+import trash from "~/assets/icons/trash.svg"
 // ui-kit
 import UiInput from './UiInput.vue'
 import UiButton from './UiButton.vue'
