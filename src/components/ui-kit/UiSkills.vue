@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-    <v-card v-if="props.skillsType != 'Project'" class="ui-skills mt-[24px]">
+    <v-card v-if="props.skillsType != 'Project'" class="ui-skills">
         <div class="ui-skills__head" v-if="props.readOnly === false">
             <p class="txt-cap2">{{ $t('me.skills') }} </p>
             <div v-if="deleteMode === false" @click="modalState.open()" class="ui-skills__btn">
@@ -17,7 +17,7 @@ export default {
             </div>
             <div v-if="chosenSkills?.length > 0" @click="deleteMode ? deleteSelectedSkills() : deleteMode = true"
                 class="ui-skills__trash">
-                <img src="../../assets/icons/trash.svg" alt="" />
+                <img :src="trash" alt="" />
             </div>
 
         </div>
@@ -25,7 +25,7 @@ export default {
         <div class="ui-skills__list">
             <div v-for="(skill, id) in chosenSkills" :key="id">
                 <div @click="toggleSkillSelection(id)"
-                    :class="{ 'ui-skills__skill': true, 'selected border-[1.5px] border-red-500': deleteMode && selectedSkills.includes(id) }">
+                    :class="{ 'ui-skills__skill': true, 'selected border-[1px] border-red-500': deleteMode && selectedSkills.includes(id) }">
                     {{ skill }}
                 </div>
             </div>

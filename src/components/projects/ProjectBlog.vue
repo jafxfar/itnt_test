@@ -51,7 +51,7 @@
                     v-if="props.feedCardType != 'newProjectDiscussed'"
                     bgColor="def"
                     class="mr-3"
-                    imgSrc="../src/assets/icons/share-black.svg"
+                    :imgSrc="share"
                     style="padding: 10px 13px 9px 14px"
                     onlyIcon
                 />
@@ -59,7 +59,7 @@
                     v-if="props.feedCardType != 'newProjectDiscussed'"
                     bgColor="def"
                     class="mr-3"
-                    imgSrc="../src/assets/icons/chat-black.svg"
+                    :imgSrc="chat"
                     style="padding: 10px 13px 9px 14px"
                     onlyIcon
                 />
@@ -99,6 +99,9 @@
 </template>
 
 <script lang="ts" setup>
+import share from "~/assets/icons/share-black.svg"
+import chat from "~/assets/icons/chat-black.svg"
+import bgImage from "~/assets/Frame221.png"
 import Fire from '../Fire.vue'
 
 import { modalActionsList } from '~/helpers/types'
@@ -132,10 +135,10 @@ const me: modalActionsList[] = [
     }
 ]
 
-const backgroundImageUrl = ref("/src/assets/Frame221.png");
+const backgroundImageUrl = ref(bgImage);
 
 const hasImage = computed(() => {
-    return backgroundImageUrl.value !== "/src/assets/Frame221.png";
+    return backgroundImageUrl.value !== bgImage;
 });
 
 const imageHeight = computed(() =>{

@@ -1,5 +1,5 @@
 <template>
-    <Header showLogo />
+    <Header showLogo/>
     <div class="flex flex-row m-4 justify-between gap-2">
         <div v-if="pageStep === 1" class="hidden"></div>
         <div v-else v-for="step in 4" :key="step" class="progress-bar"
@@ -92,7 +92,7 @@ import UiInput from '~/components/ui-kit/UiInput.vue'
 import UiPrompt from '~/components/ui-kit/UiPrompt.vue'
 import UiSkills from '~/components/ui-kit/UiSkills.vue'
 
-import { reactive, ref, watch, onMounted, computed } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { postAddUserPicture, patchUser } from '~/API/ways/user'
 import Header from '~/components/Header.vue'
 // import Arr from '~/helpers/set.ts'

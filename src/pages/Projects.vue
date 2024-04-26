@@ -14,19 +14,6 @@
             <RatingProjectCard :listID="++id" :projectInfoSet="project" />
         </div>
 
-        <!-- <div class="" v-show="projectsType ===0" >
-            <TopNotification />
-
-            <TopNotification />
-            <TopNotification />
-
-        </div>
-
-        <div class="" v-show="projectsType ===1" >
-            <RecentNotification  />
-        </div> -->
-
-
     </v-container>
     <Footer />
 </template>

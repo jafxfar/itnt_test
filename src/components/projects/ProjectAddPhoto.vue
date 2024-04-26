@@ -1,6 +1,6 @@
 <template>
     <div class="m-2">
-     <p>Презентация {{ countUploadedPhotos }} / 10</p>    
+     <p>Презентация {{ countUploadedPhotos() }} / 8</p>    
     </div>
     <div class="photo-upload flex w-full flex-wrap">
         <div v-for="(inputId, index) in inputIds" :key="index" class="upload-wrapper">
@@ -20,8 +20,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const inputIds = Array.from({ length: 10 }, (_, i) => `file-upload-${i}`);
-const imageUrls = ref(Array(10).fill(null));
+const inputIds = Array.from({ length: 8 }, (_, i) => `file-upload-${i}`);
+const imageUrls = ref(Array(8).fill(null));
 const activeIndex = ref(0);
 
 const handleFileChange = (event: Event, index: number) => {
@@ -45,7 +45,7 @@ const setNextActive = (index: number) => {
     activeIndex.value = 0;
   }
 };
-
+// ошибка с счетчиком 
 const countUploadedPhotos = () => {
   return imageUrls.value.filter(url => url !== null).length;
 };
@@ -61,7 +61,7 @@ const countUploadedPhotos = () => {
 }
 
 .upload-wrapper {
-    flex-basis: calc(20% - 12px);
+    flex-basis: calc(25% - 12px);
 }
 
 .file-upload-label {
