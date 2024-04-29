@@ -13,6 +13,7 @@ export default {
         :label="props?.label"
         :placeholder="props?.placeholder"
         hide-details
+        :v-model="search"
         :clearable="clearable"
         v-maska:[mask]
         @input="$emit('input', $event.target.value)"
@@ -22,7 +23,9 @@ export default {
 </template>
 
 <script setup lang="ts">
+import {ref} from "vue"
 import { vMaska } from 'maska'
+const search =ref('')
 
 const props = defineProps({
     placeholder: {

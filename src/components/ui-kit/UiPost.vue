@@ -32,6 +32,18 @@ export default {
                             <span class="icon" v-show="!imageUrls[index]">
                                 <v-icon icon="mdi-plus" />
                             </span>
+                            <div class="">
+                                <!-- Отображение иконки, если файл не является изображением и был добавлен -->
+                                <span class="file-icon flex justify-center"
+                                    v-show="fileNames[index] && !isImageType(fileTypes[index])">
+                                    <img :src="file" alt="">
+                                </span>
+                                <!-- Отображение имени файла внутри блока фотографии, если файл не является изображением -->
+                                <p class="text-center" v-show="fileNames[index] && !isImageType(fileTypes[index])">{{
+                truncateFileName(fileNames[index])
+            }}</p>
+                            </div>
+
                         </label>
                     </div>
                 </div>
@@ -50,6 +62,7 @@ import { defineProps, ref } from 'vue';
 import UiButton from './UiButton.vue';
 import UiInput from './UiInput.vue';
 import UiTextArea from './UiTextArea.vue';
+import file from "~/assets/icons/media/ppt-blue.svg"
 
 const props = defineProps({
     data: {
@@ -69,16 +82,30 @@ const props = defineProps({
 const showPhotos = ref(false);
 
 const inputIds = Array.from({ length: 5 }, (_, i) => `file-upload-${i}`);
-const imageUrls = ref(Array(10).fill(null));
+const imageUrls = ref(Array(5).fill(null));
 const activeIndex = ref(0);
+const fileTypes = ref(Array(5).fill(null));
+const fileTypeText = ref('');
+const fileNames = ref(Array(5).fill(null));
 
 const handleFileChange = (event: Event, index: number) => {
     const file = (event.target as HTMLInputElement).files[0];
     if (file) {
+        if (!file.type.startsWith('image/')) {
+            console.log('Имя файла: ', file.name);
+            fileNames.value[index] = file.name;
+        } else {
+            fileNames.value[index] = null;
+        }
+        console.log('Тип файла: ', file.type);
+        fileTypes.value[index] = file.type;
+        fileTypeText.value = file.type;
+        fileNames.value[index] = file.name;
+
         const reader = new FileReader();
         reader.onload = () => {
             if (reader.result) {
-                imageUrls.value[index] = reader.result.toString(); // Update the image URL at the specified index
+                imageUrls.value[index] = reader.result.toString();
                 setNextActive(index);
             }
         };
@@ -93,17 +120,21 @@ const setNextActive = (index: number) => {
         activeIndex.value = 0;
     }
 };
+const truncateFileName = (fileName: string): string => {
+    if (fileName && fileName.length > 7) {
+        return fileName.substring(0, 7) + '...';
+    }
+    return fileName;
+};
 
+// Функция для подсчета загруженных фотографий
 const countUploadedPhotos = () => {
     return imageUrls.value.filter(url => url !== null).length;
 };
-const removeImage = (index) => {
-    imageUrls.value.splice(index, 1);
-};
 
-const openFileInput = () => {
-    const fileInput = $refs.fileInput;
-    fileInput.click();
+// Функция для проверки типа файла на изображение
+const isImageType = (type: string | null): boolean => {
+    return type ? type.startsWith('image/') : false;
 };
 </script>
 
@@ -131,6 +162,7 @@ const openFileInput = () => {
         padding: 23px 20px !important;
     }
 }
+
 .photo-upload {
     display: flex;
     flex-wrap: wrap;
@@ -181,7 +213,7 @@ const openFileInput = () => {
 
 
 .file-upload-label.with-image {
-    min-height: 220px;
+    min-height: 120px;
     min-width: 100%;
 }
 

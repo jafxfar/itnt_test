@@ -19,7 +19,7 @@
         <!-- Отображение загруженного баннера -->
         <div @click="openModal" v-if="uploadedBgImageUrl || props.bgPic || !props.bgPic" class="userPics__bg">
             <img v-if="props.bgPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.bgPic}`" />
-            <div v-else ></div>
+            <img v-if="uploadedBgImageUrl" :src="uploadedBgImageUrl" />
         </div>
 
         <v-dialog v-model="searchModalState" width="100%">
@@ -36,8 +36,9 @@
         <!-- Отображение загруженной аватарки -->
         <div class="userPics__ava">
             <img v-if="props.avaPic" :src="userPictureUrl" />
-            <img v-else :src="ava" />
-        </div>
+            <img 
+            v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" />
+                </div>
         <!-- <v-dialog v-model="searchModalState" width="100%">
             <v-card class="ui-skills__search">
                 <p>
@@ -56,8 +57,8 @@
                 <img src="/src/assets/Profile/icons.svg" alt="">
             </button>
         </div>
-        <div v-else class="hidden">
-        </div>
+        <!-- <div v-else class="userPics__upload hidden">
+        </div> -->
         <!-- Загрузка аватарки -->
         <div v-if="!uploadedAvaImageUrl && !props.avaPic" class="userPics__ava">
             <input type="file" ref="avaFleInput" style="display: none;" @change="handleFileAva">
@@ -65,9 +66,9 @@
                 <img :src="ava" alt="">
             </button>
         </div>
-        <div v-else class="userPics__ava">
+        <!-- <div v-else class="userPics__ava">
             <img :src="ava" />
-        </div>
+        </div> -->
     </div>
 </template>
 

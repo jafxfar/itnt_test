@@ -9,21 +9,19 @@
 
         <!-- Статус предложений -->
         <div class="flex flex-row justify-between">
+            <!-- Отображение статуса -->
             <div class="userInfo__status">
-                <p class="userInfo__status__title txt-body1">Открыт к предложениям</p>
+                <p class="userInfo__status__title txt-body1">{{ getProjectsTypeLabel() }}</p>
                 <img src="../../assets/icons/footer/message.svg" alt="" />
             </div>
             <button v-if="props.readOnly" @click="changeImageColor" class="bg-white p-[10px] rounded-[12px] shadow-md">
                 <img :src="imageUrl" alt="" />
             </button>
-
             <div class="" v-else></div>
-
         </div>
-
     </div>
 
-    <div class="userInfo__body">
+    <div class="userInfo__body mb-[24px]">
         <div class="txt-body1">
             Я сюда припёрся, чтобы нормально постартапить! Ждал нормального стартапа с нормальными мужиками. © Легенда
             <!-- {{ props.userDescription }} -->
@@ -37,6 +35,8 @@ import star from "~/assets/modal_icon/star-filled.svg"
 
 import { ref } from 'vue';
 // 'userCity', 'userCountry'
+const projectsType = ref(0); // Инициализация переменной, которая будет содержать выбранный тип проекта
+
 const imageUrl = ref<string>(follow);
 const props = defineProps({
     readOnly: {
@@ -47,7 +47,10 @@ const props = defineProps({
 function changeImageColor() {
     imageUrl.value = star;
 }
-
+function getProjectsTypeLabel(): string {
+  // Если projectsType равен 0, возвращаем "Открыт к предложениям", иначе "Закрыт к предложениям"
+  return projectsType.value === 0 ? "Открыт к предложениям" : "Закрыт к предложениям";
+}
 // const props = defineProps(['userName', 'userSurname', 'userDescription'])
 </script>
 

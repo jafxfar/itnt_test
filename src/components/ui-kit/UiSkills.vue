@@ -69,8 +69,8 @@ export default {
 
     <vue-bottom-sheet :full-screen="true" ref="modalState">
         <div class="txt-body1 p-2">Выбрано : {{ chosenSkills.length }}</div>
-        <UiInput class="p-2" label="Введите навык для поиска" />
-        <div class="ui-skills__choser p-2" v-for="(skillGroup, groupId) in skills" :key="groupId">
+        <UiInput v-slot:text v-model="search" class="p-2" label="Введите навык для поиска" />
+        <v-data-table :search="search" class="ui-skills__choser p-2" v-for="(skillGroup, groupId) in skills" :key="groupId">
             <div class="ui-skills__choser" v-for="(skill, id) in skillGroup" :key="id">
                 <p v-if="skill.title" class="txt-cap1 ui-skills__choser__title">
                     {{ skill.title }}
@@ -79,7 +79,7 @@ export default {
                     {{ skill.name }}
                 </p>
             </div>
-        </div>
+        </v-data-table>
         <UiAgree @click="modalState.close()" />
     </vue-bottom-sheet>
 </template>
@@ -95,6 +95,8 @@ import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 
 import { ref, onMounted } from 'vue';
 import { getInterestListGrouped } from '~/API/ways/dictionary';
+
+const search =ref('')
 
 const skills = ref({});
 
