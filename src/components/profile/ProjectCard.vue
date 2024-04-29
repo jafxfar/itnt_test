@@ -31,22 +31,32 @@ export default {
     </div>
     <div v-else class="project-anonim " @click="modalState.open()">
         <div :style="props.projectInfo.isAnon === false ? 'padding-left: 52px' : ''" class="project-card__info">
-            <img  class="img" width="41" height="38" :src="hidden" />
+            <img class="img" width="41" height="38" :src="hidden" />
             <div class="text-start px-[16vw]">
-                    <p class="project-anonim__info__name">{{ props.projectInfo.project.name }}</p>
-                    <p class="project-anonim__info__position">{{ props.projectInfo.project.slogan }}</p>
-                </div>
+                <p class="project-anonim__info__name">{{ props.projectInfo.project.name }}</p>
+                <p class="project-anonim__info__position">{{ props.projectInfo.project.slogan }}</p>
+            </div>
         </div>
     </div>
     <vue-bottom-sheet ref="modalState">
         <div class="modal">
             <div class="modal__list">
-                <button class="modal__list__item" @click="hideContent"><img :src="hide" alt="">Не показывать проект в
-                    профиле</button>
-                <button class="modal__list__item" @click="anonimeContent"><img :src="anonimus" alt="">Включить анонимное
-                    участие</button> 
-                <button class="modal__list__item" @click="$router.push('/project/new')"><img :src="project" alt="">Открыть проект</button>
-                <button class="modal__list__item" @click="shareProject()"><img :src="share" alt="">Поделиться проектом</button>
+                <button class="modal__list__item" @click="hideContent"><img :src="hide" alt="">
+                    <p v-if="!isHidden">Не показывать проект в профиле</p>
+                    <p v-else>Показать проект в профиле</p>
+
+                </button>
+                <button class="modal__list__item" @click="anonimeContent"><img :src="anonimus" alt="">
+                    <p v-if="!isAnonimus">Включить анонимное участие</p>
+                    <p v-else>Выключить анонимное участие</p>
+
+                </button>
+                <button class="modal__list__item" @click="$router.push('/project/new')"><img :src="project" alt="">
+                    <p>Открыть проект</p>
+                </button>
+                <button class="modal__list__item" @click="shareProject()"><img :src="share" alt="">
+                    <p>Поделиться проектом</p>
+                </button>
                 <div v-for="(item, id) in modalItems" :key="id" class="modal__list__item cursor-pointer">
                     <img :src="item.icon" alt="" />
                     <p class="txt-body1">{{ item.name }}</p>
@@ -96,7 +106,7 @@ const anonimeContent = () => {
 const modalState = ref(false)
 
 const modalItems: modalActionsList[] = [
-   
+
 ]
 
 const props = defineProps({
@@ -219,10 +229,12 @@ const props = defineProps({
     // &:last-child {}
 
 }
-.img{
+
+.img {
     position: absolute;
-    right:12px;
+    right: 12px;
 }
+
 .project-card:not(.project-card ~ .project-card) {
     border-radius: 12px 12px 2px 2px;
 }
