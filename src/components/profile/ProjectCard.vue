@@ -51,7 +51,7 @@ export default {
                     <p v-else>Выключить анонимное участие</p>
 
                 </button>
-                <button class="modal__list__item" @click="$router.push('/project/new')"><img :src="project" alt="">
+                <button class="modal__list__item" @click="$router.push('/project/' + props.projectInfoSet.id)"><img :src="project" alt="">
                     <p>Открыть проект</p>
                 </button>
                 <button class="modal__list__item" @click="shareProject()"><img :src="share" alt="">
@@ -77,10 +77,20 @@ import project from "~/assets/project_modal/project.svg"
 import share from "~/assets/project_modal/share.svg"
 import plus from "~/assets/project_modal/plus.svg"
 
-import { ref } from 'vue'
+import { ref, defineProps } from 'vue'
 import { modalActionsList } from '~/helpers/types'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 
+
+const props = defineProps({
+    projectInfo: {
+        type: Object || Array,
+    },
+    projectInfoSet: {
+        type: Object || Array,
+        default: () => {},
+    },
+})
 const isHidden = ref(false)
 
 const hideContent = () => {
@@ -109,11 +119,7 @@ const modalItems: modalActionsList[] = [
 
 ]
 
-const props = defineProps({
-    projectInfo: {
-        type: Object || Array,
-    },
-})
+
 </script>
 
 <style lang="scss" scoped>
