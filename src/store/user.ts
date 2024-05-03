@@ -2,6 +2,11 @@ import { defineStore } from 'pinia';
 
 export const useUserStore = defineStore('user', {
     state: () => ({
+        firstName: '',
+        lastName: '',
+        country: '',
+        city: '',
+        description:'',
         userToken: '',
         isAuth: false,
         topModalState: false,
@@ -11,6 +16,13 @@ export const useUserStore = defineStore('user', {
         pictureUrl: null, // Add pictureUrl state
     }),
     actions: {
+        updateUser(user) {
+            this.firstName = user.firstName;
+            this.lastName = user.lastName;
+            this.country = user.country;
+            this.city = user.city;
+            this.description = user.description;
+          },
         setUserToken(token: string) {
             this.userToken = token;
         },

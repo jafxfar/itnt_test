@@ -1,5 +1,5 @@
 <template>
-    <Header showLogo/>
+    <Header showLogo />
     <div class="flex flex-row m-4 justify-between gap-2">
         <div v-if="pageStep === 1" class="hidden"></div>
         <div v-else v-for="step in 4" :key="step" class="progress-bar"
@@ -12,7 +12,7 @@
 
     <v-col>
         <!-- Первый этап -->
-        <div v-show="pageStep === 1" class="screening__first mt-[30s%]">
+        <div v-if="pageStep === 1" class="screening__first mt-[30s%]">
             <UiInput v-model="user.firstName" placeholder="Представьтесь" label="Как другим участникам вас называть?"
                 prepend-icon="account-outline" />
             <!-- Кнопка активна, если длина строки больше двух символов -->
@@ -21,7 +21,7 @@
             </UiButton>
         </div>
         <!-- Навигация этапов -->
-        <div v-show="pageStep === 2">
+        <div v-else-if="pageStep === 2">
             <v-col class="text-center pa-0 pt-16">
                 <p class="ma-0">{{ user.firstName }}, хотите выглядеть особенно?</p>
             </v-col>
@@ -29,7 +29,7 @@
                 <v-file-input height="200" v-model="user.pictureUrl" accept="image/png, image/jpeg, image/bmp"
                     class="input-file">
                 </v-file-input>
-                <img src="../../assets/img/regSteps/addProfilePic.svg" v-show="user.pictureUrl == ''"
+                <img src="../../assets/img/regSteps/addProfilePic.svg" v-if="user.pictureUrl == ''"
                     class="rounded-circle mx-auto" height="208" width="208" />
                 <!-- v-show="user.pictureUrl != ''" -->
                 <img v-if="blobPic" class="rounded-circle mx-auto" height="208" width="208" :src="blobPic" />
@@ -39,37 +39,24 @@
 
             <UiButton @click="pageStep += 1" bgColor="def"> Пропустить </UiButton>
         </div>
-        <div v-show="pageStep === 3">
+        <div v-else-if="pageStep === 3">
             <v-col class="text-center pa-0 pt-16">
                 <p class="ma-0">Откуда вы?</p>
             </v-col>
             <v-col class="mt-6">
-                <v-select
-                    v-model="user.country"
-                    variant="outlined"
-                    label="Страна"
-                    class="rounded-lg mb-2"
-                    :items="Object.keys(list)"
-                    :item-text="'name'"
-                    :menu-props="{ bottom: true, offsetY: true }"
-                    hide-details
-                ></v-select>
-                <v-select
-                    v-model="user.city"
-                    :disabled="user.country ? false : true"
-                    variant="outlined"
-                    label="Выберите город"
-                    class="rounded-lg"
-                    :item-text="'name'"
+                <v-select v-model="user.country" variant="outlined" label="Страна" class="rounded-lg mb-2"
+                    :items="Object.keys(list)" :item-text="'name'" :menu-props="{ bottom: true, offsetY: true }"
+                    hide-details></v-select>
+                <v-select v-model="user.city" :disabled="user.country ? false : true" variant="outlined"
+                    label="Выберите город" class="rounded-lg" :item-text="'name'"
                     :menu-props="{ bottom: true, offsetY: true, maxHeight: '300' }"
-                    :items="(list as any)[user.country]"
-                ></v-select>
+                    :items="(list as any)[user.country]"></v-select>
 
                 <UiButton @click="pageStep += 1" bgColor="blue" class="mt-6"> Продолжить </UiButton>
                 <UiButton @click="pageStep += 1" bgColor="def" class="mt-4"> Пропустить </UiButton>
             </v-col>
         </div>
-        <div v-show="pageStep === 4">
+        <div v-else-if="pageStep === 4">
             <v-col class="text-center pl-3 pr-3 pt-16">
                 <!-- Подсказка -->
                 <UiPrompt style="margin-bottom: 24px">
@@ -103,28 +90,28 @@ import UiInput from '~/components/ui-kit/UiInput.vue'
 import UiPrompt from '~/components/ui-kit/UiPrompt.vue'
 import UiSkills from '~/components/ui-kit/UiSkills.vue'
 
-import { reactive, ref, watch, onMounted } from 'vue'
+import { reactive, ref, watchEffect, onMounted } from 'vue'
 import { postAddUserPicture, patchUser } from '~/API/ways/user'
 import Header from '~/components/Header.vue'
 import Arr from '~/helpers/set.ts'
-import { getCountryList ,getCityList } from '~/API/ways/dictionary'
+import { getCountryList, getCityList } from '~/API/ways/dictionary'
 import { useRouter } from 'vue-router'
 const list = ref(Arr)
 
 onMounted(async () => {
-    await getCountryList().then((response: any) => {
-        console.log(response)
-    })
-    await getCityList().then((response: any) => {
-        console.log(response)
-    })
+    try {
+        const countryResponse = await getCountryList();
+        console.log(countryResponse);
+        const cityResponse = await getCityList();
+        console.log(cityResponse);
+    } catch (error) {
+        console.error(error);
+    }
 })
+
 const router = useRouter()
-
-let blobPic = ref('')
-
+const blobPic = ref('')
 const pageStep = ref(1)
-
 const maxReachedStep = ref(4);
 const isLoading = ref(false);
 const showCheckmark = ref(false);
@@ -176,14 +163,13 @@ async function selectProfilePic() {
     formData.append('file', user.pictureUrl[0])
     formData.append('mainPicture', 'true')
 
-    await postAddUserPicture(formData)
-        .then((response: any) => {
-            console.log(response)
-        })
-        .catch((e: Error) => {
-            console.error('error text:', e)
-        })
-        .finally(() => (pageStep.value += 1))
+    try {
+        const response = await postAddUserPicture(formData);
+        console.log(response);
+        pageStep.value += 1;
+    } catch (e) {
+        console.error('error text:', e);
+    }
 }
 
 function addAvatar() {
@@ -192,38 +178,33 @@ function addAvatar() {
 
 async function saveProfile() {
     isLoading.value = true;
-    patchUser(user).then((response: any) => {
-        try {
-            console.log(response)
-            if (response.data.operationResult === 'OK') {
+    try {
+        const response = await patchUser(user);
+        console.log(response)
+        if (response.data.operationResult === 'OK') {
+            setTimeout(() => {
+                isLoading.value = false;
+                showCheckmark.value = true;
                 setTimeout(() => {
-                    isLoading.value = false;  // Прекратить показ анимации загрузки
-                    showCheckmark.value = true; // Показать галочку
+                    showCheckmark.value = false;
+                    showOverlay.value = true;
                     setTimeout(() => {
-                        showCheckmark.value = false; // Скрыть галочку
-                        showOverlay.value = true; // Начать заливку экрана
-                        setTimeout(() => {
-                            showOverlay.value = false; // Завершить заливку
-                            router.push('/me');       // Переход на страницу пользователя
-                        }, 500); // Задержка перед переходом
-                    }, 1000); // Задержка перед началом заливки
-                }, 3000);
-            }
-        } catch (error) {
-            console.log(error)
+                        showOverlay.value = false;
+                        router.push('/me');
+                    }, 500);
+                }, 1000);
+            }, 3000);
         }
-    })
+    } catch (error) {
+        console.log(error)
+    }
 }
 
-watch(
-    user,
-    () => {
-        if (user.pictureUrl) {
-            addAvatar()
-        }
-    },
-    { deep: true }
-)
+watchEffect(() => {
+    if (user.pictureUrl) {
+        addAvatar()
+    }
+})
 
 </script>
 

@@ -3,13 +3,13 @@
     <div v-if="props.readOnly" class="userPics">
         <!-- Отображение загруженного баннера -->
         <div class="userPics__uploadEdit">
-            <img v-if="props.bgPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.bgPic}`" />
-            <img v-else  alt="">
+            <img v-if="props.bgPic" :src="`http://62.217.181.172:8080/${props.bgPic}`" />
+            <img v-else alt="">
         </div>
 
         <!-- Отображение загруженной аватарки -->
         <div class="userPics__ava">
-            <img v-if="props.avaPic" :src="userPictureUrl" />
+            <img v-if="userPictureUrl" :src="userPictureUrl" />
             <img v-else :src="ava" />
 
         </div>
@@ -18,7 +18,7 @@
     <div v-else class="userPics">
         <!-- Отображение загруженного баннера -->
         <div @click="openModal" v-if="uploadedBgImageUrl || props.bgPic || !props.bgPic" class="userPics__bg">
-            <img v-if="props.bgPic" :src="`http://62.217.181.172:8080/var/itnt-files/${props.bgPic}`" />
+            <img v-if="props.bgPic" :src="`http://62.217.181.172:8080/${props.bgPic}`" />
             <img v-if="uploadedBgImageUrl" :src="uploadedBgImageUrl" />
         </div>
 
@@ -36,9 +36,8 @@
         <!-- Отображение загруженной аватарки -->
         <div class="userPics__ava">
             <img v-if="props.avaPic" :src="userPictureUrl" />
-            <img 
-            v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" />
-                </div>
+            <img v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" />
+        </div>
         <!-- <v-dialog v-model="searchModalState" width="100%">
             <v-card class="ui-skills__search">
                 <p>
@@ -219,6 +218,7 @@ const removeBackgroundPicture = async (id: Number) => {
         height: 120px;
         display: flex;
     }
+
     &__uploadEdit {
         width: 100vw;
         height: 120px;

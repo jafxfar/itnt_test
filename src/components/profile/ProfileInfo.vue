@@ -1,10 +1,10 @@
 <template>
     <div class="userInfo">
         <div class="userInfo__head">
-            <h2 class="mb-1">Томас Хардов</h2>
+            <h2 class="mb-1">{{ userStore.firstName }} {{ userStore.lastName }}</h2>
             <!-- <h2 class="mb-1">{{ props.userName }} {{ props.userSurname }}</h2> -->
 
-            <p class="txt-body1">Россия, Краснодар</p>
+            <p class="txt-body1">{{ userStore.country }} {{ userStore.city }}</p>
         </div>
 
         <!-- Статус предложений -->
@@ -23,7 +23,8 @@
 
     <div class="userInfo__body mb-[24px]">
         <div class="txt-body1">
-            Я сюда припёрся, чтобы нормально постартапить! Ждал нормального стартапа с нормальными мужиками. © Легенда
+            {{ userStore.description }}
+            <!-- Я сюда припёрся, чтобы нормально постартапить! Ждал нормального стартапа с нормальными мужиками. © Легенда -->
             <!-- {{ props.userDescription }} -->
         </div>
     </div>
@@ -34,6 +35,8 @@ import follow from "~/assets/modal_icon/follow.svg"
 import star from "~/assets/modal_icon/star-filled.svg"
 
 import { ref } from 'vue';
+import { useUserStore } from '~/store/user'
+const userStore = useUserStore()
 // 'userCity', 'userCountry'
 const projectsType = ref(0); // Инициализация переменной, которая будет содержать выбранный тип проекта
 

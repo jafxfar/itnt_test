@@ -10,7 +10,7 @@ export default {
             :class="projectsType === id && 'ui-coop__btn--active'">
             <div class="flex justify-center">
                 <!-- Изображения для каждого варианта -->
-                <img v-if="projectsType === id" :src="getSwitchImage(id)" alt="" />
+                <!-- <img v-if="projectsType === id" :src="getSwitchImage(id)" alt="" /> -->
                 <!-- Изменение switchRef на projectsType -->
             </div>
             {{ item }}

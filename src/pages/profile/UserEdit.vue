@@ -17,7 +17,7 @@
 
         <div class="about">
             <UiTextArea :rules="[(v) => v.length <= 300 || 'Max 300 characters']" label="О себе"
-                v-model="user.fullDescription" />
+                v-model="user.description" />
         </div>
 
         <div class="userEdit__components">
@@ -92,6 +92,7 @@ import ProjectBlog from '~/components/projects/ProjectBlog.vue'
 import RatingProjectCard from '~/components/projects/RatingProjectCard.vue'
 import Arr from '~/helpers/set'
 import { ref, reactive, onMounted } from 'vue'
+import { useUserStore } from '~/store/user';
 
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -102,7 +103,10 @@ const modalState = ref(null)
 
 const list = ref(Arr)
 const projectsType = ref(0)
-const topProjectsData = ref(null)
+// const topProjectsData = ref(null)
+const userStore = useUserStore();
+
+
 
 let projectsInfo = ref({})
 
@@ -114,7 +118,7 @@ let user = reactive({
     openedForProposition: true,
     roles: [''],
     shortDescription: '',
-    fullDescription: null,
+    description: null,
 })
 
 onMounted(async () => {
@@ -134,11 +138,12 @@ onMounted(async () => {
 async function patchUserInfo() {
     await patchUser(user).then(() => {
         try {
-            router.push('/me')
+            userStore.updateUser(user);
+            router.push('/me');
         } catch (e) {
-            console.error('error :', e)
+            console.error('error :', e);
         }
-    })
+    });
 }
 </script>
 
