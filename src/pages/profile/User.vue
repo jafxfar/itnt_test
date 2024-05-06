@@ -1,9 +1,9 @@
 <template>
     <Header showID showUserMinify />
-    <ProfileHeader :bg-pic="userInfo.pictureUrl" :ava-pic="userInfo.pictureUrl" />
+    <ProfileHeader :read-only="true" :bg-pic="userStore.bgPicUrl" :ava-pic="userStore.pictureUrl" />
     <v-container style="padding: 0 20px; margin-bottom: 48px">
         <ProfileInfo :userName="userInfo.firstName" :userSurname="userInfo.lastName"
-            :userDescription="userInfo.description" />
+            :userDescription="userInfo.description" :status="status" />
         <UiSkills />
 
         <!-- <ProjectsList :projects="userInfo.projects" /> -->
@@ -42,10 +42,14 @@ import ProfileHeader from '~/components/profile/ProfileHeader.vue'
 import { onMounted, ref } from 'vue'
 import { getUserByID } from '~/API/ways/user.ts'
 import { isAuth } from '~/helpers/routerHandler'
+import { useUserStore } from '~/store/user'; // убедитесь, что путь корректный
+import { computed } from 'vue';
 
+
+const userStore = useUserStore(); // Инициализируйте userStore
+const projectsType = computed(() => userStore.$state.projectsType); const userInfo = ref({}); // Инициализируйте userInfo
 const modalState = ref(null)
 
-let userInfo = ref({})
 // console.log($cookies.get('jwtToken'))
 // const editableModalItems: modalActionsList[] = [
 //     {

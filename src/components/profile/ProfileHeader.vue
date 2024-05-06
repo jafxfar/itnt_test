@@ -1,25 +1,17 @@
 <template>
-
     <div v-if="props.readOnly" class="userPics">
-        <!-- Отображение загруженного баннера -->
         <div class="userPics__uploadEdit">
-            <img v-if="props.bgPic" :src="`http://62.217.181.172:8080/${props.bgPic}`" />
-            <img v-else alt="">
+            <img :src="userStore.bgPicUrl" alt="User background picture">
         </div>
-
-        <!-- Отображение загруженной аватарки -->
         <div class="userPics__ava">
-            <img v-if="userPictureUrl" :src="userPictureUrl" />
-            <img v-else :src="ava" />
-
+            <img :src="userStore.pictureUrl" alt="User avatar">
         </div>
     </div>
 
     <div v-else class="userPics">
-        <!-- Отображение загруженного баннера -->
-        <div @click="openModal" v-if="uploadedBgImageUrl || props.bgPic || !props.bgPic" class="userPics__bg">
-            <img v-if="props.bgPic" :src="`http://62.217.181.172:8080/${props.bgPic}`" />
+        <div @click="openModal" v-if="uploadedBgImageUrl || userStore.bgPicUrl" class="userPics__bg">
             <img v-if="uploadedBgImageUrl" :src="uploadedBgImageUrl" />
+            <img v-else-if="userStore.bgPicUrl" :src="userStore.bgPicUrl" />
         </div>
 
         <v-dialog v-model="searchModalState" width="100%">
@@ -33,47 +25,31 @@
                 </div>
             </v-card>
         </v-dialog>
-        <!-- Отображение загруженной аватарки -->
+
         <div class="userPics__ava">
-            <img v-if="props.avaPic" :src="userPictureUrl" />
-            <img v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" />
+            <img v-if="userStore.pictureUrl" :src="userStore.pictureUrl" />
+            <img v-else-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" />
         </div>
-        <!-- <v-dialog v-model="searchModalState" width="100%">
-            <v-card class="ui-skills__search">
-                <p>
-                    <span>Изменение основного фото</span>
-                </p>
-                <div class="ui-skills__search__actions">
-                    <UiButton @click="searchModalState = false" bgColor="smOutlined" isSmall> Удалить </UiButton>
-                    <UiButton bgColor="smOutlined" isSmall>Заменить</UiButton>
-                </div>
-            </v-card>
-        </v-dialog> -->
-        <!-- Загрузка баннера -->
-        <div v-if="!uploadedBgImageUrl && !props.bgPic" class="userPics__upload">
+
+        <div v-if="!uploadedBgImageUrl" class="userPics__upload">
             <input type="file" ref="bgFileInput" style="display: none;" @change="handleFileInputChange">
             <button class="userPics__btn" @click="uploadBg">
                 <img src="/src/assets/Profile/icons.svg" alt="">
             </button>
         </div>
-        <!-- <div v-else class="userPics__upload hidden">
-        </div> -->
-        <!-- Загрузка аватарки -->
-        <div v-if="!uploadedAvaImageUrl && !props.avaPic" class="userPics__ava">
+
+        <div v-if="!uploadedAvaImageUrl" class="userPics__ava">
             <input type="file" ref="avaFleInput" style="display: none;" @change="handleFileAva">
             <button class="" @click="uploadAva">
                 <img :src="ava" alt="">
             </button>
         </div>
-        <!-- <div v-else class="userPics__ava">
-            <img :src="ava" />
-        </div> -->
     </div>
 </template>
 
 <script setup lang="ts">
 import ava from "~/assets/Profile/Photo.svg"
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useUserStore } from '~/store/user';
 
 import { postAddUserPicture, postAddBackgroundPicture, deleteUserPicture } from '~/API/ways/user';
@@ -81,20 +57,13 @@ import UiButton from '../ui-kit/UiButton.vue';
 
 const userStore = useUserStore();
 
+
 const props = defineProps({
-    avaPic: {
-        type: String,
-    },
-    bgPic: {
-        type: String,
-    },
     readOnly: {
         type: Boolean,
         default: false,
     },
 })
-const userPictureUrl = computed(() => userStore.pictureUrl);
-
 const searchModalState = ref(false)
 
 function openModal() {
@@ -118,15 +87,15 @@ const handleFileInputChange = () => {
             try {
                 const formData = new FormData();
                 formData.append('file', selectedFile);
-                const response = await postAddBackgroundPicture(formData);
-                console.log('success:', response);
+                const response = await postAddBackgroundPicture(formData); // Используйте postAddBackgroundPicture для отправки запроса
+                userStore.bgPicUrl = response.data.imageUrl; // Используйте URL изображения, возвращенный сервером
+                console.log(userStore.bgPicUrl, userStore.pictureUrl) // Обновляем URL аватара в глобальном состоянии
             } catch (error) {
                 console.error('error:', error);
             }
         };
     }
 }
-
 const handleFileAva = () => {
     const files = avaFleInput.value?.files;
     if (files && files.length > 0) {
@@ -138,8 +107,9 @@ const handleFileAva = () => {
             try {
                 const formData = new FormData();
                 formData.append('file', selectedFile);
-                const response = await postAddUserPicture(formData);
-                console.log('success:', response);
+                const response = await postAddUserPicture(formData); // Используйте функцию для загрузки аватара
+                userStore.pictureUrl = response.data.imageUrl;
+                console.log(userStore.bgPicUrl, userStore.pictureUrl) // Обновляем URL аватара в глобальном состоянии
             } catch (error) {
                 console.error('error:', error);
             }
@@ -191,7 +161,7 @@ const removeBackgroundPicture = async (id: Number) => {
 
     &__ava {
         position: absolute;
-        left: 50%;
+        left: 52%;
         top: 33px;
         transform: translateX(-50%);
         width: 104px;

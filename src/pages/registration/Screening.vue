@@ -96,6 +96,7 @@ import Header from '~/components/Header.vue'
 import Arr from '~/helpers/set.ts'
 import { getCountryList, getCityList } from '~/API/ways/dictionary'
 import { useRouter } from 'vue-router'
+import {useUserStore} from '~/store/user'
 const list = ref(Arr)
 
 onMounted(async () => {
@@ -179,9 +180,11 @@ function addAvatar() {
 async function saveProfile() {
     isLoading.value = true;
     try {
-        const response = await patchUser(user);
+        const userStore = useUserStore();
+        const response = await userStore.updateUser(user);
+        console.log('Response:', response);
         console.log(response)
-        if (response.data.operationResult === 'OK') {
+        if (response.operationResult === 'OK') {
             setTimeout(() => {
                 isLoading.value = false;
                 showCheckmark.value = true;

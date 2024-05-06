@@ -66,7 +66,9 @@
 
         <!-- Карточки пользователей -->
         <div v-if="searchPageSwitchState === 1">
-            <SearchUserCard />
+            <template v-for="(user, id) in user.$state.searchBarResponse" :key="id">
+                <SearchUserCard :user="user" />
+            </template>
         </div>
     </v-container>
 
@@ -84,6 +86,7 @@ import SearchProjectCard from '~/components/search/SearchProjectCard.vue'
 import { ref, watch, onMounted } from 'vue'
 import { useUserStore } from '~/store/user'
 import { getUserSearch } from '~/API/ways/user' // Предполагаемый путь к функции API
+import { getProjectByID } from '~/API/ways/project' // Предполагаемый путь к функции API
 
 const user = useUserStore()
 
@@ -102,6 +105,7 @@ const searchParams = ref({
 })
 
 // Функция для вызова API и обновления результатов поиска
+// Функция для вызова API и обновления результатов поиска
 const fetchUsers = async () => {
     try {
         const response = await getUserSearch(
@@ -113,13 +117,29 @@ const fetchUsers = async () => {
             searchParams.value.searchString,
             searchParams.value.tags
         );
-        searchResults.value = response.data;
+        // Обработка ответа
+        if (response.data.length > 0) {
+            // Если получены результаты поиска, сохраните их
+            searchResults.value = response.data;
+        } else {
+            // Если результатов поиска нет, покажите сообщение
+            alert('Пользователи не найдены.');
+        }
     } catch (error) {
         console.error('Ошибка при запросе пользователей:', error);
         alert('Не удалось получить данные. Пожалуйста, проверьте подключение и попробуйте снова.');
     }
 }
-
+// Функция для вызова API и обновления результатов поиска проектов
+const fetchProjects = async () => {
+    try {
+        const response = await getProjectByID(searchParams.value.searchString);
+        searchResults.value = response.data;
+    } catch (error) {
+        console.error('Ошибка при запросе проектов:', error);
+        alert('Не удалось получить данные. Пожалуйста, проверьте подключение и попробуйте снова.');
+    }
+}
 
 // Следим за изменением параметров поиска, чтобы повторно вызвать API
 watch(searchParams, fetchUsers)
@@ -134,6 +154,22 @@ onMounted(() => {
 // Следим за изменением вкладки, чтобы перезагрузить данные при необходимости
 watch(searchPageSwitchState, (newValue, oldValue) => {
     if (newValue === 1) {
+        fetchUsers()
+    }
+})
+onMounted(() => {
+    if (searchPageSwitchState.value === 0) {
+        fetchProjects()
+    } else if (searchPageSwitchState.value === 1) {
+        fetchUsers()
+    }
+})
+
+// Следим за изменением вкладки, чтобы перезагрузить данные при необходимости
+watch(searchPageSwitchState, (newValue, oldValue) => {
+    if (newValue === 0) {
+        fetchProjects()
+    } else if (newValue === 1) {
         fetchUsers()
     }
 })

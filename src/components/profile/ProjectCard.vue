@@ -51,7 +51,7 @@ export default {
                     <p v-else>Выключить анонимное участие</p>
 
                 </button>
-                <button class="modal__list__item"  @click="$router.push(`project/${id}`)"><img :src="project" alt="">
+                <button class="modal__list__item" @click="$router.push({ name: 'Project', params: { ID: Number(projectStore.prjObject.id) }});"><img :src="project" alt="">
                     <p>Открыть проект</p>
                 </button>
                 <button class="modal__list__item" @click="shareProject()"><img :src="share" alt="">
@@ -81,7 +81,8 @@ import { ref, defineProps } from 'vue'
 import { modalActionsList } from '~/helpers/types'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import { useRouter } from 'vue-router';
-
+import { useProjectStore } from '~/store/projectStore'
+const projectStore = useProjectStore()
 
 const props = defineProps({
     projectInfo: {
@@ -92,18 +93,17 @@ const props = defineProps({
         default: () => {},
     },
 })
-const projectInfo = props.projectInfo;
 
 const router = useRouter();
 
 const openProject = () => {
-  console.log('projectInfoSet:', projectInfo); // Проверяем содержимое projectInfoSet
-  if (projectInfo && projectInfo.id) {
-    router.push({ name: 'Project', params: { id: projectInfo.id }});
+  console.log('projectInfoSet:', projectStore.prjObject); // Проверяем содержимое projectInfoSet
+  if (projectStore.prjObject && typeof projectStore.prjObject.id === 'number') {
+    router.push({ name: 'Project', params: { id: Number(projectStore.prjObject.id) }});
   } else {
     console.error('Ошибка: Невозможно открыть проект. Некорректные данные.');
   }
-};
+}
 const isHidden = ref(false)
 
 const hideContent = () => {

@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <!-- <div class="searchProjectCard__footer">
+        <div class="searchProjectCard__footer">
             <UiButton bgColor="def" class="searchProjectCard__footer__button" fit>Открыть проект </UiButton>
 
             <UiButton
@@ -37,7 +37,7 @@
                 style="padding: 10px 13px 9px 14px"
                 onlyIcon
             />
-        </div> -->
+        </div>
     </div>
 </template>
 

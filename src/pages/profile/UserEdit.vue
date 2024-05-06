@@ -1,6 +1,6 @@
 <template>
     <Header showUserMinify showID />
-    <ProfileHeader />
+    <ProfileHeader :bg-pic="userStore.bgPicUrl" :ava-pic="userStore.pictureUrl" />
     <v-container>
         <div class="userEdit mt-4">
             <UiInput v-model="user.firstName" class="mb-4" label="Имя" />
@@ -11,8 +11,7 @@
                 label="Выберите город" :items="(list as any)[user.country]"></v-select>
         </div>
         <div class="mb-[48px] mt-[32px]">
-            <UiCoop @change-value="projectsType = $event"
-                :items="['Мне не интересно сотрудничество', 'Я хочу получать предложения о сотрудничестве']" />
+            <UiCoop v-model="newStatus" :items="items" @changeValue="updateUserStatus" />
         </div>
 
         <div class="about">
@@ -37,7 +36,7 @@
 
             <!-- <UiSwitch v-if="projectsType === 1" @change-value="topProjectsData = $event" :items="['Неделя', 'Месяц', 'Год']" /> -->
 
-            <div v-for="(project, id) in projectsInfo" :key="id" class="mt-6">
+            <div v-if="projectsInfo" v-for="(project, id) in projectsInfo" :key="id" class="mt-6">
                 <RatingProjectCard :listID="++id" :projectInfoSet="project" />
             </div>
 
@@ -93,19 +92,27 @@ import RatingProjectCard from '~/components/projects/RatingProjectCard.vue'
 import Arr from '~/helpers/set'
 import { ref, reactive, onMounted } from 'vue'
 import { useUserStore } from '~/store/user';
-
+import { getUserByID, patchUser } from '~/API/ways/user'
 import { useRouter } from 'vue-router'
+
+
 const router = useRouter()
 
-import { getUserByID, patchUser } from '~/API/ways/user'
+let projectsType = '';
+const userStore = useUserStore();
+const items = ['Мне интересно сотрудничество', 'Мне не интересно сотрудничество'];
+
+const newStatus = ref(userStore.status); // начальное значение статуса
+
+const updateUserStatus = (value) => {
+    user.status = value;
+    userStore.updateUser({ status: user.status }); // обновление статуса
+};
+const list = ref(Arr)
+// const topProjectsData = ref(null)
+
 let userInfo = ref({})
 const modalState = ref(null)
-
-const list = ref(Arr)
-const projectsType = ref(0)
-// const topProjectsData = ref(null)
-const userStore = useUserStore();
-
 
 
 let projectsInfo = ref({})
@@ -119,6 +126,7 @@ let user = reactive({
     roles: [''],
     shortDescription: '',
     description: null,
+    status: userStore.status, // добавить статус в reactive объект
 })
 
 onMounted(async () => {

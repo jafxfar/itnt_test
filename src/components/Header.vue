@@ -19,9 +19,8 @@ export default {
             @click="toggleTopModal"
             style="padding: 10px"
             v-if="props.showUserMinify === true"
-            :src="`http://62.217.181.172:8080/var/itnt-files/${props.avaPic}`"
-        />
-
+            :src="user.pictureUrl" />
+            
         <img @click="toggleUserModal" style="padding: 10px" v-if="props.showControlDots" src="../assets/icons/dots-black.svg" />
 
         <div v-if="props.search" class="d-flex w-full align-center">
