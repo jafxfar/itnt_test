@@ -7,7 +7,7 @@ export default {
 <template>
     <div class="projectHeader">
         <!-- TODO: READONLY PROJECT PICTURE -->
-        <img style="width: 100%" src="../../assets/demo/project-head.svg" />
+        <img style="width: 100%; height:fit-content;" src="../../assets/demo/project-head.svg" />
 
         <!-- READONLY -->
         <div class="projectHeader__container" v-if="props.readOnly">
@@ -20,16 +20,27 @@ export default {
             </div>
             <div class="projectHeader__controls">
                 <div class="d-flex justify-space-between mb-4">
-                    <UiButton bgColor="blue" @click="follow" style="max-width: 152px">Подписаться</UiButton>
+                    <UiButton bgColor="blue" @click="follow" style="max-width: 152px">{{ isFollowing ? 'Подписан' : 'Подписаться' }}</UiButton>
                     <UiButton @click="shareProject()" :imgSrc="share" onlyIcon />
                     <Fire :id="props.prjID" />
                 </div>
-                <UiButton @click="handleAddComment" bgColor="def" :imgSrc="message">Обсуждение проекта</UiButton>
+                <UiButton @click="$router.push('/project/' + props.prjID + '/comment')" bgColor="def" :imgSrc="message">Обсуждение проекта</UiButton>
             </div>
         </div>
 
+        <!-- comment page -->
+        <div v-if="props.commentText" class="">
+            <div class="mt-5 mb-7 mx-4">
+                <div class="d-flex justify-space-between">
+                    <h2>{{ props.prjName }}</h2>
+                    <div v-show="props.prjType" class="projectHeader__capital txt-body1">{{ props.prjType }}</div>
+                </div>
+                <p class="txt-body1">{{ props?.prjSlogan }}</p>
+            </div>
+        </div>
+        
         <!-- EDITABLE -->
-        <div class="projectHeader__edit" v-else>
+        <div class="projectHeader__edit" v-if="!props.commentText && !props.readOnly" >
             <UiInput label="Название проекта*" v-model="prjObject.name" />
             <UiInput label="Слоган" v-model="prjObject.slogan" />
             <UiInput label="id проекта" v-model="prjObject.nickName" />
@@ -64,6 +75,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    commentText: {
+        type: Boolean,
+        default: false,
+    },
     prjName: {
         type: String,
     },
@@ -89,10 +104,13 @@ function shareProject() {
         console.log('error :' + error)
     }
 }
+const isFollowing = ref(false) // Добавляем новое состояние
+
 async function follow() {
     try {
         const response = await addFollow(props.prjID);
         console.log(response);
+        isFollowing.value = true // После успешной подписки устанавливаем isFollowing в true
     } catch (error) {
         console.error('Ошибка при подписке на проект:', error);
         // Дополнительная обработка ошибки...

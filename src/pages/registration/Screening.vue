@@ -44,10 +44,10 @@
                 <p class="ma-0">Откуда вы?</p>
             </v-col>
             <v-col class="mt-6">
-                <v-select v-model="user.country" variant="outlined" label="Страна" class="rounded-lg mb-2"
+                <v-select v-model="user.country" variant="outlined" color="#29b6f6" label="Страна" class="rounded-lg mb-2"
                     :items="Object.keys(list)" :item-text="'name'" :menu-props="{ bottom: true, offsetY: true }"
                     hide-details></v-select>
-                <v-select v-model="user.city" :disabled="user.country ? false : true" variant="outlined"
+                <v-select v-model="user.city" :disabled="user.country ? false : true" variant="outlined" color="blue"
                     label="Выберите город" class="rounded-lg" :item-text="'name'"
                     :menu-props="{ bottom: true, offsetY: true, maxHeight: '300' }"
                     :items="(list as any)[user.country]"></v-select>
@@ -98,6 +98,7 @@ import { getCountryList, getCityList } from '~/API/ways/dictionary'
 import { useRouter } from 'vue-router'
 import {useUserStore} from '~/store/user'
 const list = ref(Arr)
+const userStore = useUserStore() // используем хранилище
 
 onMounted(async () => {
     try {
@@ -166,8 +167,14 @@ async function selectProfilePic() {
 
     try {
         const response = await postAddUserPicture(formData);
-        console.log(response);
+        userStore.pictureUrl = response.data.imageUrl;
+        userStore.backgroundPictureUrl = response.data.backgroundPictureUrl; // сохраняем backgroundPictureUrl в хранилище
+        blobPic.value = URL.createObjectURL(user.pictureUrl[0]) // обновляем blobPic
         pageStep.value += 1;
+        console.log(useUserStore().pictureUrl);
+        console.log(useUserStore().backgroundPictureUrl); // выводим backgroundPictureUrl в консоль
+        console.log(response);
+        
     } catch (e) {
         console.error('error text:', e);
     }
@@ -175,13 +182,14 @@ async function selectProfilePic() {
 
 function addAvatar() {
     blobPic.value = URL.createObjectURL(user.pictureUrl[0])
+
 }
 
 async function saveProfile() {
     isLoading.value = true;
     try {
         const userStore = useUserStore();
-        const response = await userStore.updateUser(user);
+        const response = userStore.updateUser(user);
         console.log('Response:', response);
         console.log(response)
         if (response.operationResult === 'OK') {

@@ -1,5 +1,5 @@
 <template>
-    <Header showID showUserMinify />
+    <Header showID :showUserMinify="true" />
     <ProfileHeader :read-only="true" :bg-pic="userStore.bgPicUrl" :ava-pic="userStore.pictureUrl" />
     <v-container style="padding: 0 20px; margin-bottom: 48px">
         <ProfileInfo :userName="userInfo.firstName" :userSurname="userInfo.lastName"

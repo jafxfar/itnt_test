@@ -19,7 +19,7 @@ export default {
 
         <!-- <div style="box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05)"> -->
         <template v-for="(project, id) in projects" :key="id">
-            <ProjectCard v-if="!project.isAnon && !project.isHiden" :projectInfo="project" />
+            <ProjectCard v-if="!project.isAnon && !project.isHiden" :prjID="project.id" />
         </template>
         <!-- </div> -->
     </div>

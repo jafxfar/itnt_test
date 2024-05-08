@@ -1,21 +1,23 @@
 import { defineStore } from 'pinia';
 
-export const useUserStore = defineStore('user', {
+export const useUserStore = defineStore('user', 
+{
     state: () => ({
         firstName: '',
         lastName: '',
         country: '',
         city: '',
-        description:'',
+        description: '',
         userToken: '',
         isAuth: false,
         topModalState: false,
-        userModalState:false,
+        userModalState: false,
         searchBarValue: '',
         searchBarResponse: {},
-        pictureUrl: null,
-        bgPicUrl: null, 
+        pictureUrl: "", // новое свойство состояния
+        bgPicUrl: "",
         status: '', // добавьте это
+        chosenSkills: [], // новое свойство состояния
     }),
     actions: {
         updateUser(user: User) {
@@ -24,20 +26,19 @@ export const useUserStore = defineStore('user', {
             this.country = user.country;
             this.city = user.city;
             this.description = user.description;
-            this.status = user.status; // обновление статуса
-            return{
+            this.status = user.status;
+            this.bgPicUrl = user.bgPicUrl;
+            this.pictureUrl = user.backgroundPictureUrl;
+             // обновление статуса
+            return {
                 operationResult: 'OK', // или 'ERROR', в зависимости от результата обновления
             }
-          },
+        },
         setUserToken(token: string) {
             this.userToken = token;
         },
-        // Add setUserAvatar method
-        setUserAvatar(avatarUrl: string | null) {
-            this.pictureUrl = avatarUrl;
-        },
-        setUserBgPic(bgPicUrl: string | null) {
-            this.bgPicUrl = bgPicUrl;
+        updateChosenSkills(skills: string[]) {
+            this.chosenSkills = skills;
         },
     },
 });

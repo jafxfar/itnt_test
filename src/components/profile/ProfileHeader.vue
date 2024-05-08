@@ -1,10 +1,10 @@
 <template>
     <div v-if="props.readOnly" class="userPics">
         <div class="userPics__uploadEdit">
-            <img :src="userStore.bgPicUrl" alt="User background picture">
+            <img v-show="props.bgPic" :src="props.bgPic" alt="User background picture">
         </div>
         <div class="userPics__ava">
-            <img :src="userStore.pictureUrl" alt="User avatar">
+            <img v-show="props.avaPic" :src="props.avaPic" alt="User avatar">
         </div>
     </div>
 
@@ -48,21 +48,26 @@
 </template>
 
 <script setup lang="ts">
+import bg from "~/assets/demo/project-head.svg"
 import ava from "~/assets/Profile/Photo.svg"
 import { ref } from 'vue'
 import { useUserStore } from '~/store/user';
-
 import { postAddUserPicture, postAddBackgroundPicture, deleteUserPicture } from '~/API/ways/user';
 import UiButton from '../ui-kit/UiButton.vue';
-
 const userStore = useUserStore();
-
-
 const props = defineProps({
     readOnly: {
         type: Boolean,
         default: false,
     },
+    bgPic: {
+        type: String,
+        default: bg
+    },
+    avaPic: {
+        type: String,
+        default: ava
+    }
 })
 const searchModalState = ref(false)
 
@@ -88,7 +93,7 @@ const handleFileInputChange = () => {
                 const formData = new FormData();
                 formData.append('file', selectedFile);
                 const response = await postAddBackgroundPicture(formData); // Используйте postAddBackgroundPicture для отправки запроса
-                userStore.bgPicUrl = response.data.imageUrl; // Используйте URL изображения, возвращенный сервером
+                userStore.bgPicUrl = response.data.backgroundPictureUrl; // Используйте URL изображения, возвращенный сервером
                 console.log(userStore.bgPicUrl, userStore.pictureUrl) // Обновляем URL аватара в глобальном состоянии
             } catch (error) {
                 console.error('error:', error);
@@ -108,7 +113,7 @@ const handleFileAva = () => {
                 const formData = new FormData();
                 formData.append('file', selectedFile);
                 const response = await postAddUserPicture(formData); // Используйте функцию для загрузки аватара
-                userStore.pictureUrl = response.data.imageUrl;
+                userStore.pictureUrl = response.data.pictureUrl;
                 console.log(userStore.bgPicUrl, userStore.pictureUrl) // Обновляем URL аватара в глобальном состоянии
             } catch (error) {
                 console.error('error:', error);

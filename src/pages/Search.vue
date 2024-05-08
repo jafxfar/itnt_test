@@ -86,7 +86,7 @@ import SearchProjectCard from '~/components/search/SearchProjectCard.vue'
 import { ref, watch, onMounted } from 'vue'
 import { useUserStore } from '~/store/user'
 import { getUserSearch } from '~/API/ways/user' // Предполагаемый путь к функции API
-import { getProjectByID } from '~/API/ways/project' // Предполагаемый путь к функции API
+import { getAllProjects } from '~/API/ways/project' // Предполагаемый путь к функции API
 
 const user = useUserStore()
 
@@ -101,7 +101,8 @@ const searchParams = ref({
     pageNumber: 1,
     pageSize: 10,
     searchString: '',
-    tags: ''
+    tags: '',
+    projectId: 0
 })
 
 // Функция для вызова API и обновления результатов поиска
@@ -133,7 +134,9 @@ const fetchUsers = async () => {
 // Функция для вызова API и обновления результатов поиска проектов
 const fetchProjects = async () => {
     try {
-        const response = await getProjectByID(searchParams.value.searchString);
+        const response = await getAllProjects(
+            searchParams.value.projectId
+        );
         searchResults.value = response.data;
     } catch (error) {
         console.error('Ошибка при запросе проектов:', error);
