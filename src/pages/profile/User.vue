@@ -8,7 +8,7 @@
 
         <!-- <ProjectsList :projects="userInfo.projects" /> -->
         <ProjectsList class="mt-12 mb-4" :projects="userInfo.projects" />
-        <UiButton @click="$router.push('/project/new')" bgColor="blue">Создать проект</UiButton>
+        <UiButton class="mt-4" @click="$router.push('/project/new')" bgColor="blue">Создать проект</UiButton>
 
         <div class="mt-[48px]">
             <h1>Что у меня нового:</h1>

@@ -10,6 +10,8 @@ import ProjectInfo from '~/pages/project/ProjectInfo.vue'
 import ProjectEdit from '~/pages/project/ProjectEdit.vue'
 import ProjectNew from '~/pages/project/ProjectNew.vue'
 import ProjectComment from '~/components/projects/ProjectComment.vue'
+import BlogPage from '~/components/projects/BlogPage.vue'
+
 // enter
 import Entry from '~/pages/registration/Entry.vue'
 import Agreement from '~/pages/registration/Agreement.vue'
@@ -73,6 +75,10 @@ const routes: Array<routes> = [
     {
         path: '/project/:ID/comment',
         component: ProjectComment,
+    },
+    {
+        path: '/project/:ID/blogComment',
+        component: BlogPage,
     },
     {
         path: '/project/new',

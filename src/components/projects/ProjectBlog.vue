@@ -62,6 +62,7 @@
                     :imgSrc="chat"
                     style="padding: 10px 13px 9px 14px"
                     onlyIcon
+                    @click="$router.push('/project/' + props.prjID + '/blogComment')"
                 />
             </div>
             <Fire />
@@ -109,7 +110,10 @@ import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import UiButton from '../ui-kit/UiButton.vue'
 import { computed, ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useProjectStore } from '~/store/projectStore'
 
+const { prjObject } = storeToRefs(useProjectStore())
 const props = defineProps({
     feedCardType: {
         type: String,
@@ -118,7 +122,10 @@ const props = defineProps({
     userType:{
         type:String,
         default: '',
-    }
+    },
+    prjID: {
+        type: Number,
+    },
 })
 
 
@@ -182,7 +189,7 @@ const feedCardSubtitle = computed(() => {
     line-height: 14px;
 }
 .feedCard {
-    // padding: 16px 14px;
+    padding: 0px 0px;
     border-radius: 12px;
     background: #fff;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);

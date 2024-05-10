@@ -1,36 +1,32 @@
 <template>
     <Header showID showUserMinify />
     <ProjectHeader commentText :prj-name="data.name" :prjID="data.id" :prj-slogan="data.slogan" />
-    <div class="mx-4 feedCard">
-        <div class="feedCard__head">
-            <div class="d-flex align-center">
-                <img class="mr-3" width="30" height="30" src="../../assets/demo/ava-small-header.svg" />
-                <div>
-                    <div class="flex flex-col items-start">
-                        <p class="txt-body3">Save and Brave</p>
-                        <span style="color: #9e9e9e" class="txt-cap1">slogan</span>
+    <div v-for="comment in comments" :key="comment.id" class="mx-4">
+        <div class="feedCard mx-4" v-if="comment.isReply">
+            <div class="feedCard__head">
+                <div class="d-flex align-center">
+                    <img class="mr-3" width="30" height="30" src="../../assets/demo/ava-small-header.svg" />
+                    <div>
+                        <div class="flex flex-col items-start">
+                            <p class="txt-body3">Save and Brave</p>
+                            <span style="color: #9e9e9e" class="txt-cap1">slogan</span>
+                        </div>
                     </div>
-                    <p class="feedCard__head__subtitle txt-cap1">
-                        {{ feedCardSubtitle }}
-                    </p>
                 </div>
             </div>
+            <!-- body -->
+            <div class="feedCard__body">
+                <!-- Новый этап проекта -->
+                <p class="txt-cap1">
+                    {{ comment.text }}
+                </p>
+            </div>
+            <!-- footer -->
+            <div class="feedCard__footer">
+                <span style="color: #9e9e9e" class="txt-cap1">{{ $t('feed.time') }}</span>
+            </div>
         </div>
-        <!-- body -->
-        <div class="feedCard__body">
-            <!-- Новый этап проекта -->
-            <p class="txt-cap1">
-                {{ $t('feed.feedBack') }}
-            </p>
-        </div>
-        <!-- footer -->
-        <div class="feedCard__footer">
-            <span style="color: #9e9e9e" class="txt-cap1">{{ $t('feed.time') }}</span>
-            <button style="color: #9e9e9e" class="txt-cap1" @click="showReply = true">Ответить</button>
-        </div>
-    </div>
-    <div>
-        <div v-for="comment in comments" :key="comment.id" class="mx-4 feedCard">
+        <div class="feedCard" v-else>
             <div class="feedCard__head">
                 <div class="d-flex align-center">
                     <img class="mr-3" width="30" height="30" src="../../assets/demo/ava-small-header.svg" />
@@ -57,6 +53,9 @@
         </div>
     </div>
     <div class="input">
+        <div v-if="replyToComment">
+            <p>Ответ на: {{ replyToComment.text }}</p>
+        </div>
         <div class="input-container">
             <input @keyup.enter="addComment" type="text" v-model="commentText" placeholder="Ваш комментарий..." />
 
@@ -73,9 +72,7 @@ import { ref, onMounted } from 'vue';
 import { getProjectByID } from '~/API/ways/project.ts'
 import { useRoute } from 'vue-router'
 import send from "~/assets/icons/chat.svg"
-import UiInput from '../ui-kit/UiInput.vue';
 
-const showReply = ref(false);
 let data = ref({})
 const route = useRoute()
 onMounted(async () => {
@@ -89,15 +86,21 @@ onMounted(async () => {
 })
 const commentText = ref('');
 const comments = ref([]);
+let replyToComment = ref(null);
+const startReply = (comment) => {
+    replyToComment.value = comment;
+}
 
 const addComment = () => {
     if (commentText.value) {
         const newComment = {
             id: Date.now(),
-            text: commentText.value
+            text: commentText.value,
+            isReply: replyToComment.value !== null
         };
         comments.value.push(newComment);
         commentText.value = '';
+        replyToComment.value = null;
     }
 }
 </script>

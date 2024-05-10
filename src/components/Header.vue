@@ -21,7 +21,7 @@ export default {
             v-if="props.showUserMinify === true"
             :src="user.pictureUrl" />
             
-        <img @click="toggleUserModal" style="padding: 10px" v-if="props.showControlDots" src="../assets/icons/dots-black.svg" />
+        <img @click="toggleUserModal" style="padding: 10px" v-if="props.showControlDots" :src="dots" />
 
         <div v-if="props.search" class="d-flex w-full align-center">
             <UiInput noStyle v-model="searchBarValue" />
@@ -35,6 +35,7 @@ export default {
 </template>
 
 <script lang="ts" setup>
+import dots from "~/assets/icons/dots-black.svg"
 import UserModal from './UserModal.vue'
 import TopModal from './TopModal.vue'
 import UiInput from './ui-kit/UiInput.vue'
