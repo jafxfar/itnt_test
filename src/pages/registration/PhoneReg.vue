@@ -1,22 +1,16 @@
 <template>
     <Header showLogo />
     <v-col class="pa-0">
-        <v-row class="container pa-0 ma-0" justify="center"  align="center">
+        <v-row class="container pa-0 ma-0" justify="center" align="center">
             <!-- phone -->
             <div v-if="pageStep === 1" class="button-container">
                 <v-form @submit.prevent>
-                    <UiInput
-                        placeholder="+7 (---) --- -- --"
-                        clearable
-                        label="Ваш телефон"
-                        :mask="phoneOptions"
-                        v-model="phone"
-                        style="margin-bottom: 28px"
-                    />
+                    <UiInput placeholder=" --- -- --" clearable label="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ваш телефона" :mask="phoneOptions"
+                        v-model="phone" id="phone" style="margin-bottom: 28px; " />
 
                     <!-- Проверка на длину грязного телефона, 18 символов -->
-                    <UiButton v-if="phone.length < 18">
-                        <v-icon icon="mdi-arrow-up" />
+                    <UiButton v-if="phone.length < 12">
+                        <v-icon icon="mdi-arrow-up" style="z-index: 1;" />
                         Введите номер
                     </UiButton>
 
@@ -35,42 +29,26 @@
                     </v-col>
                 </v-form>
             </div>
-
             <!-- OTP-код -->
             <div v-if="pageStep === 2" class="button-container text-center">
                 <p class="code-title text-left ma-0 pl-4">Введите код из смс сообщения:</p>
-                <div
-                    style="
+                <div style="
                         display: flex;
                         flex-direction: row;
                         justify-content: center;
                         margin-top: 40px;
                         margin-bottom: 35px;
-                    "
-                >
-                    <v-otp-input
-                        ref="otpInput"
-                        input-classes="otp-input"
-                        separator=""
-                        :num-inputs="4"
-                        v-model:value="otpCode"
-                        :should-auto-focus="true"
-                        input-type="number"
-                        @on-complete="sendCode"
+                    ">
+                    <v-otp-input ref="otpInput" input-classes="otp-input" separator="" :num-inputs="4"
+                        v-model:value="otpCode" :should-auto-focus="true" input-type="number" @on-complete="sendCode"
                         :class="{
-                        'otp-input--has-value': otpCode.length > 0,
-                        'blue-bottom-border': otpCode.length === inputIndex + 1
-                    }"
-                    />
+                'otp-input--has-value': otpCode.length > 0,
+                'blue-bottom-border': otpCode.length === inputIndex + 1
+            }" />
                 </div>
                 <v-chip v-show="codeError" class="chip mt-4"> Неверный код </v-chip>
-                <v-progress-circular
-                    v-if="isLoading"
-                    width="2"
-                    class="loading mx-auto text-center mt-4"
-                    color="active"
-                    indeterminate
-                ></v-progress-circular>
+                <v-progress-circular v-if="isLoading" width="2" class="loading mx-auto text-center mt-4" color="active"
+                    indeterminate></v-progress-circular>
                 <v-col v-if="!isLoading" class="text-left mt-2">
                     <p class="text-code ma-0">Не пришла смс в течении 2 минут?</p>
                     <a @click="sendPhoneInfo" class="text-code-href ma-0">Отправить снова</a>
@@ -80,8 +58,10 @@
     </v-col>
 </template>
 
-<script setup>
-import { ref, computed, watch } from 'vue'
+<script setup lang="ts">
+import 'intl-tel-input/build/css/intlTelInput.css';
+import intlTelInput from 'intl-tel-input';
+import { ref,reactive,onMounted, computed, watch } from 'vue'
 import { vMaska } from 'maska'
 import UiButton from '~/components/ui-kit/UiButton.vue'
 import UiInput from '~/components/ui-kit/UiInput.vue'
@@ -92,7 +72,6 @@ import { useUserStore } from '~/store/user'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const user = useUserStore()
 
 const pageStep = ref(1)
 const inputIndex = ref(1); // начинаем с -1, так как счет начинается с 0
@@ -101,8 +80,27 @@ const codeError = ref(false)
 const isLoading = ref(false)
 
 const phone = ref('')
-const phoneOptions = { mask: '+7 (###) ###-##-##' }
+const phoneOptions = { mask: '(###) ###-##-##' }
+const user = useUserStore()
+const iti = ref({});
+onMounted(()=>{
+    const input = document.querySelector("#phone");
+    iti.value = intlTelInput(input, {
+        utilsScript: "/node_modules/intl-tel-input/build/js/utils.js",
+        containerClass: "w-full z-999999",
+    });
 
+    // обработчик события countrychange
+    input.addEventListener("countrychange", function() {
+    let countryData = iti.value.getSelectedCountryData(); // получаем данные выбранной страны
+
+    // сохраняем текущий ввод пользователя
+    let currentInput = iti.value.getNumber();
+
+    // устанавливаем значение phone равным коду страны + текущий ввод
+    iti.value.setNumber('+' + countryData.dialCode + currentInput);
+});
+})
 const otpInput = ref(null)
 const otpCode = ref('')
 
@@ -146,12 +144,24 @@ async function sendCode() {
             .finally(() => (isLoading.value = false))
     }
 }
+console.log('phone', phone.value)
 </script>
 
 <style lang="scss">
-.blue-bottom-border input {
-  border-bottom-color:#29b6f6 !important; /* устанавливаем синюю границу */
+#phone .v-input__slot .label {
+    padding-left: 34px;
 }
+.iti {
+  --iti-path-flags-1x: url('/node_modules/intl-tel-input/build/img/flags.png');
+  --iti-path-flags-2x: url('/node_modules/intl-tel-input/build/img/flags@2x.png');
+//   --iti-path-globe-1x: url('/node_modules/intl-tel-input/build/img/globe.png');
+//   --iti-path-globe-2x: url('/node_modules/intl-tel-input/build/img/globe@2x.png');
+}
+.blue-bottom-border input {
+    border-bottom-color: #29b6f6 !important;
+    /* устанавливаем синюю границу */
+}
+
 .otp-input {
     width: 40px;
     height: 40px;
@@ -160,14 +170,19 @@ async function sendCode() {
     font-size: 20px;
     border-radius: 4px;
     border-bottom: 4px solid #E0E0E0;
-    box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.1), /* Тень сверху */
-                1px 0px 3px rgba(0, 0, 0, 0.1), /* Тень справа */
-                -1px 0px 3px rgba(0, 0, 0, 0.1); /* Тень слева */
+    box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.1),
+        /* Тень сверху */
+        1px 0px 3px rgba(0, 0, 0, 0.1),
+        /* Тень справа */
+        -1px 0px 3px rgba(0, 0, 0, 0.1);
+    /* Тень слева */
     text-align: center;
+
     &__error {
         border-bottom: 4px solid red !important;
     }
 }
+
 .otp-input::-webkit-inner-spin-button,
 .otp-input::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -191,22 +206,27 @@ async function sendCode() {
 .container {
     height: 80vh;
 }
+
 .button-container {
     width: 80%;
 }
+
 .input {
     border-radius: 12px;
 }
+
 .button {
     border-radius: 12px;
     border: 1px solid #263238 !important;
 }
+
 .your-phone-text {
     font-size: 13px;
     line-height: 14px;
     letter-spacing: 0.01em;
     color: #9e9e9e;
 }
+
 .your-phone-href {
     font-size: 13px;
     line-height: 14px;
@@ -214,6 +234,7 @@ async function sendCode() {
     letter-spacing: 0.01em;
     color: #29b6f6;
 }
+
 .button-validate {
     background: linear-gradient(96.78deg, #13d5ff -0.02%, #12a1de 94.31%) !important;
     border: 1px solid #12b7ec !important;
@@ -223,17 +244,20 @@ async function sendCode() {
     line-height: 22px;
     color: #ffffff;
 }
+
 .button-validate-text {
     font-size: 13px;
     line-height: 14px;
     letter-spacing: 0.01em;
     color: #9e9e9e;
 }
+
 .code-title {
     font-size: 16px;
     line-height: 18px;
     color: #263238;
 }
+
 .otp {
     width: 205px;
     margin: auto;
@@ -245,6 +269,7 @@ async function sendCode() {
     letter-spacing: 0.01em;
     color: #9e9e9e;
 }
+
 .text-code-href {
     font-size: 13px;
     line-height: 14px;
@@ -252,6 +277,7 @@ async function sendCode() {
     letter-spacing: 0.01em;
     color: #29b6f6;
 }
+
 .loading {
     width: 38px !important;
     height: 38px !important;

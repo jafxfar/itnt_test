@@ -32,4 +32,4 @@ export interface CountryData {
         name: string;
         cities: City[];
     };
-}ы
+}

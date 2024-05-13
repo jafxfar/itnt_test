@@ -17,6 +17,8 @@
         "eslint": "^8.44.0",
         "eslint-config-prettier": "^8.8.0",
         "eslint-plugin-vue": "^9.15.1",
+        "intl-tel-input": "^23.0.4",
+        "libphonenumber-js": "^1.11.1",
         "maska": "^2.1.9",
         "pinia": "^2.1.4",
         "prettier": "^2.8.8",

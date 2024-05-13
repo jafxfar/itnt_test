@@ -48,10 +48,10 @@ export default {
         </v-card>
     </v-dialog>
     <vue-bottom-sheet :full-screen="true" ref="modalState">
-        <div class="">
+        <div class="scroll">
             <div class="txt-body1 mb-2 mx-4">Выбрано : {{ chosenSkills.length }}</div>
             <UiInput class="mx-4" label="Введите навык для поиска" />
-            <div class="ui-skills__choser mt-2" v-for="(skillObj, skill, id) in skills" :key="id">
+            <div class="ui-skills__choser mt-2 " v-for="(skillObj, skill, id) in skills" :key="id">
                 <div class="ui-skills__choser" v-for="(skill, id) in skillObj" :key="id">
                     <p v-if="skill.title" class="text-[#29b6f6] text-lg mx-5 ml-[3%] ui-skills__choser__title">
                         {{ skill.title }}
@@ -64,7 +64,9 @@ export default {
             </div>
             <UiAgree @click="modalState.close()" />
         </div>
-
+        <div class="scroll">
+            <div class="h-44 xl:h-4 lg:h-4 md:h-36"></div>
+        </div>
     </vue-bottom-sheet>
 </template>
 <script lang="ts" setup>
@@ -110,6 +112,7 @@ const chosenSkills: Ref<Array<string>> = ref([])
 </script>
 
 <style lang="scss">
+
 .selected {
     background-color: #FFEBEE;
     border: 1px solid red;
@@ -191,7 +194,7 @@ const chosenSkills: Ref<Array<string>> = ref([])
     &__choser {
         display: flex;
         flex-direction: column;
-
+        margin-bottom: 0px;
         &__title {
             margin-bottom: 12px;
             color: $def-gray;

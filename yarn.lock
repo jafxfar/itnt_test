@@ -2620,6 +2620,11 @@ internal-slot@^1.0.3, internal-slot@^1.0.5:
     has "^1.0.3"
     side-channel "^1.0.4"
 
+intl-tel-input@^23.0.4:
+  version "23.0.4"
+  resolved "https://registry.yarnpkg.com/intl-tel-input/-/intl-tel-input-23.0.4.tgz#7d7ad4dee48f27bd400cfa1eb4ca1b5c4a4179b6"
+  integrity sha512-meUomkOF7W+qY2ch/LOLFuQXwFUuRod7YwHP6qgK2keYFAdDz+dB171KQAjUZhgTwDLejS6Ui/Qc7IHQBO1MKQ==
+
 is-array-buffer@^3.0.1, is-array-buffer@^3.0.2:
   version "3.0.2"
   resolved "https://registry.npmjs.org/is-array-buffer/-/is-array-buffer-3.0.2.tgz"
@@ -2894,6 +2899,11 @@ levn@^0.4.1:
   dependencies:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
+
+libphonenumber-js@^1.11.1:
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.11.1.tgz#2596683e1876bfee74082bb49339fe0a85ae34f9"
+  integrity sha512-Wze1LPwcnzvcKGcRHFGFECTaLzxOtujwpf924difr5zniyYv1C2PiW0419qDR7m8lKDxsImu5mwxFuXhXpjmvw==
 
 lilconfig@^2.1.0:
   version "2.1.0"

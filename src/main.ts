@@ -10,7 +10,6 @@ import VueAppleLogin from 'vue-apple-login'
 import VueCookies from 'vue-cookies'
 import vue3GoogleLogin from 'vue3-google-login'
 import './assets/style/global.scss'
-
 import './assets/style/style.css'
 
 import messages from './i18n/main';
