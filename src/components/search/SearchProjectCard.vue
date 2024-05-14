@@ -1,5 +1,5 @@
 <template>
-    <div class="searchProjectCard">
+    <div class="searchProjectCard mt-4">
         <div class="searchProjectCard__head">
             <div class="d-flex align-center">
                 <img class="mr-3" width="37" height="37" src="../../assets/demo/ava-small-header.svg" />
@@ -27,6 +27,7 @@
                 </p>
             </div>
         </div>
+        <h1 class="bg-black">{{ props.id }}</h1>
 
         <div class="searchProjectCard__footer">
             <UiButton bgColor="def" class="searchProjectCard__footer__button" fit>Открыть проект </UiButton>
@@ -44,7 +45,14 @@
 <script setup lang="ts">
 // import UiButton from '../ui-kit/UiButton.vue'
 
-const props = defineProps(['desc', 'descHeader', 'name', 'type'])
+const props = defineProps({
+  project: Object,
+  desc: String,
+  descHeader: String,
+  name: String,
+  type: String,
+  id: String
+})
 </script>
 
 <style scoped lang="scss">

@@ -60,9 +60,9 @@ import { addComment } from '~/API/ways/project'; // Импортируйте add
 
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '~/store/projectStore'
-
+import {useUserStore} from '~/store/user'
 const commentText = ref(''); // Для хранения текста комментария, если нужно
-
+const userStore = useUserStore()
 const { prjObject } = storeToRefs(useProjectStore())
 
 // const onlyENGletters = computed(() => {
@@ -91,6 +91,9 @@ const props = defineProps({
     prjID: {
         type: Number,
     },
+    id: {
+        type: Number,
+    },
 })
 
 function shareProject() {
@@ -108,7 +111,9 @@ const isFollowing = ref(false) // Добавляем новое состояни
 
 async function follow() {
     try {
-        const response = await addFollow(props.prjID);
+        console.log();
+        const response = await addFollow(props.prjID, props.id);
+        
         console.log(response);
         isFollowing.value = true // После успешной подписки устанавливаем isFollowing в true
     } catch (error) {

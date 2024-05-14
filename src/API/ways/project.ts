@@ -1,3 +1,5 @@
+// import { id } from 'vuetify/locale
+import { log } from 'console'
 import { API } from '../main.ts'
 import ComplaintData from "~/helpers/types"
 
@@ -36,9 +38,10 @@ const addComplaint = (complaintData: ComplaintData[]) => {
     return API.post(`${prefix}/addComplaint`, complaintData);
 }
 
-
-const addFollow = (projectID: number , id:number) => {
-    return API.post(`${prefix}/addFollow`, { projectId: projectID , id:id });
+const addFollow = (projectID: Number , userID:Number) => {
+    console.log(user, 'user');
+    return API.post(`${prefix}/addFollow`, {project:{id:projectID}, user:{id:userID}}  
+    );
 };
 const addProjectAvatar = (picLink: FormData , projectID: number ) => {
     return API.post(`${prefix}/addProjectAvatar`, picLink , projectID)
@@ -52,9 +55,11 @@ const delLike = (projectID: number) => {
     return API.delete(`${prefix}/${projectID}/delLike`)
 }
 
-const deleteComment = (projectID: number) => {
-    return API.delete(`${prefix}/addFollow`)
-}
+// const deleteComment = (projectID: number) => {
+//     return API.delete(`${prefix}/addFollow`)
+// }
 
 export { getProjectsByValue, getProjectByID, getAllProjects, addLike, delLike, postProject, patchProject, 
-        addFollow ,addProjectAvatar, addProjectFile , addComment , deleteComment   }
+        addFollow ,addProjectAvatar, addProjectFile , addComment , 
+        // deleteComment
+       }

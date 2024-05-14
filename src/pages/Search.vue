@@ -3,7 +3,7 @@
 
     <v-container style="padding: 0 20px">
         <UiSwitch @changeValue="searchPageSwitchState = $event" :items="['Проекты', 'Люди']" />
-
+        <input type="text" v-model.number="searchParams.projectId" @input="fetchProjects" />
         <!-- Детальный поиск -->
         <div v-if="searchPageSwitchState === 0">
             <div :class="detailsValue === true ? 'details--opened' : 'details'" class="card">
@@ -58,9 +58,9 @@
             </div>
         </div>
         <!-- Карточки проектов -->
-        <div v-if="searchPageSwitchState === 0">
-            <template v-for="(item, id) in user.$state.searchBarResponse" :key="id">
-                <SearchProjectCard :name="item.name" :desc="item.description" :descHeader="item.descriptionHeader" />
+        <div v-if="searchPageSwitchState === 1">
+            <template v-for="(proj, id) in project.$state.searchBarResponse" :key="id">
+                <SearchProjectCard  :project="proj" />
             </template>
         </div>
 
@@ -86,7 +86,7 @@ import SearchProjectCard from '~/components/search/SearchProjectCard.vue'
 import { ref, watch, onMounted } from 'vue'
 import { useUserStore } from '~/store/user'
 import { getUserSearch } from '~/API/ways/user' // Предполагаемый путь к функции API
-import { getAllProjects } from '~/API/ways/project' // Предполагаемый путь к функции API
+import { getProjectByID } from '~/API/ways/project' // Предполагаемый путь к функции API
 
 const user = useUserStore()
 
@@ -102,7 +102,7 @@ const searchParams = ref({
     pageSize: 10,
     searchString: '',
     tags: '',
-    projectId: 0
+    projectId: null
 })
 
 // Функция для вызова API и обновления результатов поиска
@@ -134,13 +134,11 @@ const fetchUsers = async () => {
 // Функция для вызова API и обновления результатов поиска проектов
 const fetchProjects = async () => {
     try {
-        const response = await getAllProjects(
-            searchParams.value.projectId
-        );
-        searchResults.value = response.data;
+        const response = await getProjectByID(searchParams.value.projectId);
+        // Обновите searchBarResponse, чтобы он содержал только найденный проект
+        user.$state.searchBarResponse = [response.data];
     } catch (error) {
-        console.error('Ошибка при запросе проектов:', error);
-        alert('Не удалось получить данные. Пожалуйста, проверьте подключение и попробуйте снова.');
+        console.error('Ошибка при запросе проекта:', error);
     }
 }
 

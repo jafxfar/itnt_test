@@ -24,6 +24,7 @@
             <!-- footer -->
             <div class="feedCard__footer">
                 <span style="color: #9e9e9e" class="txt-cap1">{{ $t('feed.time') }}</span>
+                <button style="color: #9e9e9e" class="txt-cap1" @click="startReply(comment)">Ответить</button>
             </div>
         </div>
         <div class="feedCard" v-else>
@@ -54,7 +55,8 @@
     </div>
     <div class="input">
         <div v-if="replyToComment">
-            <p>Ответ на: {{ replyToComment.text }}</p>
+            <p>В ответ Save and Brave</p>
+            <p>{{ replyToComment.text }}</p>
         </div>
         <div class="input-container">
             <input @keyup.enter="addComment" type="text" v-model="commentText" placeholder="Ваш комментарий..." />
