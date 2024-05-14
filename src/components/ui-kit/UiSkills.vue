@@ -112,7 +112,9 @@ const chosenSkills: Ref<Array<string>> = ref([])
 </script>
 
 <style lang="scss">
-
+.scroll {
+  scroll-behavior: smooth;
+}
 .selected {
     background-color: #FFEBEE;
     border: 1px solid red;

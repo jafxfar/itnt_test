@@ -52,8 +52,8 @@ const manageSkills: skillList[] = [
     {
         name: "Web Developer",
     },
-    
-    
+]
+const marketingSkills: skillList[] = [
     {
         title: "Marketing: Choose your profession",
     },
@@ -105,8 +105,9 @@ const manageSkills: skillList[] = [
     {
         name: "ASO",
     },
-    
-    
+
+]
+const EntertainmentSkills: skillList[] = [
     {
         title: "Entertainment: Choose your profession",
     },
@@ -161,8 +162,9 @@ const manageSkills: skillList[] = [
     {
         name: "Director",
     },
-    
-    
+]
+const FinanceSkills: skillList[] = [
+
     {
         title: "Finance: Choose your profession",
     },
@@ -202,8 +204,9 @@ const manageSkills: skillList[] = [
     {
         name: "Financial Planner",
     },
-    
-    
+]
+const DesignSkills: skillList[] = [
+
     {
         title: "Design: Choose your profession",
     },
@@ -234,8 +237,10 @@ const manageSkills: skillList[] = [
     {
         name: "Industrial Designer",
     },
-    
-    
+]
+const SportsSkills: skillList[] = [
+
+
     {
         title: "Sports: Choose your profession",
     },
@@ -287,8 +292,10 @@ const manageSkills: skillList[] = [
     {
         name: "Web Developer",
     },
-    
-    
+]
+const StudentSkills: skillList[] = [
+
+
     {
         title: "Student: Choose your profession",
     },
@@ -298,8 +305,10 @@ const manageSkills: skillList[] = [
     {
         name: "Bachelor's student",
     },
-    
-    
+
+]
+const EducationSkills: skillList[] = [
+
     {
         title: "Education: Choose your profession",
     },
@@ -309,16 +318,19 @@ const manageSkills: skillList[] = [
     {
         name: "Professor",
     },
-    
-    
+]
+const BusinessSkills: skillList[] = [
+
     {
         title: "Business Owner: Choose your profession",
     },
     {
         name: "Business Owner",
     },
-    
-    
+
+]
+const Investor: skillList[] = [
+
     {
         title: "Investor & VC: Choose your profession",
     },
@@ -346,8 +358,10 @@ const manageSkills: skillList[] = [
     {
         name: "Legal",
     },
-    
-    
+
+]
+const Consulting: skillList[] = [
+
     {
         title: "Consulting: Choose your profession",
     },
@@ -372,8 +386,9 @@ const manageSkills: skillList[] = [
     {
         name: "Associate Partner",
     },
-    
-    
+]
+const Legal: skillList[] = [
+
     {
         title: "Legal: Choose your profession",
     },
@@ -389,8 +404,10 @@ const manageSkills: skillList[] = [
     {
         name: "Legal Support",
     },
-    
-    
+
+]
+const EngineerSkills: skillList[] = [
+
     {
         title: "Engineer: Choose your profession",
     },
@@ -421,7 +438,9 @@ const manageSkills: skillList[] = [
     {
         name: "Marine engineer",
     },
-    
+]
+const HrSkills: skillList[] = [
+
     {
         title: "HR: Choose your profession",
     },
@@ -443,8 +462,9 @@ const manageSkills: skillList[] = [
     {
         name: "Training & Development Specialist",
     },
-    
-    
+]
+const BloggSkills: skillList[] = [
+
     {
         title: "Influencer or Blogger: Choose your profession",
     },
@@ -460,8 +480,8 @@ const manageSkills: skillList[] = [
     {
         name: "Streamer",
     },
-    
-    
+
+
     {
         title: "C-level Executive: Choose your profession",
     },
@@ -492,8 +512,8 @@ const manageSkills: skillList[] = [
     {
         name: "Art Director",
     },
-    
-    
+
+
     {
         title: "Sales & BizDev: Choose your profession",
     },
@@ -512,8 +532,8 @@ const manageSkills: skillList[] = [
     {
         name: "Head of Growth",
     },
-    
-    
+
+
     {
         title: "Startup Founder: Choose your profession",
     },
@@ -558,7 +578,20 @@ const tags: skillList[] = [
 ]
 
 export const skills = {
-    manageSkills,
+    manageSkills, marketingSkills, 
+    EntertainmentSkills, 
+    FinanceSkills, 
+    DesignSkills, 
+    SportsSkills, 
+    StudentSkills, 
+    EducationSkills, 
+    BusinessSkills, 
+    Investor, 
+    Consulting, 
+    Legal, 
+    EngineerSkills,
+    HrSkills, 
+    BloggSkills,
     designSkills,
     tags,
 }

@@ -5,12 +5,12 @@
             <!-- phone -->
             <div v-if="pageStep === 1" class="button-container">
                 <v-form @submit.prevent>
-                    <UiInput placeholder=" --- -- --" clearable label="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ваш телефона" :mask="phoneOptions"
-                        v-model="phone" id="phone" style="margin-bottom: 28px; " />
+                    <UiInput placeholder="+7 (---) --- -- --" clearable label="Ваш телефон" :mask="phoneOptions"
+                        v-model="phone" style="margin-bottom: 28px" />
 
                     <!-- Проверка на длину грязного телефона, 18 символов -->
-                    <UiButton v-if="phone.length < 12">
-                        <v-icon icon="mdi-arrow-up" style="z-index: 1;" />
+                    <UiButton v-if="phone.length < 18">
+                        <v-icon icon="mdi-arrow-up" />
                         Введите номер
                     </UiButton>
 
@@ -29,6 +29,7 @@
                     </v-col>
                 </v-form>
             </div>
+
             <!-- OTP-код -->
             <div v-if="pageStep === 2" class="button-container text-center">
                 <p class="code-title text-left ma-0 pl-4">Введите код из смс сообщения:</p>
@@ -58,10 +59,8 @@
     </v-col>
 </template>
 
-<script setup lang="ts">
-import 'intl-tel-input/build/css/intlTelInput.css';
-import intlTelInput from 'intl-tel-input';
-import { ref,reactive,onMounted, computed, watch } from 'vue'
+<script setup>
+import { ref, computed, watch } from 'vue'
 import { vMaska } from 'maska'
 import UiButton from '~/components/ui-kit/UiButton.vue'
 import UiInput from '~/components/ui-kit/UiInput.vue'
@@ -72,6 +71,7 @@ import { useUserStore } from '~/store/user'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const user = useUserStore()
 
 const pageStep = ref(1)
 const inputIndex = ref(1); // начинаем с -1, так как счет начинается с 0
@@ -80,27 +80,8 @@ const codeError = ref(false)
 const isLoading = ref(false)
 
 const phone = ref('')
-const phoneOptions = { mask: '(###) ###-##-##' }
-const user = useUserStore()
-const iti = ref({});
-onMounted(()=>{
-    const input = document.querySelector("#phone");
-    iti.value = intlTelInput(input, {
-        utilsScript: "/node_modules/intl-tel-input/build/js/utils.js",
-        containerClass: "w-full z-999999",
-    });
+const phoneOptions = { mask: '+7 (###) ###-##-##' }
 
-    // обработчик события countrychange
-    input.addEventListener("countrychange", function() {
-    let countryData = iti.value.getSelectedCountryData(); // получаем данные выбранной страны
-
-    // сохраняем текущий ввод пользователя
-    let currentInput = iti.value.getNumber();
-
-    // устанавливаем значение phone равным коду страны + текущий ввод
-    iti.value.setNumber('+' + countryData.dialCode + currentInput);
-});
-})
 const otpInput = ref(null)
 const otpCode = ref('')
 
@@ -144,19 +125,9 @@ async function sendCode() {
             .finally(() => (isLoading.value = false))
     }
 }
-console.log('phone', phone.value)
 </script>
 
 <style lang="scss">
-#phone .v-input__slot .label {
-    padding-left: 34px;
-}
-.iti {
-  --iti-path-flags-1x: url('/node_modules/intl-tel-input/build/img/flags.png');
-  --iti-path-flags-2x: url('/node_modules/intl-tel-input/build/img/flags@2x.png');
-//   --iti-path-globe-1x: url('/node_modules/intl-tel-input/build/img/globe.png');
-//   --iti-path-globe-2x: url('/node_modules/intl-tel-input/build/img/globe@2x.png');
-}
 .blue-bottom-border input {
     border-bottom-color: #29b6f6 !important;
     /* устанавливаем синюю границу */
