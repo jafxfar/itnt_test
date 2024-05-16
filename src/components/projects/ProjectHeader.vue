@@ -64,7 +64,6 @@ import {useUserStore} from '~/store/user'
 const commentText = ref(''); // Для хранения текста комментария, если нужно
 const userStore = useUserStore()
 const { prjObject } = storeToRefs(useProjectStore())
-
 // const onlyENGletters = computed(() => {
 //     var reg = /^[a-z]+$/i
 //     return '+' + prjObject.nickName.match(reg)[0]
@@ -107,18 +106,14 @@ function shareProject() {
         console.log('error :' + error)
     }
 }
-const isFollowing = ref(false) // Добавляем новое состояние
+const isFollowing = ref(false) 
 
 async function follow() {
     try {
-        console.log();
         const response = await addFollow(props.prjID, props.id);
-        
-        console.log(response);
-        isFollowing.value = true // После успешной подписки устанавливаем isFollowing в true
+        isFollowing.value = true 
     } catch (error) {
         console.error('Ошибка при подписке на проект:', error);
-        // Дополнительная обработка ошибки...
     }
 }
 async function handleAddComment() {

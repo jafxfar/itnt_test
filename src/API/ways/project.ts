@@ -37,12 +37,16 @@ const addComment = (projectID: number, commentText: string) => {
 const addComplaint = (complaintData: ComplaintData[]) => {
     return API.post(`${prefix}/addComplaint`, complaintData);
 }
-
-const addFollow = (projectID: Number , userID:Number) => {
-    console.log(user, 'user');
-    return API.post(`${prefix}/addFollow`, {project:{id:projectID}, user:{id:userID}}  
-    );
-};
+const addFollow = (projectId: number, userId: number) => {
+    return API.post(`${prefix}/addFollow`, {
+        project: {
+            id: projectId
+        },
+        user: {
+            id: userId
+        }
+    });
+}
 const addProjectAvatar = (picLink: FormData , projectID: number ) => {
     return API.post(`${prefix}/addProjectAvatar`, picLink , projectID)
 }
