@@ -9,6 +9,9 @@ export interface skillList {
     title?: string
     name?: string
 }
+export interface fieldList {
+    name?: string
+}
 export default interface ComplaintData {
     resource: string;
     owner: string;

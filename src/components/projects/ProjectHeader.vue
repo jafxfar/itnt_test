@@ -7,7 +7,20 @@ export default {
 <template>
     <div class="projectHeader">
         <!-- TODO: READONLY PROJECT PICTURE -->
-        <img style="width: 100%; height:fit-content;" src="../../assets/demo/project-head.svg" />
+        <div v-if="props.readOnly || props.commentText" class="">
+            <img style="width: 100%; height:fit-content;" src="../../assets/demo/project-head.svg" />
+        </div>
+        <div class="back w-full" v-else>
+            <div style="display: flex; align-items: start" class="rounded-circle mx-auto mt-6">
+                <v-file-input height="200"  accept="image/png, image/jpeg, image/bmp"
+                    class="input-file">
+                </v-file-input>
+                <img src="../../assets/img/regSteps/addProfilePic.svg"
+                    class="rounded-circle mx-auto" height="208" width="208" />
+                <!-- v-show="user.pictureUrl != ''" -->
+                <!-- <img v-if="blobPic" class="rounded-circle mx-auto" height="208" width="208" :src="blobPic" /> -->
+            </div>
+        </div>
 
         <!-- READONLY -->
         <div class="projectHeader__container" v-if="props.readOnly">
@@ -56,12 +69,12 @@ import Fire from '../Fire.vue'
 import UiButton from '../ui-kit/UiButton.vue'
 import UiInput from '../ui-kit/UiInput.vue'
 import { addFollow } from '~/API/ways/project'
-import { addComment } from '~/API/ways/project'; // Импортируйте addComment
+// import { addComment } from '~/API/ways/project'; // Импортируйте addComment
 
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '~/store/projectStore'
 import {useUserStore} from '~/store/user'
-const commentText = ref(''); // Для хранения текста комментария, если нужно
+// const commentText = ref(''); // Для хранения текста комментария, если нужно
 const userStore = useUserStore()
 const { prjObject } = storeToRefs(useProjectStore())
 // const onlyENGletters = computed(() => {
@@ -90,9 +103,7 @@ const props = defineProps({
     prjID: {
         type: Number,
     },
-    id: {
-        type: Number,
-    },
+
 })
 
 function shareProject() {
@@ -110,24 +121,26 @@ const isFollowing = ref(false)
 
 async function follow() {
     try {
-        const response = await addFollow(props.prjID, props.id);
+        const response = await addFollow(props.prjID, localStorage.getItem("userId"));
+        console.log(response);
         isFollowing.value = true 
     } catch (error) {
         console.error('Ошибка при подписке на проект:', error);
     }
 }
-async function handleAddComment() {
-    try {
-        const response = await addComment(props.prjID, commentText.value);
-        console.log('Комментарий добавлен:', response);
-    } catch (error) {
-        console.error('Ошибка при добавлении комментария:', error);
-    }
-}
+// async function handleAddComment() {
+//     try {
+//         const response = await addComment(props.prjID, commentText.value);
+//         console.log('Комментарий добавлен:', response);
+//     } catch (error) {
+//         console.error('Ошибка при добавлении комментария:', error);
+//     }
+// }
 </script>
 
 <style lang="scss" scoped>
 .projectHeader {
+    width: 100%;
     padding-top: 18px;
     &__container {
         padding: 20px;
@@ -144,5 +157,19 @@ async function handleAddComment() {
         border: 1px solid #e0e0e0;
         background: $def-white;
     }
+}
+.back{
+    width:100%;
+    background-image: url('../../assets/demo/project-head.svg');
+    height:fit-content;
+}
+.input-file {
+    min-width: 208px;
+    min-height: 220px;
+    left: 50%;
+    z-index: 1;
+    transform: translate(-50%, -12%);
+    position: absolute;
+    opacity: 0;
 }
 </style>

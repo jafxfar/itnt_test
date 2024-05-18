@@ -3,7 +3,7 @@
 
     <v-container style="padding: 0 20px">
         <UiSwitch @changeValue="searchPageSwitchState = $event" :items="['Проекты', 'Люди']" />
-        <input type="text" v-model.number="searchParams.projectId" @input="fetchProjects" />
+        <!-- <input type="text" v-model.number="searchParams.projectId" @input="fetchProjects" /> -->
         <!-- Детальный поиск -->
         <div v-if="searchPageSwitchState === 0">
             <div :class="detailsValue === true ? 'details--opened' : 'details'" class="card">
@@ -128,7 +128,6 @@ const fetchUsers = async () => {
         }
     } catch (error) {
         console.error('Ошибка при запросе пользователей:', error);
-        alert('Не удалось получить данные. Пожалуйста, проверьте подключение и попробуйте снова.');
     }
 }
 // Функция для вызова API и обновления результатов поиска проектов

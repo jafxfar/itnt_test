@@ -59,9 +59,9 @@
             <p>{{ replyToComment.text }}</p>
         </div>
         <div class="input-container">
-            <input @keyup.enter="addComment" type="text" v-model="commentText" placeholder="Ваш комментарий..." />
+            <input @keyup.enter="pushComment" type="text" v-model="commentText" placeholder="Ваш комментарий..." />
 
-            <button @click="addComment"><img :src="send" alt=""></button>
+            <button @click="pushComment"><img :src="send" alt=""></button>
         </div>
     </div>
 
@@ -71,10 +71,14 @@
 import Header from '~/components/Header.vue';
 import ProjectHeader from '~/components/projects/ProjectHeader.vue';
 import { ref, onMounted } from 'vue';
-import { getProjectByID } from '~/API/ways/project.ts'
+import { getProjectByID, addComment } from '~/API/ways/project.ts'
 import { useRoute } from 'vue-router'
 import send from "~/assets/icons/chat.svg"
+// let displayedComments = ref(2)
 
+// const showMoreComments = () => {
+//     desplayComment.value += 5
+// }
 let data = ref({})
 const route = useRoute()
 onMounted(async () => {
@@ -92,21 +96,37 @@ let replyToComment = ref(null);
 const startReply = (comment) => {
     replyToComment.value = comment;
 }
-
-const addComment = () => {
+const pushComment = async () => {
     if (commentText.value) {
-        const newComment = {
-            id: Date.now(),
-            text: commentText.value,
-            isReply: replyToComment.value !== null
-        };
-        comments.value.push(newComment);
-        commentText.value = '';
-        replyToComment.value = null;
+        try {
+            const response = await addComment(Number(route.params.ID), commentText.value);
+            const newComment = {
+                id: response.data.id, // Replace with the actual id from the response
+                text: commentText.value,
+                isReply: replyToComment.value !== null
+            };
+            comments.value.push(newComment);
+            commentText.value = '';
+            replyToComment.value = null;
+        } catch (error) {
+            console.error('Failed to add comment:', error);
+        }
     }
 }
+// const pushComment = () => {
+//     if (commentText.value) {
+//         const newComment = {
+//             id: Date.now(),
+//             text: commentText.value,
+//             isReply: replyToComment.value !== null
+//         };
+//         comments.value.push(newComment);
+//         commentText.value = '';
+//         replyToComment.value = null;
+//     }
+// }
 </script>
-<style lang="scss">
+<style scoped lang="scss">
 .input {
     position: sticky;
     bottom: 0px;
@@ -134,7 +154,7 @@ const addComment = () => {
 
 .feedCard {
     padding: 16px 14px;
-    margin-bottom: 12px;
+    margin-bottom: 4px;
     border-radius: 12px;
     background: #fff;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);

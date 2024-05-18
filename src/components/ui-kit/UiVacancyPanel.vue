@@ -46,7 +46,7 @@ export default {
                     <UiTextArea label="Сопроводительное письмо*" />
                 </div>
 
-                <UiButton bgColor="blue" class="mt-8">jopa</UiButton>
+                <UiButton bgColor="blue" @click="confirm" class="mt-8">Подтвердить</UiButton>
             </div>
         </vue-bottom-sheet>
     </div>
@@ -89,12 +89,15 @@ import UiInput from './UiInput.vue'
 import UiTextArea from './UiTextArea.vue'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
-import { ref } from 'vue'
+import { ref, defineEmits } from 'vue'
 import { modalActionsList } from '~/helpers/types'
+const emit = defineEmits(['confirm'])
 
 const modalState = ref(null)
 const vacancyPanel = ref(null)
-
+const confirm = () => {
+    emit('confirm', user.value)
+}
 const props = defineProps({
     data: {
         type: Object || Array,

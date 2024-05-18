@@ -20,13 +20,13 @@
         <!-- READONLY -->
         <div v-if="props.readOnly" class="projectTeam">
             <div class="projectTeam__list">
-                <div v-for="item in demoTeam">
+                <div v-for="user in approvedUsers">
                     <div class="projectTeam__item d-flex justify-space-between">
                         <div class="d-flex projectTeam__item__main">
                             <img class="mr-5" src="../../assets/demo/projectsmallphoto.svg" alt="" />
                             <div class="txt-body2">
-                                <p style="color: #263238">{{ item.name }}</p>
-                                <p style="color: #9e9e9e">{{ item.role }}</p>
+                                <p style="color: #263238">{{ user }}Евгений Анисимов</p>
+                                <p style="color: #9e9e9e"> Database ninja</p>
                             </div>
                         </div>
                         <v-icon @click="modalState.open()" icon="mdi-dots-vertical" />
@@ -47,14 +47,14 @@
         <!-- EDITABLE -->
         <div v-else>
             <div class="projectTeam__list">
-                <div v-for="item in demoTeam">
+                <div v-for="user in approvedUsers">
                     <div class="projectTeam__item--edit d-flex justify-space-between">
                         <div class="projectTeam__item__header--edit">
                             <div class="d-flex">
                                 <img class="mr-7" width="37" height="37" src="../../assets/demo/ava-small-header.svg"
                                     alt="" />
 
-                                <p class="txt-body2">Нейромонах Феофан</p>
+                                <p class="txt-body2">{{user}}Нейромонах Феофан</p>
                             </div>
                             <div class="d-flex">
                                 <!-- TODO: проверка что участник CEO проекта -->
@@ -81,7 +81,7 @@
                 <div class="modal__list">
                     <div v-for="(item, id) in editableModalItems" :key="id" class="modal__list__item">
                         <img :src="item.icon" alt="" />
-                        <p  class="txt-body1">
+                        <p class="txt-body1">
                             {{ item.name }}
                         </p>
                     </div>
@@ -92,17 +92,15 @@
         <vue-bottom-sheet ref="searchTeammateModal">
             <div class="searchTeammateModal modal">
                 <p class="mb-2">Поиск человека для добавления в проект</p>
-                <UiInput prepend-icon="magnify" label="Введите данные для поиска" />
+                <UiInput prepend-icon="magnify" label="Введите данные для поиска" v-model="searchTerm" />
                 <div class="searchTeammateModal__items">
-                    <template v-for="i in 3">
-                        <div class="searchTeammateModal__item">
-                            <img width="37" height="37" src="../../assets/demo/ava-small-header.svg" alt="" />
-                            <div>
-                                <p class="txt-body2">Нейромонах Феофан</p>
-                                <p class="color-gray txt-body2">Team mood</p>
-                            </div>
+                    <div class="searchTeammateModal__item" v-for="(user, index) in filteredUsers" :key="index">
+                        <img width="37" height="37" src="../../assets/demo/ava-small-header.svg" alt="" />
+                        <div>
+                            <p class="txt-body2">{{ user.name }}</p>
+                            <p class="color-gray txt-body2">{{ user.team }}</p>
                         </div>
-                    </template>
+                    </div>
                 </div>
             </div>
         </vue-bottom-sheet>
@@ -119,7 +117,8 @@
                                         @click="modalState.open()" bg-color="def">Чат</UiButton>
                                 </div>
 
-                                <v-icon :class="expanded ? 'px-6 py-3 rounded-xl' : ''" class="bg-[#e1f5fe] px-6 mt-[18px] py-3 rounded-xl" color="#1769AA"
+                                <v-icon :class="expanded ? 'px-6 py-3 rounded-xl' : ''"
+                                    class="bg-[#e1f5fe] px-6 mt-[18px] py-3 rounded-xl" color="#1769AA"
                                     :icon="expanded ? 'mdi-chevron-up' : ' mdi-chevron-down'"></v-icon>
                             </template>
                             <img width="30" height="30" class="mr-3" src="../../assets/demo/ava-small-header.svg"
@@ -139,7 +138,7 @@
                             <div class="back-messages-after"></div>
                         </v-expansion-panel-title>
 
-                        <v-expansion-panel-text v-for="(info, id) in demoInfo" :key="id">
+                        <v-expansion-panel-text v-if="!props.readOnly" v-for="(info, id) in demoInfo" :key="id">
                             <div class="feedPanel__card d-flex align-center">
                                 <div class="ui-vacancyPanel__head mb-2">
                                     Здравствуйте! Кажется я тот, кого вы ищете!
@@ -148,9 +147,9 @@
                                 <v-spacer />
                             </div>
                             <div class="flex flex-row gap-8">
-                                <UiButton isSmall @click="modalState.open()" bg-color="def">Отклонить</UiButton>
-                                <UiButton isxSmall @click="modalState.open()" bg-color="def">Чат</UiButton>
-                                <UiButton isSmall @click="modalState.open()" bg-color="smBlue">Одобрить</UiButton>
+                                <UiButton isSmall  bg-color="def">Отклонить</UiButton>
+                                <UiButton isxSmall bg-color="def">Чат</UiButton>
+                                <UiButton isSmall @click="approveUser(currentUser)" bg-color="smBlue">Одобрить</UiButton>
                             </div>
                         </v-expansion-panel-text>
                     </v-expansion-panel>
@@ -167,7 +166,9 @@ import UiInput from '../ui-kit/UiInput.vue'
 import { modalActionsList } from '~/helpers/types'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { getUserByID } from '~/API/ways/user';
+// import { getUserSearch } from './user.ts'; 
 
 const props = defineProps({
     readOnly: {
@@ -178,7 +179,30 @@ const props = defineProps({
         type: Object,
     },
 })
+let searchTerm = ref('');
+let users = ref([]);
+let approvedUsers = ref([]);
 
+const approveUser = (user) => {
+  approvedUsers.value.push(user);
+  // Закрытие модального окна. Убедитесь, что у вас есть функция modalState.close()
+//   this.modalState.close();
+};
+
+watch(searchTerm, async (newSearchTerm) => {
+    if (newSearchTerm) {
+        users.value = await getUserByID(Number(newSearchTerm));
+    } else {
+        users.value = [];
+    }
+});
+// watch(searchTerm, async (newSearchTerm) => {
+//   if (newSearchTerm) {
+//     users.value = await getUserSearch(undefined, undefined, undefined, undefined, undefined, newSearchTerm);
+//   } else {
+//     users.value = [];
+//   }
+// });
 const modalState = ref(null)
 const searchTeammateModal = ref(null)
 const joinTeam = ref(null)
@@ -190,17 +214,7 @@ const demoInfo = [
     },
 
 ]
-const demoTeam = [
-    {
-        name: 'Евгений Анисимов',
-        role: 'Database ninja',
-    },
-    {
-        name: 'Евгений Анисимов',
-        role: 'Database ninja',
-    },
 
-]
 
 const readOnlyModalItems: modalActionsList[] = [
     {

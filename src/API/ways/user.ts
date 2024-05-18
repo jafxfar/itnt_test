@@ -33,7 +33,7 @@ const deleteUserPicture = (id: Number) => {
 
 
 
-const getUserByID = (id: string) => {
+const getUserByID = (id: Number) => {
     if (id) {
         return API.get(`${prefix}/${id}`)
     } else {

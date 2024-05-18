@@ -1,5 +1,5 @@
 <template>
-    <Header showUserMinify showControlDots />
+    <Header showUserMinify />
     <ProjectHeader />
     <v-container>
         <ProjectCard />

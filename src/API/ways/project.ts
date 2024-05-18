@@ -28,31 +28,50 @@ const patchProject = (prjInfo: Object) => {
 const addLike = (projectID: number) => {
     return API.post(`${prefix}/${projectID}/addLike`, projectID)
 }
-const addComment = (projectID: number, commentText: string) => {
+const addComment = (projectID: number, message: string) => {
     return API.post(`${prefix}/addComment`, {
-        projectId: projectID,
-        comment: commentText
+        project: {
+            id: projectID
+        },
+        "message":message
     });
 };
-const addComplaint = (complaintData: ComplaintData[]) => {
-    return API.post(`${prefix}/addComplaint`, complaintData);
+const addComplaint = (projectId: number, userId: number) => {
+    return API.post(`${prefix}/addComplaint`, {
+        project: {
+            id: projectId
+        },
+        "user": {
+            "id": userId
+        }
+    });
 }
 const addFollow = (projectId: number, userId: number) => {
     return API.post(`${prefix}/addFollow`, {
         project: {
             id: projectId
         },
-        user: {
-            id: userId
+        "user": {
+            "id": userId
         }
     });
 }
-const addProjectAvatar = (picLink: FormData , projectID: number ) => {
-    return API.post(`${prefix}/addProjectAvatar`, picLink , projectID)
+const addProjectAvatar = (picLink: FormData, projectID: number) => {
+    return API.post(`${prefix}/addProjectAvatar`, picLink, projectID)
 }
 
-const addProjectFile = (picLink: string, projectID: number) => {
-    return API.post(`${prefix}/addProjectFile?projectId=${projectID}`, { link: picLink });
+// const addProjectFile = (picLink: string, projectID: number) => {
+//     return API.post(`${prefix}/addProjectFile?projectId=${projectID}`, { link: picLink });
+// };
+const addProjectFile = (file: File, projectID: number) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return API.post(`${prefix}/addProjectFile?projectId=${projectID}`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
 };
 
 const delLike = (projectID: number) => {
@@ -63,7 +82,8 @@ const delLike = (projectID: number) => {
 //     return API.delete(`${prefix}/addFollow`)
 // }
 
-export { getProjectsByValue, getProjectByID, getAllProjects, addLike, delLike, postProject, patchProject, 
-        addFollow ,addProjectAvatar, addProjectFile , addComment , 
-        // deleteComment
-       }
+export {
+    getProjectsByValue, getProjectByID, getAllProjects, addLike, delLike, postProject, patchProject,
+    addFollow, addProjectAvatar, addProjectFile, addComment,
+    // deleteComment
+}

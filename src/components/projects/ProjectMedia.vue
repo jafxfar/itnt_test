@@ -2,7 +2,7 @@
     <div class="projectMedia">
         <div class="d-flex mb-3 align-center">
             <p style="color: #263238" class="txt-cap2 mr-5">Вложенные файлы и ссылки</p>
-            <div class="txt-body1" style="color: #9e9e9e">0 / 6</div>
+            <!-- <div class="txt-body1" style="color: #9e9e9e">0 / 6</div> -->
         </div>
 
         <div class="projectMedia__list">
@@ -24,26 +24,32 @@
             </div> -->
 
             <!-- EDITABLE -->
-            <div
-                @click="modalState.open()"
-                v-if="props.readOnly === false"
-                class="projectMedia__item projectMedia__item--adder cursor-pointer"
-            >
-                <v-icon icon="mdi-plus" />
+            <div @click="modalState.open()" v-if="props.readOnly === false"
+                class="projectMedia__item projectMedia__item--adder cursor-pointer">
+                <div v-if="uploadedFile">
+                    <img :src="uploadedFile" alt="Uploaded file" />
+                </div>
+                <v-icon v-else icon="mdi-plus" />
                 <vue-bottom-sheet ref="modalState">
                     <div class="mx-5 mb-10">
                         <p class="txt-body1 mb-12">
                             Добавьте ссылку на видео-хостинг или загрузите файл в удобное облако и прикрепите ссылку на
                             него.
                         </p>
-                        <UiInput id="linkInput" label="Ссылка*" />
+                        <!-- <UiInput id="linkInput" label="Ссылка*" /> -->
+                        <v-file-input id="fileInput" label="Ссылка*">
+
+                        </v-file-input>
                         <UiInput label="Описание ссылки*" class="my-8" />
                         <UiButton @click="submitProjectLink" bgColor="blue">Добавить</UiButton>
                     </div>
                 </vue-bottom-sheet>
             </div>
         </div>
+        <!-- <p>Project ID: {{ projectStore.prjObject.id }}</p> -->
+
     </div>
+
 </template>
 
 <script lang="ts" setup>
@@ -51,23 +57,42 @@ import { ref } from 'vue'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import UiInput from '../ui-kit/UiInput.vue'
 import UiButton from '../ui-kit/UiButton.vue'
-import { addProjectFile } from '~/API/ways/project';  // Убедитесь, что ваша функция импортирована
-const projectID = ref<number>(); // Пример ID проекта, предполагается, что это значение устанавливается где-то в вашем компоненте
-
+import { addProjectFile } from '~/API/ways/project';
+import { useProjectStore } from '~/store/projectStore'
+import { router } from '~/router';
+const projectStore = useProjectStore();
+import { useRoute } from 'vue-router'
+const router = useRoute()
+const uploadedFile = ref<string | null>(null)
 // Функция для отправки файла
-const submitProjectLink = async () => {
-  const linkInput = document.getElementById('linkInput') as HTMLInputElement;
+// const submitProjectLink = async () => {
+//   const linkInput = document.getElementById('linkInput') as HTMLInputElement;
 
-  if (linkInput && linkInput.value) {
-    try {
-      const response = await addProjectFile(linkInput.value, projectID.value);
-      console.log('Ссылка успешно добавлена', response);
-    } catch (error) {
-      console.error('Ошибка при добавлении ссылки', error);
+//   if (linkInput && linkInput.value) {
+//     try {
+//       const response = await addProjectFile(linkInput.value, projectStore.prjObject.id);
+//       console.log('Ссылка успешно добавлена', response);
+//     } catch (error) {
+//       console.error('Ошибка при добавлении ссылки', error);
+//     }
+//   } else {
+//     alert('Пожалуйста, введите URL-ссылку.');
+//   }
+// };
+const submitProjectLink = async () => {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+
+    if (fileInput && fileInput.files && fileInput.files.length > 0) {
+        try {
+            const response = await addProjectFile(fileInput.files[0], Number(router.params.ID));
+            console.log('Файл успешно добавлен', response);
+            uploadedFile.value = URL.createObjectURL(fileInput.files[0]);
+        } catch (error) {
+            console.error('Ошибка при добавлении файла', error);
+        }
+    } else {
+        alert('Пожалуйста, выберите файл.');
     }
-  } else {
-    alert('Пожалуйста, введите URL-ссылку.');
-  }
 };
 const modalState = ref(false)
 const props = defineProps({
@@ -86,6 +111,7 @@ const props = defineProps({
         flex-wrap: wrap;
         gap: 12px;
     }
+
     &__item {
         display: flex;
         flex-direction: column;
@@ -96,6 +122,7 @@ const props = defineProps({
         border-radius: 12px;
         background: #fff;
         box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
+
         &--adder {
             align-items: center;
             justify-content: center;
