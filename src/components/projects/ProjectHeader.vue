@@ -12,7 +12,7 @@ export default {
         </div>
         <div class="back w-full" v-else>
             <div style="display: flex; align-items: start" class="rounded-circle mx-auto mt-6">
-                <v-file-input height="200"  accept="image/png, image/jpeg, image/bmp"
+                <v-file-input @change="uploadImage" height="200"  accept="image/png, image/jpeg, image/bmp"
                     class="input-file">
                 </v-file-input>
                 <img src="../../assets/img/regSteps/addProfilePic.svg"
@@ -54,9 +54,9 @@ export default {
         
         <!-- EDITABLE -->
         <div class="projectHeader__edit" v-if="!props.commentText && !props.readOnly" >
-            <UiInput label="Название проекта*" v-model="prjObject.name" />
-            <UiInput label="Слоган" v-model="prjObject.slogan" />
-            <UiInput label="id проекта" v-model="prjObject.nickName" />
+            <UiInput label="Название проекта*" v-model="prjObject.name" :required="true"/>
+            <UiInput label="Слоган" v-model="prjObject.slogan" :required="true" />
+            <UiInput label="id проекта" v-model="prjObject.nickName" :required="true" />
         </div>
     </div>
 </template>
@@ -69,13 +69,13 @@ import Fire from '../Fire.vue'
 import UiButton from '../ui-kit/UiButton.vue'
 import UiInput from '../ui-kit/UiInput.vue'
 import { addFollow } from '~/API/ways/project'
-// import { addComment } from '~/API/ways/project'; // Импортируйте addComment
-
+import { addProjectAvatar } from '~/API/ways/project.ts';
+import {useRoute} from 'vue-router';
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '~/store/projectStore'
 import {useUserStore} from '~/store/user'
-// const commentText = ref(''); // Для хранения текста комментария, если нужно
-const userStore = useUserStore()
+import { router } from "~/router"
+const route = useRoute()
 const { prjObject } = storeToRefs(useProjectStore())
 // const onlyENGletters = computed(() => {
 //     var reg = /^[a-z]+$/i
@@ -105,7 +105,23 @@ const props = defineProps({
     },
 
 })
+const uploadImage = async (event: Event) => {
+    const fileInput = event.target as HTMLInputElement;
 
+    if (fileInput.files && fileInput.files.length > 0) {
+        try {
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            const response = await addProjectAvatar(formData, Number(route.params.ID));
+            console.log('Изображение успешно загружено', response);
+        } catch (error) {
+            console.error('Ошибка при загрузке изображения', error);
+        }
+    } else {
+        alert('Пожалуйста, выберите изображение.');
+    }
+};
 function shareProject() {
     try {
         navigator.share({

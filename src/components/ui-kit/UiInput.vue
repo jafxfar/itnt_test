@@ -19,6 +19,8 @@ export default {
         @input="$emit('input', $event.target.value)"
         :prepend-inner-icon="props.prependIcon ? `mdi-${props.prependIcon}` : ''"
         :append-icon="props.appendIcon ? `mdi-${props.appendIcon}` : ''"
+        :required="props.required"
+        @blur="checkRequired"
     ></v-text-field>
 </template>
 
@@ -26,6 +28,7 @@ export default {
 import {ref} from "vue"
 import { vMaska } from 'maska'
 const search =ref('')
+const error = ref(false)
 
 const props = defineProps({
     placeholder: {
@@ -51,7 +54,18 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    required: {
+        type: Boolean,
+        default: false,
+    },
 })
+const checkRequired = () => {
+    if (props.required && !search.value) {
+        error.value = true
+    } else {
+        error.value = false
+    }
+}
 </script>
 
 <style lang="scss" scoped>

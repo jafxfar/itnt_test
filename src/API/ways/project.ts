@@ -1,7 +1,7 @@
 // import { id } from 'vuetify/locale
 import { log } from 'console'
 import { API } from '../main.ts'
-import ComplaintData from "~/helpers/types"
+// import ComplaintData from "~/helpers/types"
 
 const prefix = '/project'
 
@@ -33,7 +33,7 @@ const addComment = (projectID: number, message: string) => {
         project: {
             id: projectID
         },
-        "message":message
+        "message": message
     });
 };
 const addComplaint = (projectId: number, userId: number) => {
@@ -57,7 +57,11 @@ const addFollow = (projectId: number, userId: number) => {
     });
 }
 const addProjectAvatar = (picLink: FormData, projectID: number) => {
-    return API.post(`${prefix}/addProjectAvatar`, picLink, projectID)
+    return API.post(`${prefix}/addProjectAvatar?projectId=${projectID}`, picLink, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
 }
 
 // const addProjectFile = (picLink: string, projectID: number) => {

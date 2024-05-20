@@ -149,7 +149,7 @@
                             <div class="flex flex-row gap-8">
                                 <UiButton isSmall  bg-color="def">Отклонить</UiButton>
                                 <UiButton isxSmall bg-color="def">Чат</UiButton>
-                                <UiButton isSmall @click="approveUser(currentUser)" bg-color="smBlue">Одобрить</UiButton>
+                                <UiButton isSmall @click="sendProp()" bg-color="smBlue">Одобрить</UiButton>
                             </div>
                         </v-expansion-panel-text>
                     </v-expansion-panel>
@@ -168,8 +168,27 @@ import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import { ref, watch } from 'vue'
 import { getUserByID } from '~/API/ways/user';
+import {sendProposition} from '~/API/ways/notifications.ts';
 // import { getUserSearch } from './user.ts'; 
+const sendProp = async (user) => {
+    try {
+    // Prepare the notification object
+    const notification = {
+        message: 'Your message here',
+    };
 
+    // Call the API function with the necessary parameters
+    const response = await sendProposition(notification);
+
+    if (response.operationResult === 'ERROR') {
+      console.error('Error sending proposition:', response.operationInfo);
+    } else {
+      console.log(`Proposition sent to user ${user.name}`);
+    }
+  } catch (error) {
+    console.error('Error sending proposition:', error);
+  }
+};
 const props = defineProps({
     readOnly: {
         type: Boolean,
@@ -196,6 +215,7 @@ watch(searchTerm, async (newSearchTerm) => {
         users.value = [];
     }
 });
+
 // watch(searchTerm, async (newSearchTerm) => {
 //   if (newSearchTerm) {
 //     users.value = await getUserSearch(undefined, undefined, undefined, undefined, undefined, newSearchTerm);

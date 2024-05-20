@@ -43,7 +43,7 @@ export default {
                         <p>Driver</p>
                     </div>
 
-                    <UiTextArea label="Сопроводительное письмо*" />
+                    <UiTextArea label="Сопроводительное письмо*" v-model="propositionAnswer" />
                 </div>
 
                 <UiButton bgColor="blue" @click="confirm" class="mt-8">Подтвердить</UiButton>
@@ -91,13 +91,29 @@ import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import { ref, defineEmits } from 'vue'
 import { modalActionsList } from '~/helpers/types'
+import { reactToProposition } from '~/API/ways/notifications';
+
+let propositionAnswer = ref('');
+let propositionId = ref(2);
+// watch(() => props.data.id, (newId) => {
+//   propositionId.value = newId;
+// });
 const emit = defineEmits(['confirm'])
 
 const modalState = ref(null)
 const vacancyPanel = ref(null)
-const confirm = () => {
-    emit('confirm', user.value)
-}
+const confirm = async () => {
+  try {
+    if (propositionId.value) {
+      const response = await reactToProposition(propositionAnswer.value, propositionId.value);
+      console.log('Response:', response);
+    } else {
+      console.error('propositionId is not set');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
 const props = defineProps({
     data: {
         type: Object || Array,
