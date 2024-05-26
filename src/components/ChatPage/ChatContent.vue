@@ -98,7 +98,7 @@
         </vue-bottom-sheet> -->
     </div>
 </template>
-<script setup>
+<!-- <script setup>
 import { io } from "socket.io-client";
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
@@ -108,7 +108,7 @@ const router = useRouter()
 const handleClick = () => {
     // Создание нового WebSocketHere are a few WebSocket servers that you can use for testing:
     router.push('/messenger/chat/:ID')
-}
+} -->
 
 
 
