@@ -4,7 +4,7 @@ export const useProjectStore = defineStore('project', {
     state: () => ({
         prjObject: {
             activityFields: 'VALUE_1',
-            avatarUrl: 'string',
+            avatarUrl: '',
             companyPreferences: 'NONE',
             competitionInfo: 'string',
             description: '',

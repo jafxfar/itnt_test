@@ -43,6 +43,7 @@ onMounted(async () => {
             prjStore.$state.prjObject.nickName = response.data.object.nickName
             prjStore.$state.prjObject.description = response.data.object.description
             prjStore.$state.prjObject.descriptionHeader = response.data.object.descriptionHeader
+            prjStore.$state.prjObject.avatarUrl= response.data.object.avatarUrl
         } catch (e) {
             console.error('error:', e)
         }

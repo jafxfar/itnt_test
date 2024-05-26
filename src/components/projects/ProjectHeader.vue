@@ -9,7 +9,7 @@ export default {
         <!-- TODO: READONLY PROJECT PICTURE -->
         <div v-if="props.readOnly || props.commentText" class="">
             <img style="width: 100%; height:fit-content;" src="../../assets/demo/project-head.svg" />
-            <img :src="prjAva" class="bg-black m-8 p-8" />
+            <img :src="prjAva" class=" m-8 p-8" />
         </div>
         <div class="back w-full" v-else>
             <div style="display: flex; align-items: start" class="rounded-circle mx-auto mt-6">
