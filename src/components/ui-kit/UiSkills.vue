@@ -51,7 +51,19 @@ export default {
         <div class="scroll">
             <div class="txt-body1 mb-2 mx-4">Выбрано : {{ chosenSkills.length }}</div>
             <UiInput class="mx-4" label="Введите навык для поиска" />
-            <div class="ui-skills__choser mt-2 " v-for="(skillObj, skill, id) in skills" :key="id">
+            <!-- {{ categories }} -->
+            <div class="ui-skills__choser mt-2 " v-for="(skill, id) in categories" :key="id">
+                <div class="m-0" v-for="(interest, id) in skills" :key="id">
+                    <div class="m-0 p-0" v-for="(name, id) in interest" :key="id">
+                        <p class="text-[#29b6f6] text-lg mx-5 ml-[3%] ui-skills__choser__title">{{ name.title }}</p>
+                        <p @click="addSkill(name.name)" v-if="name.name" class="txt-body1 ui-skills__choser__skill"
+                        :class="{ 'skill-chosen': chosenSkills.includes(name.name) }">
+                        {{ name.name }}
+                    </p>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="ui-skills__choser mt-2 " v-for="(skillObj, skill, id) in skills" :key="id">
                 <div class="ui-skills__choser" v-for="(skill, id) in skillObj" :key="id">
                     <p v-if="skill.title" class="text-[#29b6f6] text-lg mx-5 ml-[3%] ui-skills__choser__title">
                         {{ skill.title }}
@@ -61,7 +73,7 @@ export default {
                         {{ skill.name }}
                     </p>
                 </div>
-            </div>
+            </div> -->
             <UiAgree @click="modalState.close()" />
         </div>
         <div class="scroll">
@@ -76,11 +88,9 @@ import UiButton from './UiButton.vue'
 import UiAgree from './UiAgree.vue'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
-import { ref, Ref } from 'vue'
+import { ref, Ref, onMounted } from 'vue'
 import { skills } from '~/helpers/skills'
-// import { storeToRefs } from 'pinia'
-// import { useProjectStore } from '~/store/projectStore'
-// const { prjObject } = storeToRefs(useProjectStore())
+import { getInterestListGrouped } from '~/API/ways/dictionary'
 const props = defineProps({
     readOnly: {
         type: Boolean,
@@ -90,8 +100,18 @@ const props = defineProps({
         type: String,
     },
 })
+const categories = ref([]);
+const getInterst = async () => {
+    try {
+        const res = await getInterestListGrouped();
+        categories.value = res;
+        console.log(res);
+
+    } catch (error) {
+        console.error("Error fetching interests:", error);
+    }
+}
 const deleteMode = ref(false)
-// const searchProjectTagsModalState = ref(false)
 const chosenModalSkill = ref(null)
 const modalState = ref(false)
 const searchModalState = ref(false)
@@ -107,14 +127,13 @@ const addSkill = (skillName) => {
         chosenSkills.value.push(skillName);
     }
 }
-// const demoSkills: Ref<Array<string>> = ref(['User Experience Designer (UX)', 'Team Lead', 'Product Owner'])
 const chosenSkills: Ref<Array<string>> = ref([])
+onMounted(() => {
+    getInterst()
+})
 </script>
 
 <style lang="scss">
-.scroll {
-  scroll-behavior: smooth;
-}
 .selected {
     background-color: #FFEBEE;
     border: 1px solid red;
@@ -123,7 +142,6 @@ const chosenSkills: Ref<Array<string>> = ref([])
 
 .skill-chosen {
     background-color: #E1F5FE;
-    margin-bottom: 1px;
 }
 
 .ui-skills {
@@ -197,13 +215,14 @@ const chosenSkills: Ref<Array<string>> = ref([])
         display: flex;
         flex-direction: column;
         margin-bottom: 0px;
+
         &__title {
-            margin-bottom: 12px;
+            margin: 1px;
             color: $def-gray;
         }
 
         &__skill {
-            padding: 9px 0px 7px 47px;
+            padding: 9px 0px 9px 47px;
             color: $def-black;
         }
     }

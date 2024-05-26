@@ -18,7 +18,7 @@ export default {
                 </v-file-input>
                 <img v-if="!prjAva" src="../../assets/img/regSteps/addProfilePic.svg" class="rounded-circle mx-auto"
                     height="208" width="208" />
-                <img v-else :src="prjAva" class="rounded-circle " height="208" width="208" />
+                <img v-else :src="props.prjAva" class="rounded-circle " height="208" width="208" />
             </div>
         </div>
 
