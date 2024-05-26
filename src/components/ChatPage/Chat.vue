@@ -24,7 +24,7 @@
     </div>
 </template>
 
-<script setup>
+<!-- <script setup>
 import Header from "~/components/Header.vue";
 import { ref, onMounted } from "vue";
 import { io } from "socket.io-client";
@@ -50,7 +50,7 @@ const sendMessage = (message) => {
     socket.emit('send_message', message)
     currentMessage.value = '';
 }
-</script>
+</script> -->
 
 <style scoped>
 .input {
