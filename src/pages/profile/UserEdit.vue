@@ -1,22 +1,15 @@
 <template>
     <Header showUserMinify showID />
-    <ProfileHeader :bg-pic="userStore.bgPicUrl" :ava-pic="userStore.pictureUrl" />
+    <ProfileHeader />
     <v-container>
-        <div class="userEdit mt-4">
-            <UiInput v-model="user.firstName" class="mb-4" label="Имя" />
-            <UiInput v-model="user.lastName" class="mb-4" label="Фамилия" />
-            <v-select v-model="user.country" variant="outlined" label="Страна" class="mb-2" color="active"
-                :items="Object.keys(list)" hide-details></v-select>
-            <v-select v-model="user.city" :disabled="user.country ? false : true" variant="outlined" color="active"
-                label="Выберите город" :items="(list as any)[user.country]"></v-select>
-        </div>
-        <div class="mb-[48px] mt-[32px]">
+        <ProfileInfo :read-only="false"/>
+        <!-- <div class="mb-[48px] mt-[32px]">
             <UiCoop v-model="newStatus" :items="items" @changeValue="updateUserStatus" />
-        </div>
+        </div> -->
 
         <div class="about">
             <UiTextArea :rules="[(v) => v.length <= 300 || 'Max 300 characters']" label="О себе"
-                v-model="user.description" />
+                v-model="userObj.description" />
         </div>
 
         <div class="userEdit__components">
@@ -33,8 +26,6 @@
                 <UiSwitch @change-value="projectsType = $event" :items="['Текущие', 'Прошлые']" />
                 <ProjectsList class="mt-12" :projects="userInfo.projects" />
             </div>
-
-            <!-- <UiSwitch v-if="projectsType === 1" @change-value="topProjectsData = $event" :items="['Неделя', 'Месяц', 'Год']" /> -->
 
             <div v-if="projectsInfo" v-for="(project, id) in projectsInfo" :key="id" class="mt-6">
                 <RatingProjectCard :listID="++id" :projectInfoSet="project" />
@@ -82,77 +73,54 @@ import Header from '~/components/Header.vue'
 import UiAgree from '~/components/ui-kit/UiAgree.vue'
 import ProfileHeader from '~/components/profile/ProfileHeader.vue'
 import ProjectsList from '~/components/profile/ProjectsList.vue'
-import UiInput from '~/components/ui-kit/UiInput.vue'
+import ProfileInfo from '~/components/profile/ProfileInfo.vue'
 import UiSkills from '~/components/ui-kit/UiSkills.vue'
 import UiTextArea from '~/components/ui-kit/UiTextArea.vue'
-import UiCoop from '~/components/ui-kit/UiCoop.vue'
+// import UiCoop from '~/components/ui-kit/UiCoop.vue'
 import UiSwitch from '~/components/ui-kit/UiSwitch.vue'
 import ProjectBlog from '~/components/projects/ProjectBlog.vue'
 import RatingProjectCard from '~/components/projects/RatingProjectCard.vue'
-import Arr from '~/helpers/set'
-import { ref, reactive, onMounted } from 'vue'
-import { useUserStore } from '~/store/user';
+// import Arr from '~/helpers/set'
+import { ref, onMounted } from 'vue'
 import { getUserByID, patchUser } from '~/API/ways/user'
 import { useRouter } from 'vue-router'
-
-
+import { storeToRefs } from 'pinia'
+import { useUserStore } from '~/store/user'
+const { userObj } = storeToRefs(useUserStore())
+const userStore = useUserStore()
 const router = useRouter()
 
 let projectsType = '';
-const userStore = useUserStore();
-const items = ['Мне интересно сотрудничество', 'Мне не интересно сотрудничество'];
-
-const newStatus = ref(userStore.status); // начальное значение статуса
-
-const updateUserStatus = (value) => {
-    user.status = value;
-    userStore.updateUser({ status: user.status }); // обновление статуса
-};
-const list = ref(Arr)
-// const topProjectsData = ref(null)
-
+// const items = ['Мне интересно сотрудничество', 'Мне не интересно сотрудничество'];
 let userInfo = ref({})
 const modalState = ref(null)
 
 
 let projectsInfo = ref({})
-
-let user = reactive({
-    city: null,
-    country: null,
-    firstName: null,
-    lastName: null,
-    openedForProposition: true,
-    roles: [''],
-    shortDescription: '',
-    description: null,
-    status: userStore.status, // добавить статус в reactive объект
-})
-
 onMounted(async () => {
-    await getUserByID().then((response) => {
+    await getUserByID(Number(localStorage.getItem('userId'))).then((response) => {
         try {
-            let data = response.data.object
-
-            user.firstName = data.firstName
-            user.lastName = data.lastName
-            user.fullDescription = data.fullDescription
+            userStore.$state.userObj.firstName = response.data.object.firstName
+            userStore.$state.userObj.lastName = response.data.object.lastName
+            userStore.$state.userObj.country = response.data.object.country
+            userStore.$state.userObj.description = response.data.object.description
+            userStore.$state.userObj.pictureUrl = response.data.object.pictureUrl
         } catch (e) {
             console.error('error:', e)
         }
     })
 })
-
 async function patchUserInfo() {
-    await patchUser(user).then(() => {
+    userStore.$state.userObj.id = Number(localStorage.getItem('userId'))
+    await patchUser(userStore.$state.userObj).then(() => {
         try {
-            userStore.updateUser(user);
-            router.push('/me');
+            router.push('/me')
         } catch (e) {
-            console.error('error :', e);
+            console.error('error :', e)
         }
-    });
+    })
 }
+console.log(userInfo.value)
 </script>
 
 <style lang="scss" scoped>

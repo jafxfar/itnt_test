@@ -1,6 +1,6 @@
 <template>
     <Header showID showUserMinify />
-    <ProjectHeader readOnly :prj-name="data.name" :prjID="data.id" :prj-slogan="data.slogan" />
+    <ProjectHeader :prjAva="data.avatarUrl" readOnly :prj-name="data.name" :prjID="data.id" :prj-slogan="data.slogan" />
     <v-container>
         <ProjectCard readOnly class="mt-12" :prj-desc-body="data.description" :prj-desc-head="data.descriptionHeader" />
         <ProjectTeam :team="data.users" class="mt-12" readOnly />
@@ -27,7 +27,6 @@ onMounted(async () => {
         }
     })
 })
-
 import Footer from '~/components/Footer.vue'
 import Header from '~/components/Header.vue'
 

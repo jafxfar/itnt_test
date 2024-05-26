@@ -1,5 +1,4 @@
 // import { id } from 'vuetify/locale
-import { log } from 'console'
 import { API } from '../main.ts'
 // import ComplaintData from "~/helpers/types"
 
@@ -56,8 +55,8 @@ const addFollow = (projectId: number, userId: number) => {
         }
     });
 }
-const addProjectAvatar = (picLink: FormData, projectID: number) => {
-    return API.post(`${prefix}/addProjectAvatar?projectId=${projectID}`, picLink, {
+const addProjectAvatar = (avatarUrl: FormData, projectID: number) => {
+    return API.post(`${prefix}/addProjectAvatar?projectId=${projectID}`, avatarUrl, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }

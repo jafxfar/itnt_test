@@ -10,8 +10,8 @@
 
     <div v-else class="userPics">
         <div @click="openModal" v-if="uploadedBgImageUrl || userStore.bgPicUrl" class="userPics__bg">
-            <img v-if="uploadedBgImageUrl" :src="uploadedBgImageUrl" />
-            <img v-else-if="userStore.bgPicUrl" :src="userStore.bgPicUrl" />
+            <img v-if="uploadedBgImageUrl" :src="props.bgPic" />
+            <img v-else-if="props.bgPic" :src="props.bgPic" />
         </div>
 
         <v-dialog v-model="searchModalState" width="100%">

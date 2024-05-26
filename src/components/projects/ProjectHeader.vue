@@ -9,16 +9,16 @@ export default {
         <!-- TODO: READONLY PROJECT PICTURE -->
         <div v-if="props.readOnly || props.commentText" class="">
             <img style="width: 100%; height:fit-content;" src="../../assets/demo/project-head.svg" />
+            <img :src="prjAva" class="bg-black m-8 p-8" />
         </div>
         <div class="back w-full" v-else>
             <div style="display: flex; align-items: start" class="rounded-circle mx-auto mt-6">
-                <v-file-input @change="uploadImage" height="200"  accept="image/png, image/jpeg, image/bmp"
+                <v-file-input @change="uploadImage" height="200" accept="image/png, image/jpeg, image/bmp"
                     class="input-file">
                 </v-file-input>
-                <img src="../../assets/img/regSteps/addProfilePic.svg"
-                    class="rounded-circle mx-auto" height="208" width="208" />
-                <!-- v-show="user.pictureUrl != ''" -->
-                <!-- <img v-if="blobPic" class="rounded-circle mx-auto" height="208" width="208" :src="blobPic" /> -->
+                <img v-if="!prjAva" src="../../assets/img/regSteps/addProfilePic.svg" class="rounded-circle mx-auto"
+                    height="208" width="208" />
+                <img v-else :src="prjAva" class="rounded-circle " height="208" width="208" />
             </div>
         </div>
 
@@ -33,11 +33,13 @@ export default {
             </div>
             <div class="projectHeader__controls">
                 <div class="d-flex justify-space-between mb-4">
-                    <UiButton bgColor="blue" @click="follow" style="max-width: 152px">{{ isFollowing ? 'Подписан' : 'Подписаться' }}</UiButton>
+                    <UiButton bgColor="blue" @click="follow" style="max-width: 152px">{{ isFollowing ? 'Подписан' :
+            'Подписаться' }}</UiButton>
                     <UiButton @click="shareProject()" :imgSrc="share" onlyIcon />
                     <Fire :id="props.prjID" />
                 </div>
-                <UiButton @click="$router.push('/project/' + props.prjID + '/comment')" bgColor="def" :imgSrc="message">Обсуждение проекта</UiButton>
+                <UiButton @click="$router.push('/project/' + props.prjID + '/comment')" bgColor="def" :imgSrc="message">
+                    Обсуждение проекта</UiButton>
             </div>
         </div>
 
@@ -51,10 +53,10 @@ export default {
                 <p class="txt-body1">{{ props?.prjSlogan }}</p>
             </div>
         </div>
-        
+
         <!-- EDITABLE -->
-        <div class="projectHeader__edit" v-if="!props.commentText && !props.readOnly" >
-            <UiInput label="Название проекта*" v-model="prjObject.name" :required="true"/>
+        <div class="projectHeader__edit" v-if="!props.commentText && !props.readOnly">
+            <UiInput label="Название проекта*" v-model="prjObject.name" :required="true" />
             <UiInput label="Слоган" v-model="prjObject.slogan" :required="true" />
             <UiInput label="id проекта" v-model="prjObject.nickName" :required="true" />
         </div>
@@ -70,11 +72,9 @@ import UiButton from '../ui-kit/UiButton.vue'
 import UiInput from '../ui-kit/UiInput.vue'
 import { addFollow } from '~/API/ways/project'
 import { addProjectAvatar } from '~/API/ways/project.ts';
-import {useRoute} from 'vue-router';
+import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '~/store/projectStore'
-import {useUserStore} from '~/store/user'
-import { router } from "~/router"
 const route = useRoute()
 const { prjObject } = storeToRefs(useProjectStore())
 // const onlyENGletters = computed(() => {
@@ -103,25 +103,26 @@ const props = defineProps({
     prjID: {
         type: Number,
     },
+    prjAva: {
+        type: String,
+    }
 
 })
-const uploadImage = async (event: Event) => {
-    const fileInput = event.target as HTMLInputElement;
 
-    if (fileInput.files && fileInput.files.length > 0) {
-        try {
-            const formData = new FormData();
-            formData.append('file', fileInput.files[0]);
-
-            const response = await addProjectAvatar(formData, Number(route.params.ID));
-            console.log('Изображение успешно загружено', response);
-        } catch (error) {
-            console.error('Ошибка при загрузке изображения', error);
-        }
-    } else {
-        alert('Пожалуйста, выберите изображение.');
+const prjAva = ref(props.prjAva)
+async function uploadImage(e: any) {
+    const file = e.target.files[0]
+    const formData = new FormData()
+    formData.append('file', file)
+    try {
+        const response = await addProjectAvatar(formData,Number(route.params.ID), )
+        prjAva.value = URL.createObjectURL(file)
+        console.log(response)
+    } catch (error) {
+        console.error('Ошибка при загрузке аватара проекта:', error)
     }
-};
+}
+
 function shareProject() {
     try {
         navigator.share({
@@ -133,40 +134,35 @@ function shareProject() {
         console.log('error :' + error)
     }
 }
-const isFollowing = ref(false) 
+const isFollowing = ref(false)
 
 async function follow() {
     try {
-        const response = await addFollow(props.prjID, localStorage.getItem("userId"));
+        const response = await addFollow(Number(props.prjID), Number(localStorage.getItem("userId")));
         console.log(response);
-        isFollowing.value = true 
+        isFollowing.value = true
     } catch (error) {
         console.error('Ошибка при подписке на проект:', error);
     }
 }
-// async function handleAddComment() {
-//     try {
-//         const response = await addComment(props.prjID, commentText.value);
-//         console.log('Комментарий добавлен:', response);
-//     } catch (error) {
-//         console.error('Ошибка при добавлении комментария:', error);
-//     }
-// }
 </script>
 
 <style lang="scss" scoped>
 .projectHeader {
     width: 100%;
     padding-top: 18px;
+
     &__container {
         padding: 20px;
     }
+
     &__edit {
         display: flex;
         flex-direction: column;
         gap: 12px;
         padding: 20px;
     }
+
     &__capital {
         padding: 5px 15px;
         border-radius: 8px;
@@ -174,11 +170,13 @@ async function follow() {
         background: $def-white;
     }
 }
-.back{
-    width:100%;
+
+.back {
+    width: 100%;
     background-image: url('../../assets/demo/project-head.svg');
-    height:fit-content;
+    height: fit-content;
 }
+
 .input-file {
     min-width: 208px;
     min-height: 220px;

@@ -2,12 +2,11 @@
     <Header showID :showUserMinify="true" />
     <ProfileHeader :read-only="true" :bg-pic="userStore.bgPicUrl" :ava-pic="userStore.pictureUrl" />
     <v-container style="padding: 0 20px; margin-bottom: 48px">
-        <ProfileInfo :userName="userInfo.firstName" :userSurname="userInfo.lastName"
-            :userDescription="userInfo.description" :status="status" />
+        <ProfileInfo :read-only="true" />
         <UiSkills />
 
         <!-- <ProjectsList :projects="userInfo.projects" /> -->
-        <ProjectsList class="mt-12 mb-4" :projects="userInfo.projects" />
+        <ProjectsList class="mt-12" :projects="userInfo.projects" />
         <UiButton class="mt-4" @click="$router.push('/project/new')" bgColor="blue">Создать проект</UiButton>
 
         <div class="mt-[48px]">
@@ -24,6 +23,10 @@
             </div>
 
         </vue-bottom-sheet>
+
+        <div v-for="(post, id) in feedInfo" :key="id" class="mt-6">
+                    <FeedCard  :post="post" :post-desc-header="post.descriptionHeader || 'Нет заголовка'" :post-desc="post.description || 'Нет описания к посту'" />
+                </div>
     </v-container>
     <Footer />
 </template>
@@ -39,17 +42,33 @@ import UiSkills from '~/components/ui-kit/UiSkills.vue'
 import ProfileInfo from '~/components/profile/ProfileInfo.vue'
 import ProjectsList from '~/components/profile/ProjectsList.vue'
 import ProfileHeader from '~/components/profile/ProfileHeader.vue'
-import { onMounted, ref } from 'vue'
 import { getUserByID } from '~/API/ways/user.ts'
 import { isAuth } from '~/helpers/routerHandler'
 import { useUserStore } from '~/store/user'; // убедитесь, что путь корректный
-import { computed } from 'vue';
+import { onMounted, ref } from 'vue';
+import { getPost } from '~/API/ways/user';
+import FeedCard from '~/components/feed/FeedCard.vue';
+
+let posts = ref();
+let feedInfo = ref();
+const userId = Number(localStorage.getItem('userId'));
+
+const getPosts = async () => {
+    try {
+        const data = await getPost(userId);
+        posts.value = data;
+        feedInfo.value = data;
+    } catch (error) {
+        console.error(error);
+    }
+};
+console.log(feedInfo);
+onMounted(getPosts);
 
 
 const userStore = useUserStore(); // Инициализируйте userStore
-const projectsType = computed(() => userStore.$state.projectsType); const userInfo = ref({}); // Инициализируйте userInfo
+let userInfo = ref({})
 const modalState = ref(null)
-
 // console.log($cookies.get('jwtToken'))
 // const editableModalItems: modalActionsList[] = [
 //     {
@@ -70,16 +89,18 @@ const modalState = ref(null)
 //     },
 // ]
 isAuth()
-
+let data = ref()
 onMounted(async () => {
-    await getUserByID().then((response) => {
+    await getUserByID(Number(localStorage.getItem("userId"))).then((response) => {
         try {
-            userInfo.value = response.data.object
+            data.value = response.data.object
+            console.log(data.value)
         } catch (e) {
             console.error('text error:', e)
         }
     })
 })
+
 </script>
 
 <style scoped></style>

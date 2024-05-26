@@ -12,8 +12,8 @@
                     </div>
 
                     <p class="feedCard__head__subtitle txt-cap1">
-                        {{ feedCardSubtitle }}
-                        <span v-if="props.feedCardType === 'newProjectStage'" class="color-blue">MVP</span>
+                        <!-- {{ post.offer }} -->
+                        <!-- <span v-if="props.feedCardType === 'newProjectStage'" class="color-blue">{{post.type}}</span> -->
                     </p>
                 </div>
             </div>
@@ -22,6 +22,9 @@
 
         <!-- body -->
         <div class="feedCard__body">
+            <p> {{ postDescHeader }}</p>
+            <p> {{ postDesc }}</p>
+
             <!-- Новый этап проекта -->
             <div v-if="props.feedCardType === 'newProjectStage'">
                 <p class="txt-cap1">
@@ -58,17 +61,13 @@
             <UiButton bgColor="def" class="feedCard__footer__button" fit>
                 <p v-if="props.feedCardType != 'newProjectDiscussed'" class="txt-cap1">{{ $t('feed.GoTo') }}</p>
                 <p v-else class="txt-cap1">{{ $t('feed.comments') }}</p>
+              
             </UiButton>
             <div class="d-flex align-center">
-                <UiButton
-                    v-if="props.feedCardType != 'newProjectDiscussed'"
-                    bgColor="def"
-                    class="mr-3"
-                    :imgSrc="share"
-                    style="padding: 10px 13px 9px 14px"
-                    onlyIcon
-                />
-                <Fire />
+                <UiButton v-if="props.feedCardType != 'newProjectDiscussed'" bgColor="def" class="mr-3" :imgSrc="share"
+                    style="padding: 10px 13px 9px 14px" onlyIcon />
+
+                <Fire :id="props.postID" />
             </div>
         </div>
     </div>
@@ -80,12 +79,29 @@ import Fire from '../Fire.vue'
 import UiButton from '../ui-kit/UiButton.vue'
 import UiVacancyPanel from '../ui-kit/UiVacancyPanel.vue'
 import { computed } from 'vue'
+import { postAddUserPicture } from "~/API/ways/user";
 
 const props = defineProps({
     feedCardType: {
         type: String,
         default: '',
     },
+    post: {
+        type: Object,
+        default: () => { },
+    },
+    postID: {
+        type: Number,
+        default: 0,
+    },
+    postDescHeader: {
+        type: String,
+        required: false,
+    },
+    postDesc:{
+        reqired: false,
+        type: String
+    }
 })
 
 const demoVacancy = {
@@ -119,29 +135,37 @@ const feedCardSubtitle = computed(() => {
     display: flex;
     flex-direction: column;
     gap: 16px;
+
     &__head {
         display: flex;
         align-items: center;
         justify-content: space-between;
+
         &__subtitle {
             color: #9e9e9e;
             margin-top: 1px;
             text-align: initial;
         }
     }
+
     &__body {
         text-align: left;
+
         &__slider {
             display: flex;
             gap: 16px;
-            -ms-overflow-style: none; /* Internet Explorer 10+ */
+            -ms-overflow-style: none;
+            /* Internet Explorer 10+ */
             scrollbar-width: none;
             overflow-x: scroll;
+
             &::-webkit-scrollbar {
-                display: none; /* Safari and Chrome */
+                display: none;
+                /* Safari and Chrome */
             }
         }
     }
+
     &__vacancy {
         &__head {
             padding: 10px 20px;
@@ -153,10 +177,12 @@ const feedCardSubtitle = computed(() => {
             background: #e1f5fe;
         }
     }
+
     &__footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
+
         &__button {
             padding: 14.5px 20px;
             box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.2) inset, 0px 23px 10px -23px rgba(0, 0, 0, 0.15);
@@ -170,14 +196,17 @@ const feedCardSubtitle = computed(() => {
     .v-expansion-panel__shadow {
         display: none;
     }
+
     .v-expansion-panel-title__overlay {
         opacity: 0;
     }
+
     .v-expansion-panel-text__wrapper {
         padding: 23px 20px;
         padding-top: 8px;
     }
 }
+
 .v-expansion-panel--active {
     border-radius: 12px !important;
     background: #ffffff;

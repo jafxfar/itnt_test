@@ -11,6 +11,10 @@
         "format": "prettier .  --write"
     },
     "dependencies": {
+        "@capacitor/cli": "^6.0.0",
+        "@capacitor/core": "^6.0.0",
+        "@ionic/vue": "^8.0.0-rc.2",
+        "@ionic/vue-router": "^8.0.0-rc.2",
         "@mdi/font": "^7.2.96",
         "@webzlodimir/vue-bottom-sheet": "^2.0.2",
         "axios": "^1.4.0",
@@ -22,6 +26,7 @@
         "maska": "^2.1.9",
         "pinia": "^2.1.4",
         "prettier": "^2.8.8",
+        "socket.io-client": "^4.7.5",
         "vite-plugin-vuetify": "^2.0.3",
         "vue": "^3.2.47",
         "vue-apple-login": "2.x",

@@ -54,7 +54,7 @@
                                 <img class="mr-7" width="37" height="37" src="../../assets/demo/ava-small-header.svg"
                                     alt="" />
 
-                                <p class="txt-body2">{{user}}Нейромонах Феофан</p>
+                                <p class="txt-body2">{{ user }}Нейромонах Феофан</p>
                             </div>
                             <div class="d-flex">
                                 <!-- TODO: проверка что участник CEO проекта -->
@@ -147,9 +147,9 @@
                                 <v-spacer />
                             </div>
                             <div class="flex flex-row gap-8">
-                                <UiButton isSmall  bg-color="def">Отклонить</UiButton>
+                                <UiButton isSmall bg-color="def" @click="sendProp(Answer.No)">Отклонить</UiButton>
                                 <UiButton isxSmall bg-color="def">Чат</UiButton>
-                                <UiButton isSmall @click="sendProp()" bg-color="smBlue">Одобрить</UiButton>
+                                <UiButton isSmall @click="sendProp(Answer.Yes)" bg-color="smBlue">Одобрить</UiButton>
                             </div>
                         </v-expansion-panel-text>
                     </v-expansion-panel>
@@ -168,26 +168,23 @@ import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import { ref, watch } from 'vue'
 import { getUserByID } from '~/API/ways/user';
-import {sendProposition} from '~/API/ways/notifications.ts';
+import { reactToProposition } from '~/API/ways/notifications.ts';
 // import { getUserSearch } from './user.ts'; 
-const sendProp = async (user) => {
+enum Answer {
+    Yes = "YES",
+    No = "NO"
+}
+
+const sendProp = async (propositionAnswer: Answer) => {
     try {
-    // Prepare the notification object
-    const notification = {
-        message: 'Your message here',
-    };
+        const propositionId = 1; // replace with actual proposition id
 
-    // Call the API function with the necessary parameters
-    const response = await sendProposition(notification);
+        const response = await reactToProposition(propositionAnswer, propositionId);
+        console.log(response);
 
-    if (response.operationResult === 'ERROR') {
-      console.error('Error sending proposition:', response.operationInfo);
-    } else {
-      console.log(`Proposition sent to user ${user.name}`);
+    } catch (error) {
+        console.error('Error sending proposition:', error);
     }
-  } catch (error) {
-    console.error('Error sending proposition:', error);
-  }
 };
 const props = defineProps({
     readOnly: {
@@ -203,9 +200,9 @@ let users = ref([]);
 let approvedUsers = ref([]);
 
 const approveUser = (user) => {
-  approvedUsers.value.push(user);
-  // Закрытие модального окна. Убедитесь, что у вас есть функция modalState.close()
-//   this.modalState.close();
+    approvedUsers.value.push(user);
+    // Закрытие модального окна. Убедитесь, что у вас есть функция modalState.close()
+    //   this.modalState.close();
 };
 
 watch(searchTerm, async (newSearchTerm) => {

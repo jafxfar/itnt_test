@@ -2,6 +2,16 @@ import { API } from '../main'
 import ComplaintData from "~/helpers/types"
 const prefix = '/user'
 
+export const addPost = (description: string, descriptionHeader: string, id: number) => {
+    return API.post('/main/addPost', {
+        description,
+        descriptionHeader,
+        id
+    });
+}
+export const getPost = () => {
+    return API.get('/main/getPosts');
+}
 const postUserLoginCode = (phone: String) => {
     return API.post(`${prefix}/loginCode`, {
         login: phone,

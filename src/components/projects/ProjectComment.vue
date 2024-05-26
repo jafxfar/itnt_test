@@ -1,8 +1,8 @@
 <template>
     <Header showID showUserMinify />
     <ProjectHeader commentText :prj-name="data.name" :prjID="data.id" :prj-slogan="data.slogan" />
-    <div v-for="comment in comments" :key="comment.id" class="mx-4">
-        <div class="feedCard mx-4" v-if="comment.isReply">
+    <div v-for="(comment, index) in comments" :key="comment.id" class="mx-4">
+        <div class="feedCard mx-4" v-if="comment.isReply && index < 2 || showAllComments">
             <div class="feedCard__head">
                 <div class="d-flex align-center">
                     <img class="mr-3" width="30" height="30" src="../../assets/demo/ava-small-header.svg" />
@@ -48,6 +48,9 @@
             </div>
             <!-- footer -->
             <div class="feedCard__footer">
+                <span v-if="comments.length > 2 && !showAllComments" @click="showMoreComments">
+                    Показать еще
+            </span>
                 <span style="color: #9e9e9e" class="txt-cap1">{{ $t('feed.time') }}</span>
                 <button style="color: #9e9e9e" class="txt-cap1" @click="startReply(comment)">Ответить</button>
             </div>
@@ -113,18 +116,10 @@ const pushComment = async () => {
         }
     }
 }
-// const pushComment = () => {
-//     if (commentText.value) {
-//         const newComment = {
-//             id: Date.now(),
-//             text: commentText.value,
-//             isReply: replyToComment.value !== null
-//         };
-//         comments.value.push(newComment);
-//         commentText.value = '';
-//         replyToComment.value = null;
-//     }
-// }
+let showAllComments = ref(false);
+const showMoreComments = () => {
+    showAllComments.value = true;
+}
 </script>
 <style scoped lang="scss">
 .input {

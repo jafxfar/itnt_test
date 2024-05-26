@@ -28,11 +28,11 @@ import ProjectVacancys from '~/components/projects/ProjectVacancys.vue'
 import { getProjectByID, patchProject } from '~/API/ways/project'
 
 import { onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute,useRouter } from 'vue-router'
 import { useProjectStore } from '~/store/projectStore'
 
 const prjStore = useProjectStore()
-
+const router = useRouter()
 const route = useRoute()
 
 onMounted(async () => {
@@ -53,7 +53,7 @@ async function changeProject() {
     prjStore.$state.prjObject.id = route.params.ID
     await patchProject(prjStore.$state.prjObject).then(() => {
         try {
-            console.log(321)
+            router.push('/project/' + route.params.ID)
         } catch (e) {
             console.error('error :', e)
         }

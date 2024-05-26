@@ -5,9 +5,9 @@
     <v-container class="pa-6" style="padding: 0 20px; margin-bottom: 48px">
         <ProfileInfo
             :read-only="true"
-            :userName="userInfo.firstName"
-            :userSurname="userInfo.lastName"
-            :userDescription="userInfo.fullDescription"
+            :userName="data.firstName"
+            :userSurname="data.lastName"
+            :userDescription="data.fullDescription"
         />
         <UiSkills readOnly />
 
@@ -27,9 +27,7 @@
 <script setup lang="ts">
 // ui-kit
 // import UiButton from '~/components/ui-kit/UiButton.vue'
-import UiInput from '~/components/ui-kit/UiInput.vue'
 import UiSkills from '~/components/ui-kit/UiSkills.vue'
-import UiButton from '~/components/ui-kit/UiButton.vue'
 // page components
 import Header from '~/components/Header.vue'
 import Footer from '~/components/Footer.vue'
@@ -38,30 +36,22 @@ import ProjectsList from '~/components/profile/ProjectsList.vue'
 import ProfileHeader from '~/components/profile/ProfileHeader.vue'
 import ProjectBlog from '~/components/projects/ProjectBlog.vue'
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
 import { getUserByID } from '~/API/ways/user.ts'
-import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
-import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 let userInfo = ref({})
-const router = useRoute()
-const joinTeam = ref(null)
+// import { useRoute } from 'vue-router'
 
+let data = ref({})
 onMounted(async () => {
-    await getUserByID(router.params.ID).then((response) => {
+    await getUserByID(localStorage.getItem('userId')).then((response) => {
         try {
-            userInfo.value = response.data.object
+            data.value = response.data.object
         } catch (e) {
             console.error('error:', e)
         }
     })
 })
 
-const joinTeamModalItems= [
-    { 
-        name: 'Открыть профиль',
-        icon: 'account',
-    },
-]
+
 </script>
 
 <style scoped>

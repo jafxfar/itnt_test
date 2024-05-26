@@ -8,14 +8,12 @@
         <div class="projectMedia__list">
             <!-- READONLY -->
 
-            <!-- <div class="projectMedia__item">
+            <div class="projectMedia__item" v-if="props.readOnly === true">
                 <div style="gap: 10px" class="d-flex align-center">
-                    <img src="../../assets/icons/media/video.svg" />
-                    <p style="color: #9e9e9e" class="txt-cap1">12 Mb</p>
+                    <img v-if="uploadedFile" :src="uploadedFile" alt="Uploaded file" />
                 </div>
-                <p style="color: #29b6f6" class="txt-cap1">Демонстрация продукта</p>
             </div>
-            <div class="projectMedia__item">
+            <!-- <div class="projectMedia__item">
                 <div style="gap: 10px" class="d-flex align-center">
                     <img src="../../assets/icons/media/video.svg" />
                     <p style="color: #9e9e9e" class="txt-cap1">12 Mb</p>

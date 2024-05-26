@@ -46,7 +46,7 @@ export default {
                     <UiTextArea label="Сопроводительное письмо*" v-model="propositionAnswer" />
                 </div>
 
-                <UiButton bgColor="blue" @click="confirm" class="mt-8">Подтвердить</UiButton>
+                <UiButton bgColor="blue" @click="sendProp" class="mt-8">Подтвердить</UiButton>
             </div>
         </vue-bottom-sheet>
     </div>
@@ -54,7 +54,7 @@ export default {
     <!-- EDITABLE -->
     <div class="card" style="padding: 15px; padding-bottom: 20px" v-else>
         <div class="d-flex mb-2">
-            <p>Вакансия</p>
+            <p>Вакансия {{  }}</p>
             <v-spacer />
             <v-icon @click="vacancyPanel.open()" icon="mdi-dots-vertical" />
         </div>
@@ -89,31 +89,39 @@ import UiInput from './UiInput.vue'
 import UiTextArea from './UiTextArea.vue'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
-import { ref, defineEmits } from 'vue'
+import { ref, defineEmits, onMounted } from 'vue'
 import { modalActionsList } from '~/helpers/types'
-import { reactToProposition } from '~/API/ways/notifications';
-
+import { sendNotification } from '~/API/ways/notifications';
+import {getInterestListGrouped} from '~/API/ways/dictionary';
 let propositionAnswer = ref('');
-let propositionId = ref(2);
+// let propositionId = ref(2);
 // watch(() => props.data.id, (newId) => {
 //   propositionId.value = newId;
-// });
+// });  
 const emit = defineEmits(['confirm'])
 
 const modalState = ref(null)
 const vacancyPanel = ref(null)
-const confirm = async () => {
-  try {
-    if (propositionId.value) {
-      const response = await reactToProposition(propositionAnswer.value, propositionId.value);
-      console.log('Response:', response);
-    } else {
-      console.error('propositionId is not set');
+const sendProp = async () =>{
+    try {
+        await sendNotification(localStorage.getItem('userId'),'s', 1,) ;
+        modalState.value.close();
+    } catch (error) {
+       console.log(error);
+        
     }
-  } catch (error) {
-    console.error('Error:', error);
-  }
-};
+}
+let interestsData = ref();
+onMounted(async () => {
+    await getInterestListGrouped().then((response) => {
+        try {
+            interestsData.value = response;
+            console.log(interestsData.value);
+        } catch (error) {
+            console.error(error);
+        }
+    });
+});
 const props = defineProps({
     data: {
         type: Object || Array,
@@ -152,30 +160,36 @@ const editableModalItems: modalActionsList[] = [
         border-radius: 8px;
         background: #e1f5fe;
     }
+
     &__inputs {
         display: flex;
         flex-direction: column;
         gap: 14px;
     }
+
     &--card {
         border-radius: 12px;
         background: $def-white;
         padding: 23px 20px !important;
     }
 }
+
 .ui-vacancyPanel :deep() {
     border: 1px solid $def-white;
 
     .v-expansion-panel__shadow {
         display: none;
     }
+
     .v-expansion-panel-title__overlay {
         opacity: 0;
     }
+
     .v-expansion-panel-text__wrapper {
         padding: 23px 20px;
         padding-top: 8px;
     }
+
     .v-expansion-panel-title__overlay {
         border-radius: 12px;
         background: $def-white;
@@ -183,6 +197,7 @@ const editableModalItems: modalActionsList[] = [
         box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
     }
 }
+
 .v-expansion-panel--active {
     border-radius: 12px !important;
     background: #ffffff;

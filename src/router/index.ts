@@ -24,8 +24,9 @@ import Projects from '~/pages/Projects.vue'
 import Search from '~/pages/Search.vue'
 // errors
 import error from '~/pages/error.vue'
-
-
+// messanger
+import Messenger from '~/pages/Messenger.vue'
+import Chat from '~/components/ChatPage/Chat.vue'
 
 interface routes {
     path: string
@@ -102,6 +103,15 @@ const routes: Array<routes> = [
     {
         path: '/search',
         component: Search,
+    },
+    // Мессенджер
+    {
+        path: '/messenger',
+        component: Messenger,
+    },
+    {
+        path: '/messenger/chat/:ID',
+        component: Chat,
     },
     // Ошибки
     { path: '/:pathMatch(.*)*', component: error },

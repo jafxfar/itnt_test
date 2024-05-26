@@ -32,7 +32,7 @@ import profile from "~/assets/icons/footer/account.svg"
 import lupa from "~/assets/icons/footer/lupa.svg"
 import home from "~/assets/icons/footer/home.svg"
 import rate from "~/assets/icons/footer/rate.svg"
-
+import message from "~/assets/icons/footer/message.svg"
 import { modalActionsList } from '~/helpers/types'
 
 const routes: modalActionsList[] = [
@@ -44,10 +44,10 @@ const routes: modalActionsList[] = [
         name: '/projects',
         icon: rate,
     },
-    // {
-    //     name: '/messenger_project',
-    //     icon: message,
-    // },
+    {
+        name: '/messenger',
+        icon: message,
+    },
     {
         name: '/search',
         icon: lupa,

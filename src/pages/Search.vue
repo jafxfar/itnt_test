@@ -66,7 +66,7 @@
 
         <!-- Карточки пользователей -->
         <div v-if="searchPageSwitchState === 1">
-            <template v-for="(user, id) in user.$state.searchBarResponse" :key="id">
+            <template v-for="(user, id) in userObj.$state.searchBarResponse" :key="id">
                 <SearchUserCard :user="user" />
             </template>
         </div>
@@ -88,7 +88,7 @@ import { useUserStore } from '~/store/user'
 import { getUserSearch } from '~/API/ways/user' // Предполагаемый путь к функции API
 import { getProjectByID } from '~/API/ways/project' // Предполагаемый путь к функции API
 
-const user = useUserStore()
+const userObj = useUserStore()
 
 const searchPageSwitchState = ref(0)
 const detailsValue = ref(false)
@@ -116,7 +116,7 @@ const fetchUsers = async () => {
             searchParams.value.pageNumber,
             searchParams.value.pageSize,
             searchParams.value.searchString,
-            searchParams.value.tags
+            // searchParams.value.tags
         );
         // Обработка ответа
         if (response.data.length > 0) {
@@ -131,15 +131,15 @@ const fetchUsers = async () => {
     }
 }
 // Функция для вызова API и обновления результатов поиска проектов
-const fetchProjects = async () => {
-    try {
-        const response = await getProjectByID(searchParams.value.projectId);
-        // Обновите searchBarResponse, чтобы он содержал только найденный проект
-        user.$state.searchBarResponse = [response.data];
-    } catch (error) {
-        console.error('Ошибка при запросе проекта:', error);
-    }
-}
+// const fetchProjects = async () => {
+//     try {
+//         const response = await getProjectByID(searchParams.value.projectId);
+//         // Обновите searchBarResponse, чтобы он содержал только найденный проект
+//         userObj.$state. = [response.data];
+//     } catch (error) {
+//         console.error('Ошибка при запросе проекта:', error);
+//     }
+// }
 
 // Следим за изменением параметров поиска, чтобы повторно вызвать API
 watch(searchParams, fetchUsers)

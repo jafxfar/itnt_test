@@ -7,7 +7,7 @@ export default {
 <template>
     <button @click="handleLike" class="fire">
         <transition name="fade">
-            <img v-if="status === 'default'" src="../assets/icons/fire/flame.svg" alt="Default" />
+            <img v-if="status === 'default'" :src="flame" alt="Default" />
         </transition>
         <transition name="fade">
             <!-- <img v-if="status === 'loading'" src="../assets/icons/chat-black.svg" alt="Loading" /> -->
@@ -15,12 +15,14 @@ export default {
                 indeterminate></v-progress-circular>
         </transition>
         <transition name="fade">
-            <img width="38" v-if="status === 'success'" src="/src/assets/LoadingIcon.svg" alt="Success" />
+            <img width="38" v-if="status === 'success'" :src="sucess" alt="Success" />
         </transition>
     </button>
 </template>
 
 <script setup lang="ts">
+import sucess from '~/assets/LoadingIcon.svg'
+import flame from '~/assets/icons/fire/flame.svg'
 import { nextTick } from 'vue'
 import { addLike, delLike } from '~/API/ways/project'
 import { ref } from 'vue'
@@ -47,11 +49,11 @@ async function handleLike() {
         console.log(response)
         setTimeout(() => {
             if (isLiked.value) {
-                status.value = 'default' // Если лайк был добавлен, устанавливаем статус в 'default'
+                status.value = 'default'
             } else {
-                status.value = 'success' // Если лайк не был добавлен, устанавливаем статус в 'success'
+                status.value = 'success'
             }
-            isLiked.value = !isLiked.value // Переключаем состояние лайка
+            isLiked.value = !isLiked.value 
         }, 500);
     } catch (error) {
         console.error(error)

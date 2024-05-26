@@ -16,8 +16,8 @@
 
             <div class="feed__column">
                 <!-- Карточка с документом на 7.5мб -->
-                <FeedCard feedCardType="newFile" />
-                <FeedCard feedCardType="newProjectVacancies" />
+                <!-- <FeedCard feedCardType="newFile" />
+                <FeedCard feedCardType="newProjectVacancies" /> -->
             </div>
         </v-container>
 
@@ -26,20 +26,52 @@
 
             <div class="feed__column">
                 <!-- Карточка с двумя слайдами в одном carousel-item -->
-                <FeedCard feedCardType="newProjectPhotos" />
-                <FeedCard feedCardType="newProjectDiscussed" />
+
+                <div v-for="(post, id) in feedInfo" :key="id" class="mt-6">
+                    <FeedCard  :post="post" :post-desc-header="post.descriptionHeader || 'Нет заголовка'" :post-desc="post.description || 'Нет описания к посту'" />
+                </div>
             </div>
         </v-container>
     </v-col>
+    <!-- <div class="">
+        {{ feedInfo }}
+    </div> -->
     <Footer />
 </template>
 
 <script lang="ts" setup>
-import Footer from '~/components/Footer.vue'
-import Header from '~/components/Header.vue'
-
-import FeedCard from '~/components/feed/FeedCard.vue'
-import FeedPanels from '~/components/feed/FeedPanels.vue'
+import { onMounted, ref } from 'vue';
+import { getPost } from '~/API/ways/user';
+import Footer from '~/components/Footer.vue';
+import Header from '~/components/Header.vue';
+import FeedCard from '~/components/feed/FeedCard.vue';
+import FeedPanels from '~/components/feed/FeedPanels.vue';
+import { getInterestListGrouped } from '~/API/ways/dictionary';
+let posts = ref();
+let feedInfo = ref();
+const getPosts = async () => {
+    try {
+        const data = await getPost();
+        posts.value = data;
+        feedInfo.value = data;
+    } catch (error) {
+        console.error(error);
+    }
+};
+let interestList = ref();
+const getInterestListG = async () => {
+    try {
+        const data = await getInterestListGrouped();
+        interestList.value = data;
+        console.log(data);
+    } catch (error) {
+        console.error(error);
+    }
+};
+console.log(feedInfo);
+onMounted(getPosts);
+onMounted(getInterestListG)
+console.log(interestList.value)
 </script>
 
 <style lang="scss" scoped>
@@ -50,6 +82,7 @@ import FeedPanels from '~/components/feed/FeedPanels.vue'
         gap: 8px;
     }
 }
+
 .date {
     background: rgba(224, 224, 224, 0.5);
     font-size: 13px !important;

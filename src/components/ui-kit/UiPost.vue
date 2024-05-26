@@ -51,19 +51,23 @@ export default {
 
             <UiInput label="Что мы предлагаем* " class="mt-[48px]" v-model="props.data.offer" />
             <UiButton bg-color="def">Добавить обложку для записи <input type="file"></UiButton>
-            <UiButton bg-color="smBlue" class="mt-[48px]">Опубликовать</UiButton>
+            <UiButton @click="postBlog" bg-color="smBlue" class="mt-[48px]">Опубликовать</UiButton>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import scrip from "~/assets/demo/scrip.svg"
-import { defineProps, ref } from 'vue';
+import { defineProps, ref, } from 'vue';
 import UiButton from './UiButton.vue';
 import UiInput from './UiInput.vue';
 import UiTextArea from './UiTextArea.vue';
 import file from "~/assets/icons/media/ppt-blue.svg"
-
+import { addPost } from "~/API/ways/user";
+import { usePostStore } from '~/store/post';
+import { useRoute } from 'vue-router';
+const postStore = usePostStore();
+const router = useRoute();
 const props = defineProps({
     data: {
         type: Object || Array,
@@ -78,6 +82,20 @@ const props = defineProps({
         default: false,
     },
 });
+// const chosenId = computed(() => {
+//     return '@' + (router.params.ID ? router.params.ID : localStorage.getItem('userId'))
+// })
+async function postBlog() {
+    await addPost(props.data.type,props.data.offer, Number(localStorage.getItem('userId'))).then((response: any) => {
+        try {
+            console.log(response)
+            postStore.addPost(response.data.object)
+            console.log(postStore.posts);
+        } catch (e) {
+            console.log('error : ', e)
+        }
+    })
+}
 
 const showPhotos = ref(false);
 
