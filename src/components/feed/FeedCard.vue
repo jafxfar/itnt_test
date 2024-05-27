@@ -1,29 +1,5 @@
 <template>
-    <div v-if="props.comment" class="feedCard">
-        <!-- head -->
-        <div class="feedCard__head">
-            <div class="d-flex align-center">
-                <img class="mr-3" width="30" height="30" src="../../assets/demo/ava-small-header.svg" />
-                <div>
-                    <div class="d-flex align-center">
-                        <p class="txt-body3">{{ props.id }}</p>
-                        <img class="mx-2" src="../../assets/icons/singeDot-gray.svg" />
-                        <span style="color: #9e9e9e" class="txt-cap1">{{ $t('feed.time') }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- body -->
-        <div class="feedCard__body">
-            <p>{{ props.message }}</p>
-            <!-- footer -->
-            <div class="feedCard__footer">
-                
-            </div>
-        </div>
-    </div>
-    <div v-else class="feedCard">
+    <div class="feedCard">
         <!-- head -->
         <div class="feedCard__head">
             <div class="d-flex align-center">
