@@ -2,73 +2,50 @@
     <Header search />
 
     <v-container style="padding: 0 20px">
+        <!-- {{ ProjectSearch() }} -->
+
         <UiSwitch @changeValue="searchPageSwitchState = $event" :items="['Проекты', 'Люди']" />
-        <!-- <input type="text" v-model.number="searchParams.projectId" @input="fetchProjects" /> -->
+        <UiInput v-model="searchQuery" placeholder="Поиск..." />
         <!-- Детальный поиск -->
-        <div v-if="searchPageSwitchState === 0">
-            <div :class="detailsValue === true ? 'details--opened' : 'details'" class="card">
-                <div @click="detailsValue = !detailsValue" class="details__head">
-                    <p class="txt-body1">{{ $t('search.searchDetail') }}</p>
-                    <img v-show="detailsValue === false" src="@/assets/icons/settings-black.svg" />
-                    <img v-show="detailsValue === true" src="@/assets/icons/close-black.svg" />
+        <div :class="detailsValue === true ? 'details--opened' : 'details'" class="card">
+            <div @click="detailsValue = !detailsValue" class="details__head">
+                <p class="txt-body1">{{ $t('search.searchDetail') }}</p>
+                <img v-show="detailsValue === false" src="@/assets/icons/settings-black.svg" />
+                <img v-show="detailsValue === true" src="@/assets/icons/close-black.svg" />
+            </div>
+
+            <div class="details__body" v-show="detailsValue === true">
+                <div class="details__body__inputs">
+                    <UiInput label="Теги" />
                 </div>
 
-                <div class="details__body" v-show="detailsValue === true">
-                    <div class="details__body__inputs">
-                        <UiInput label="Теги" />
+                <div class="details__body__switchs">
+                    <div class="details__body__switchs__item">
+                        <p class="txt-body1">{{ $t('search.vacancee') }}</p>
+                        <p class="txt-body1 color-blue">{{ $t('search.NoNeed') }}</p>
                     </div>
 
-                    <div class="details__body__switchs">
-                        <div class="details__body__switchs__item">
-                            <p class="txt-body1">{{ $t('search.vacancee') }}</p>
-                            <p class="txt-body1 color-blue">{{ $t('search.NoNeed') }}</p>
-                        </div>
-
-                        <div class="details__body__switchs__item">
-                            <p class="txt-body1">{{ $t('search.Insearch') }}</p>
-                            <p class="txt-body1 color-blue">{{ $t('search.Yes') }}</p>
-                        </div>
+                    <div class="details__body__switchs__item">
+                        <p class="txt-body1">{{ $t('search.Insearch') }}</p>
+                        <p class="txt-body1 color-blue">{{ $t('search.Yes') }}</p>
                     </div>
                 </div>
             </div>
         </div>
-        <div v-if="searchPageSwitchState === 1">
-            <div :class="detailsValue === true ? 'details--opened' : 'details'" class="card">
-                <div @click="detailsValue = !detailsValue" class="details__head">
-                    <p class="txt-body1">{{ $t('search.searchDetail') }}</p>
-                    <img v-show="detailsValue === false" src="@/assets/icons/settings-black.svg" />
-                    <img v-show="detailsValue === true" src="@/assets/icons/close-black.svg" />
-                </div>
 
-                <div class="details__body" v-show="detailsValue === true">
-                    <div class="details__body__inputs">
-                        <UiInput label="Навыки" />
-
-                        <UiInput label="Город" class="mt-4" />
-
-                    </div>
-
-                    <div class="details__body__switchs">
-                        <div class="details__body__switchs__item">
-                            <p class="txt-body1">{{ $t('search.vacancee') }}</p>
-                            <p class="txt-body1 color-blue">{{ $t('search.NoNeed') }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- Карточки проектов -->
-        <div v-if="searchPageSwitchState === 1">
-            <template v-for="(proj, id) in project.$state.searchBarResponse" :key="id">
-                <SearchProjectCard  :project="proj" />
-            </template>
+        <div v-if="searchPageSwitchState === 0">
+            <div v-for="project in filteredProjects" :key="project.id">
+                <SearchProjectCard  :name="project.name" :desc-header="project.descriptionHeader"
+                    :avatar-url="project.avatarUrl" :slogan="project.slogan" />
+            </div>
         </div>
 
         <!-- Карточки пользователей -->
         <div v-if="searchPageSwitchState === 1">
-            <template v-for="(user, id) in userObj.$state.searchBarResponse" :key="id">
-                <SearchUserCard :user="user" />
-            </template>
+            <div v-for="user in filteredUsers" :key="user.id">
+                <SearchUserCard :id="user.id" :login="user.login" />
+            </div>
         </div>
     </v-container>
 
@@ -82,97 +59,87 @@ import UiSwitch from '~/components/ui-kit/UiSwitch.vue'
 import UiInput from '~/components/ui-kit/UiInput.vue'
 import SearchUserCard from '~/components/search/SearchUserCard.vue'
 import SearchProjectCard from '~/components/search/SearchProjectCard.vue'
-
-import { ref, watch, onMounted } from 'vue'
-import { useUserStore } from '~/store/user'
-import { getUserSearch } from '~/API/ways/user' // Предполагаемый путь к функции API
-import { getProjectByID } from '~/API/ways/project' // Предполагаемый путь к функции API
-
-const userObj = useUserStore()
-
+import { ref, computed, onMounted } from 'vue';
+import { getAllProjects } from '~/API/ways/project'
+import {getUserSearch} from '~/API/ways/user'
 const searchPageSwitchState = ref(0)
 const detailsValue = ref(false)
-const searchResults = ref([])
-
-const searchParams = ref({
-    cityId: 0,
-    countryId: 0,
-    openedForProposition: false,
-    pageNumber: 1,
-    pageSize: 10,
-    searchString: '',
-    tags: '',
-    projectId: null
-})
-
-// Функция для вызова API и обновления результатов поиска
-// Функция для вызова API и обновления результатов поиска
-const fetchUsers = async () => {
-    try {
-        const response = await getUserSearch(
-            searchParams.value.cityId,
-            searchParams.value.countryId,
-            searchParams.value.openedForProposition,
-            searchParams.value.pageNumber,
-            searchParams.value.pageSize,
-            searchParams.value.searchString,
-            // searchParams.value.tags
-        );
-        // Обработка ответа
-        if (response.data.length > 0) {
-            // Если получены результаты поиска, сохраните их
-            searchResults.value = response.data;
-        } else {
-            // Если результатов поиска нет, покажите сообщение
-            alert('Пользователи не найдены.');
-        }
-    } catch (error) {
-        console.error('Ошибка при запросе пользователей:', error);
-    }
+interface User {
+  id: number;
+  roles: Array<any>;
+  login: string;
+  confirmed: boolean;
+  errorConfirm: boolean;
+  // добавьте другие свойства пользователя по мере необходимости
 }
-// Функция для вызова API и обновления результатов поиска проектов
-// const fetchProjects = async () => {
-//     try {
-//         const response = await getProjectByID(searchParams.value.projectId);
-//         // Обновите searchBarResponse, чтобы он содержал только найденный проект
-//         userObj.$state. = [response.data];
-//     } catch (error) {
-//         console.error('Ошибка при запросе проекта:', error);
-//     }
-// }
-
-// Следим за изменением параметров поиска, чтобы повторно вызвать API
-watch(searchParams, fetchUsers)
-
-// Вызов поиска при первом рендере, если необходимо
-onMounted(() => {
-    if (searchPageSwitchState.value === 1) {
-        fetchUsers()
+interface Project {
+    id: number;
+    name: string;
+    descriptionHeader: string;
+    avatarUrl: string;
+    slogan: string;
+}
+const users = ref<User[]>([]);
+const projects = ref<Project[]>([]);
+const searchQuery = ref('');
+const filteredUsers = computed(() => {
+  if (!Array.isArray(users.value)) {
+    console.error('Users is not an array:', users.value);
+    return [];
+  }
+  return users.value.filter(user => {
+    const searchLower = searchQuery.value.toLowerCase();
+    return Object.values(user).some(value =>
+      String(value).toLowerCase().includes(searchLower)
+    );
+  });
+});
+const filteredProjects = computed(() => {
+    if (!Array.isArray(projects.value)) {
+        console.error('Projects is not an array:', projects.value);
+        return [];
     }
-})
+    return projects.value.filter(project => {
+        const searchLower = searchQuery.value.toLowerCase();
+        return Object.values(project).some(value =>
+            String(value).toLowerCase().includes(searchLower)
+        );
+    });
+});
+const fetchUsers = async () => {
+  try {
+    const response = await getUserSearch();
+    if (response.data && Array.isArray(response.data.object)) {
+      users.value = response.data.object;
+    } else {
+      console.error('Fetched data is not in expected format:', response.data);
+      users.value = [];
+    }
+    console.log('Fetched users:', users.value);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    users.value = [];
+  }
+};
 
-// Следим за изменением вкладки, чтобы перезагрузить данные при необходимости
-watch(searchPageSwitchState, (newValue, oldValue) => {
-    if (newValue === 1) {
-        fetchUsers()
+const fetchProjects = async () => {
+    try {
+        const response = await getAllProjects();
+        if (response.data && response.data.object && Array.isArray(response.data.object.content)) {
+            projects.value = response.data.object.content;
+        } else {
+            console.error('Fetched data is not in expected format:', response.data);
+            projects.value = [];
+        }
+        console.log('Fetched projects:', projects.value);
+    } catch (error) {
+        console.error('Error fetching projects:', error);
+        projects.value = [];
     }
-})
-onMounted(() => {
-    if (searchPageSwitchState.value === 0) {
-        fetchProjects()
-    } else if (searchPageSwitchState.value === 1) {
-        fetchUsers()
-    }
-})
+};
 
-// Следим за изменением вкладки, чтобы перезагрузить данные при необходимости
-watch(searchPageSwitchState, (newValue, oldValue) => {
-    if (newValue === 0) {
-        fetchProjects()
-    } else if (newValue === 1) {
-        fetchUsers()
-    }
-})
+onMounted(fetchProjects);
+onMounted(fetchUsers);
 </script>
 
 <style lang="scss" scoped>

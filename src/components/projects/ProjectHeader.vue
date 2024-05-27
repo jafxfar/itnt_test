@@ -9,7 +9,7 @@ export default {
         <!-- TODO: READONLY PROJECT PICTURE -->
         <div v-if="props.readOnly || props.commentText" class="">
             <img style="width: 100%; height:fit-content;" src="../../assets/demo/project-head.svg" />
-            <img :src="props.prjAva" class=" m-8 p-8" />
+            <img :src="prjAva" class=" m-8 p-8" />
         </div>
         <div class="back w-full" v-else>
             <div style="display: flex; align-items: start" class="rounded-circle mx-auto mt-6">
@@ -18,7 +18,7 @@ export default {
                 </v-file-input>
                 <img v-if="!prjAva" src="../../assets/img/regSteps/addProfilePic.svg" class="rounded-circle mx-auto"
                     height="208" width="208" />
-                <img v-else :src="props.prjAva" class="rounded-circle " height="208" width="208" />
+                <img v-else :src="prjAva" class="rounded-circle " height="208" width="208" />
             </div>
         </div>
 
@@ -70,18 +70,42 @@ import { ref } from 'vue'
 import Fire from '../Fire.vue'
 import UiButton from '../ui-kit/UiButton.vue'
 import UiInput from '../ui-kit/UiInput.vue'
-import { addFollow } from '~/API/ways/project'
-import { addProjectAvatar } from '~/API/ways/project.ts';
+import { addProjectAvatar, addFollow } from '~/API/ways/project.ts';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '~/store/projectStore'
+import { getUserNotifications, getProjectPropositions, getUserProjectPropositions, getUserPropositions } from "~/API/ways/notifications"
+import { onMounted } from "vue"
 const route = useRoute()
 const { prjObject } = storeToRefs(useProjectStore())
 // const onlyENGletters = computed(() => {
 //     var reg = /^[a-z]+$/i
 //     return '+' + prjObject.nickName.match(reg)[0]
 // })
-
+// const getUserProp = async () => {
+//     try {
+//         const response = await getUserPropositions(Number(localStorage.getItem("userId")))
+//         console.log(response)
+//     } catch (error) {
+//         console.error('Ошибка при получении предложений пользователя:', error)
+//     }
+// }
+// const getUserProp = async () => {
+//     try {
+//         const response = await getProjectPropositions(route.params.ID)
+//         console.log(response ,"getProjectPropositions")
+//     } catch (error) {
+//         console.error('Ошибка при получении предложений пользователя:', error)
+//     }
+// }
+// const getUserProjectProp = async () => {
+//     try {
+//         const response = await getUserProjectPropositions(route.params.ID, localStorage.getItem("userId"))
+//         console.log(response ,"getUserProjectPropositions")
+//     } catch (error) {
+//         console.error('Ошибка при получении предложений пользователя:', error)
+//     }
+// }
 const props = defineProps({
     readOnly: {
         type: Boolean,
@@ -109,7 +133,7 @@ const props = defineProps({
 
 })
 
-const prjAva = ref(props.prjAva)
+let prjAva = ref(props.prjAva)
 async function uploadImage(e: any) {
     const file = e.target.files[0]
     const formData = new FormData()
@@ -145,6 +169,9 @@ async function follow() {
         console.error('Ошибка при подписке на проект:', error);
     }
 }
+// onMounted(() => {
+//     getUserProp(),getUserProjectProp()
+// })
 </script>
 
 <style lang="scss" scoped>

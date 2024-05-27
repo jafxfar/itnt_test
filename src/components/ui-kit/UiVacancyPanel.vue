@@ -92,7 +92,6 @@ import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import { ref, defineEmits, onMounted } from 'vue'
 import { modalActionsList } from '~/helpers/types'
 import { sendNotification } from '~/API/ways/notifications';
-import {getInterestListGrouped} from '~/API/ways/dictionary';
 let propositionAnswer = ref('');
 // let propositionId = ref(2);
 // watch(() => props.data.id, (newId) => {
@@ -111,17 +110,6 @@ const sendProp = async () =>{
         
     }
 }
-let interestsData = ref();
-onMounted(async () => {
-    await getInterestListGrouped().then((response) => {
-        try {
-            interestsData.value = response;
-            console.log(interestsData.value);
-        } catch (error) {
-            console.error(error);
-        }
-    });
-});
 const props = defineProps({
     data: {
         type: Object || Array,

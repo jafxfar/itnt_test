@@ -51,17 +51,8 @@ const getUserByID = (id: Number) => {
     }
 }
 
-const getUserSearch = (cityId?: number, countryId?: number, openedForProposition?: boolean, pageNumber?: number, pageSize?: number, searchString?: string) => {
-    return API.get(`${prefix}/search`, {
-        params: {
-            cityId,
-            countryId,
-            openedForProposition,
-            pageNumber,
-            pageSize,
-            searchString
-        }
-    });
+const getUserSearch = () => {
+    return API.get(`${prefix}/search`);
 }
 
 // PUT

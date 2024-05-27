@@ -8,7 +8,7 @@
                         <p class="txt-body3">{{ props.name }}</p>
                     </div>
                     <p class="searchProjectCard__head__subtitle txt-cap1">
-                        Аутсорс, поддержка малого бизнеса, консалтинг
+                        {{ props.slogan }}
                     </p>
                 </div>
             </div>
@@ -31,7 +31,6 @@
 
         <div class="searchProjectCard__footer">
             <UiButton bgColor="def" class="searchProjectCard__footer__button" fit>Открыть проект </UiButton>
-
             <UiButton
                 bgColor="def"
                 imgSrc="../src/assets/icons/share-black.svg"
@@ -43,15 +42,15 @@
 </template>
 
 <script setup lang="ts">
-// import UiButton from '../ui-kit/UiButton.vue'
-
+import UiButton from '../ui-kit/UiButton.vue'
 const props = defineProps({
   project: Object,
   desc: String,
   descHeader: String,
   name: String,
+  slogan: String,
   type: String,
-  id: String
+  id: Number
 })
 </script>
 

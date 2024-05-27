@@ -1,7 +1,7 @@
 <template>
     <Header showID showUserMinify />
     <ProjectHeader commentText :prj-name="data.name" :prjID="data.id" :prj-slogan="data.slogan" />
-    <div v-for="(comment, index) in comments" :key="comment.id" class="mx-4">
+    <div v-for="(comment, index) in comments" :key="comment.id" class="mx-4"> 
         <div class="feedCard mx-4" v-if="comment.isReply && index < 2 || showAllComments">
             <div class="feedCard__head">
                 <div class="d-flex align-center">
@@ -50,11 +50,14 @@
             <div class="feedCard__footer">
                 <span v-if="comments.length > 2 && !showAllComments" @click="showMoreComments">
                     Показать еще
-            </span>
+                </span>
                 <span style="color: #9e9e9e" class="txt-cap1">{{ $t('feed.time') }}</span>
                 <button style="color: #9e9e9e" class="txt-cap1" @click="startReply(comment)">Ответить</button>
             </div>
         </div>
+    </div>
+    <div class="mx-4" v-for="comments in prjComments">
+        <Comments :comment="true" :id="comments.user.id" :message="comments.message"/>
     </div>
     <div class="input">
         <div v-if="replyToComment">
@@ -67,21 +70,16 @@
             <button @click="pushComment"><img :src="send" alt=""></button>
         </div>
     </div>
-
 </template>
 
 <script setup lang="ts">
 import Header from '~/components/Header.vue';
 import ProjectHeader from '~/components/projects/ProjectHeader.vue';
 import { ref, onMounted } from 'vue';
-import { getProjectByID, addComment } from '~/API/ways/project.ts'
+import { getProjectByID, getProjectComments, addComment } from '~/API/ways/project.ts'
 import { useRoute } from 'vue-router'
+import Comments from '~/components/Comment.vue'
 import send from "~/assets/icons/chat.svg"
-// let displayedComments = ref(2)
-
-// const showMoreComments = () => {
-//     desplayComment.value += 5
-// }
 let data = ref({})
 const route = useRoute()
 onMounted(async () => {
@@ -102,7 +100,7 @@ const startReply = (comment) => {
 const pushComment = async () => {
     if (commentText.value) {
         try {
-            const response = await addComment(Number(route.params.ID), commentText.value);
+            const response = await addComment(Number(route.params.ID), Number(localStorage.getItem("userId")), commentText.value);
             const newComment = {
                 id: response.data.id, // Replace with the actual id from the response
                 text: commentText.value,
@@ -120,6 +118,18 @@ let showAllComments = ref(false);
 const showMoreComments = () => {
     showAllComments.value = true;
 }
+const prjComments = ref([])
+onMounted(async () => {
+    await getProjectComments(route.params.ID).then((response) => {
+        try {
+            prjComments.value = response.data.object
+            console.log(prjComments.value);
+
+        } catch (e) {
+            console.error('error:', e)
+        }
+    })
+})
 </script>
 <style scoped lang="scss">
 .input {

@@ -15,6 +15,11 @@ const getAllProjects = () => {
 const getProjectsByValue = (prjValue: any) => {
     return API.get(`${prefix}/search?searchString=${prjValue}`)
 }
+const getProjectComments = (projectID: number) => {
+    return API.get(`${prefix}/projectComments?projectId=${projectID}`)
+
+}
+
 
 const postProject = (prjInfo: Object) => {
     return API.post(`${prefix}/`, prjInfo)
@@ -27,16 +32,29 @@ const patchProject = (prjInfo: Object) => {
 const addLike = (projectID: number) => {
     return API.post(`${prefix}/${projectID}/addLike`, projectID)
 }
-const addComment = (projectID: number, message: string) => {
+const addComment = ( projectID: number, userID: number, message: string) => {
+    // const now = new Date();
+    // const insertDate = now.toISOString();
     return API.post(`${prefix}/addComment`, {
+        // id: id,
+        // insertDate: insertDate,
         project: {
             id: projectID
+        },
+        user: {
+            id: userID
         },
         "message": message
     });
 };
 const addComplaint = (projectId: number, userId: number) => {
+    const now = new Date();
+    const insertDate = now.toISOString();
+
     return API.post(`${prefix}/addComplaint`, {
+        complaintInfo: "Your complaint info here",
+        id: 0,
+        insertDate: insertDate,
         project: {
             id: projectId
         },
@@ -44,7 +62,7 @@ const addComplaint = (projectId: number, userId: number) => {
             "id": userId
         }
     });
-}
+};
 const addFollow = (projectId: number, userId: number) => {
     return API.post(`${prefix}/addFollow`, {
         project: {
@@ -81,12 +99,12 @@ const delLike = (projectID: number) => {
     return API.delete(`${prefix}/${projectID}/delLike`)
 }
 
-// const deleteComment = (projectID: number) => {
-//     return API.delete(`${prefix}/addFollow`)
-// }
+const deleteComment = (projectID: number) => {
+    return API.delete(`${prefix}/deleteComment`)
+}
 
 export {
     getProjectsByValue, getProjectByID, getAllProjects, addLike, delLike, postProject, patchProject,
-    addFollow, addProjectAvatar, addProjectFile, addComment,
+    addFollow, addProjectAvatar, addProjectFile, addComment, addComplaint, getProjectComments
     // deleteComment
 }

@@ -1,13 +1,14 @@
 <template>
-    <div class="searchUserCard">
+    <div class="searchUserCard mb-2">
         <div class="searchUserCard__head">
             <div class="d-flex align-center">
                 <img class="mr-3" width="37" height="37" src="../../assets/demo/ava-small-header.svg" />
                 <div>
                     <div class="d-flex align-center">
-                        <p class="txt-body3">Томас Хардов</p>
+                        <p class="txt-body3">{{ props.id }}</p>
                     </div>
-                    <p class="searchUserCard__head__subtitle txt-cap1">г. Санкт-Петербург</p>
+                    <!-- <p class="searchUserCard__head__subtitle txt-cap1">г. Санкт-Петербург</p> -->
+                    <p class="searchUserCard__head__subtitle txt-cap1">{{ props.login }}</p>
                 </div>
             </div>
             <v-icon icon="mdi-dots-vertical" />
@@ -42,6 +43,14 @@
 </template>
 
 <script setup lang="ts">
+const props = defineProps({
+    id: Number,
+    login: String,
+    confirmed: Boolean,
+    errorConfirm: Boolean,
+    firstName: String,
+    roles: Array<any>,
+})
 const demoSkills = ['User Experience Designer (UX)', 'Team Lead', 'Product Owner']
 </script>
 
@@ -54,6 +63,7 @@ const demoSkills = ['User Experience Designer (UX)', 'Team Lead', 'Product Owner
     display: flex;
     flex-direction: column;
     gap: 16px;
+
     &__head {
         display: flex;
         align-items: center;
@@ -69,10 +79,12 @@ const demoSkills = ['User Experience Designer (UX)', 'Team Lead', 'Product Owner
 
     &__body {
         padding: 0px 2px;
+
         &__skills {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
+
             &__item {
                 padding: 3px 10px;
                 color: $def-black;
@@ -81,6 +93,7 @@ const demoSkills = ['User Experience Designer (UX)', 'Team Lead', 'Product Owner
                 border-radius: 4px;
             }
         }
+
         &__info {
             margin-top: 16px;
         }
@@ -90,6 +103,7 @@ const demoSkills = ['User Experience Designer (UX)', 'Team Lead', 'Product Owner
         display: flex;
         justify-content: space-between;
         align-items: center;
+
         &__button {
             padding: 17px 20px;
             font-size: 13px;

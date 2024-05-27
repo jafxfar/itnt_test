@@ -70,7 +70,7 @@ const sendProp = async () => {
     
     if (localStorage.getItem('userId') && router.params.ID){
         try {
-            const response = await sendProposition( router.params.ID,1, 'vacancy', '')
+            const response = await sendProposition( router.params.ID,1, 'vacancy',"PROJECT_TO_USER")
             console.log(response)
         } catch (error) {
             console.error('Error sending proposition:', error)

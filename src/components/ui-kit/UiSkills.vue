@@ -8,7 +8,7 @@ export default {
     <v-card v-if="props.skillsType != 'Project'" class="ui-skills">
         <div class="ui-skills__head" v-if="props.readOnly === false">
             <p class="txt-cap2">{{ $t('me.skills') }} </p>
-            <div v-if="deleteMode === false" @click="modalState.open()" class="ui-skills__btn">
+            <div v-if="deleteMode === false" @click="showPopup = true" class="ui-skills__btn">
                 <p class="txt-body1">{{ $t('me.add') }} </p>
                 <v-icon icon="mdi-plus" size="x-small" />
             </div>
@@ -29,7 +29,7 @@ export default {
         <div @click="openModal(skill)" class="ui-skills__projects__tag" v-for="(skill, id) in chosenSkills" :key="id">
             <p class="txt-body2">{{ skill }}</p>
         </div>
-        <div v-show="chosenSkills.length < 3" @click="modalState.open()" class="ui-skills__projects__tag">
+        <div v-show="chosenSkills.length < 3" @click="showPopup = true" class="ui-skills__projects__tag">
             <v-icon size="x-small" icon="mdi-plus" />
         </div>
     </div>
@@ -47,50 +47,34 @@ export default {
             </div>
         </v-card>
     </v-dialog>
-    <vue-bottom-sheet :full-screen="true" ref="modalState">
-        <div class="scroll">
+    <div v-if="showPopup" class="popup-overlay pb-0" @click="showPopup = false">
+        <div class="popup" style="overflow-y: auto;" @click.stop>
             <div class="txt-body1 mb-2 mx-4">Выбрано : {{ chosenSkills.length }}</div>
-            <UiInput class="mx-4" label="Введите навык для поиска" />
-            <!-- {{ categories }} -->
+            <UiInput v-model="searchTerm" class="mx-4" label="Введите навык для поиска" />
             <div class="ui-skills__choser mt-2 " v-for="(skill, id) in categories" :key="id">
                 <div class="m-0" v-for="(interest, id) in skills" :key="id">
                     <div class="m-0 p-0" v-for="(name, id) in interest" :key="id">
                         <p class="text-[#29b6f6] text-lg mx-5 ml-[3%] ui-skills__choser__title">{{ name.title }}</p>
                         <p @click="addSkill(name.name)" v-if="name.name" class="txt-body1 ui-skills__choser__skill"
-                        :class="{ 'skill-chosen': chosenSkills.includes(name.name) }">
-                        {{ name.name }}
-                    </p>
+                            :class="{ 'skill-chosen': chosenSkills.includes(name.name) }">
+                            {{ name.name }}
+                        </p>
                     </div>
                 </div>
             </div>
-            <!-- <div class="ui-skills__choser mt-2 " v-for="(skillObj, skill, id) in skills" :key="id">
-                <div class="ui-skills__choser" v-for="(skill, id) in skillObj" :key="id">
-                    <p v-if="skill.title" class="text-[#29b6f6] text-lg mx-5 ml-[3%] ui-skills__choser__title">
-                        {{ skill.title }}
-                    </p>
-                    <p @click="addSkill(skill.name)" v-if="skill.name" class="txt-body1 ui-skills__choser__skill"
-                        :class="{ 'skill-chosen': chosenSkills.includes(skill.name) }">
-                        {{ skill.name }}
-                    </p>
-                </div>
-            </div> -->
-            <UiAgree @click="modalState.close()" />
         </div>
-        <div class="scroll">
-            <div class="h-44 xl:h-4 lg:h-4 md:h-36"></div>
-        </div>
-    </vue-bottom-sheet>
+        <UiAgree class="close" @click="showPopup = false" />
+    </div>
 </template>
 <script lang="ts" setup>
 // ui-kit
 import UiInput from './UiInput.vue'
 import UiButton from './UiButton.vue'
 import UiAgree from './UiAgree.vue'
-import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
-import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import { ref, Ref, onMounted } from 'vue'
 import { skills } from '~/helpers/skills'
 import { getInterestListGrouped } from '~/API/ways/dictionary'
+let showPopup = ref(true)
 const props = defineProps({
     readOnly: {
         type: Boolean,
@@ -101,19 +85,17 @@ const props = defineProps({
     },
 })
 const categories = ref([]);
+const searchTerm = ref('');
 const getInterst = async () => {
     try {
         const res = await getInterestListGrouped();
         categories.value = res;
-        console.log(res);
-
     } catch (error) {
         console.error("Error fetching interests:", error);
     }
 }
 const deleteMode = ref(false)
 const chosenModalSkill = ref(null)
-const modalState = ref(false)
 const searchModalState = ref(false)
 function openModal(skill: any) {
     chosenModalSkill.value = skill
@@ -134,6 +116,53 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
+.close {
+    position: absolute;
+    bottom: 0;
+    left: 68%;
+    width: 40px;
+    height: 40px;
+    padding: 10px;
+    cursor: pointer;
+
+}
+
+.close {
+    @media (max-width: 768px) {
+        left: 84%;
+        width: auto;
+        height: auto;
+    }
+}
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: -100%;
+    height: 112%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.popup {
+    padding-top: 20px;
+    padding-bottom: 32px;
+    background: white;
+    border-radius: 24px;
+    max-height: 80%;
+    min-height: 40%;
+    width: 100%;
+    max-width: 768px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+
 .selected {
     background-color: #FFEBEE;
     border: 1px solid red;
@@ -217,7 +246,6 @@ onMounted(() => {
         margin-bottom: 0px;
 
         &__title {
-            margin: 1px;
             color: $def-gray;
         }
 

@@ -94,10 +94,6 @@ const isImageType = (type: string | null): boolean => {
 };
 </script>
 
-
-
-
-
 <style scoped>
 .photo-upload {
     display: flex;

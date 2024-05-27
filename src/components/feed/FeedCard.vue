@@ -1,5 +1,29 @@
 <template>
-    <div class="feedCard">
+    <div v-if="props.comment" class="feedCard">
+        <!-- head -->
+        <div class="feedCard__head">
+            <div class="d-flex align-center">
+                <img class="mr-3" width="30" height="30" src="../../assets/demo/ava-small-header.svg" />
+                <div>
+                    <div class="d-flex align-center">
+                        <p class="txt-body3">{{ props.id }}</p>
+                        <img class="mx-2" src="../../assets/icons/singeDot-gray.svg" />
+                        <span style="color: #9e9e9e" class="txt-cap1">{{ $t('feed.time') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- body -->
+        <div class="feedCard__body">
+            <p>{{ props.message }}</p>
+            <!-- footer -->
+            <div class="feedCard__footer">
+                
+            </div>
+        </div>
+    </div>
+    <div v-else class="feedCard">
         <!-- head -->
         <div class="feedCard__head">
             <div class="d-flex align-center">
@@ -61,7 +85,7 @@
             <UiButton bgColor="def" class="feedCard__footer__button" fit>
                 <p v-if="props.feedCardType != 'newProjectDiscussed'" class="txt-cap1">{{ $t('feed.GoTo') }}</p>
                 <p v-else class="txt-cap1">{{ $t('feed.comments') }}</p>
-              
+
             </UiButton>
             <div class="d-flex align-center">
                 <UiButton v-if="props.feedCardType != 'newProjectDiscussed'" bgColor="def" class="mr-3" :imgSrc="share"
@@ -79,10 +103,22 @@ import Fire from '../Fire.vue'
 import UiButton from '../ui-kit/UiButton.vue'
 import UiVacancyPanel from '../ui-kit/UiVacancyPanel.vue'
 import { computed } from 'vue'
-import { postAddUserPicture } from "~/API/ways/user";
+// import { postAddUserPicture } from "~/API/ways/user";
 
 const props = defineProps({
     feedCardType: {
+        type: String,
+        default: '',
+    },
+    comment: {
+        type: Boolean,
+        default: '',
+    },
+    message: {
+        type: String,
+        default: '',
+    },
+    id: {
         type: String,
         default: '',
     },
@@ -98,18 +134,11 @@ const props = defineProps({
         type: String,
         required: false,
     },
-    postDesc:{
+    postDesc: {
         reqired: false,
         type: String
     }
 })
-
-const demoVacancy = {
-    type: 'Driver',
-    description: `Ищем надёжного джентельмена, со своим транспортным средством, желательно без растительности на голове, c суровым взглядом и парой пушек в багажнике. 
-Вам можно доверить доставку любого груза/человека в любую точку земного шара.`,
-    offer: 'Доля в компании + ЗП + оплата расходников на авто и парикмахера',
-}
 
 const feedCardSubtitle = computed(() => {
     if (props.feedCardType === 'newProjectDiscussed') {
