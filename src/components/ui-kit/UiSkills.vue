@@ -74,7 +74,7 @@ import UiAgree from './UiAgree.vue'
 import { ref, Ref, onMounted } from 'vue'
 import { skills } from '~/helpers/skills'
 import { getInterestListGrouped } from '~/API/ways/dictionary'
-let showPopup = ref(true)
+let showPopup = ref(false)
 const props = defineProps({
     readOnly: {
         type: Boolean,

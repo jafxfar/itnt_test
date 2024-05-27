@@ -33,7 +33,7 @@
             <UiButton bgColor="def" class="searchProjectCard__footer__button" fit>Открыть проект </UiButton>
             <UiButton
                 bgColor="def"
-                imgSrc="../src/assets/icons/share-black.svg"
+                :imgSrc="share"
                 style="padding: 10px 13px 9px 14px"
                 onlyIcon
             />
@@ -42,6 +42,7 @@
 </template>
 
 <script setup lang="ts">
+import share from '../../assets/icons/share-black.svg'
 import UiButton from '../ui-kit/UiButton.vue'
 const props = defineProps({
   project: Object,
