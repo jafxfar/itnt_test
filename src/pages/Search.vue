@@ -36,15 +36,16 @@
         <!-- Карточки проектов -->
         <div v-if="searchPageSwitchState === 0">
             <div v-for="project in filteredProjects" :key="project.id">
-                <SearchProjectCard  :name="project.name" :desc-header="project.descriptionHeader"
-                    :avatar-url="project.avatarUrl" :slogan="project.slogan" />
+                <SearchProjectCard :name="project.name" :desc-header="project.descriptionHeader"
+                    :avatar-url="project.avatarUrl" :slogan="project.slogan" :id="project.id"
+                    @click="openProject(project.id)" />
             </div>
         </div>
 
         <!-- Карточки пользователей -->
         <div v-if="searchPageSwitchState === 1">
             <div v-for="user in filteredUsers" :key="user.id">
-                <SearchUserCard :id="user.id" :login="user.login" />
+                <SearchUserCard :id="user.id" :login="user.login" @click="openUser(user.id)" />
             </div>
         </div>
     </v-container>
@@ -61,16 +62,18 @@ import SearchUserCard from '~/components/search/SearchUserCard.vue'
 import SearchProjectCard from '~/components/search/SearchProjectCard.vue'
 import { ref, computed, onMounted } from 'vue';
 import { getAllProjects } from '~/API/ways/project'
-import {getUserSearch} from '~/API/ways/user'
+import { getUserSearch } from '~/API/ways/user'
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
 const searchPageSwitchState = ref(0)
 const detailsValue = ref(false)
 interface User {
-  id: number;
-  roles: Array<any>;
-  login: string;
-  confirmed: boolean;
-  errorConfirm: boolean;
-  // добавьте другие свойства пользователя по мере необходимости
+    id: number;
+    roles: Array<any>;
+    login: string;
+    confirmed: boolean;
+    errorConfirm: boolean;
 }
 interface Project {
     id: number;
@@ -79,20 +82,26 @@ interface Project {
     avatarUrl: string;
     slogan: string;
 }
+const openProject = (id) => {
+    router.push(`/project/${id}`);
+};
+const openUser = (id) => {
+    router.push(`/user/${id}`);
+};
 const users = ref<User[]>([]);
 const projects = ref<Project[]>([]);
 const searchQuery = ref('');
 const filteredUsers = computed(() => {
-  if (!Array.isArray(users.value)) {
-    console.error('Users is not an array:', users.value);
-    return [];
-  }
-  return users.value.filter(user => {
-    const searchLower = searchQuery.value.toLowerCase();
-    return Object.values(user).some(value =>
-      String(value).toLowerCase().includes(searchLower)
-    );
-  });
+    if (!Array.isArray(users.value)) {
+        console.error('Users is not an array:', users.value);
+        return [];
+    }
+    return users.value.filter(user => {
+        const searchLower = searchQuery.value.toLowerCase();
+        return Object.values(user).some(value =>
+            String(value).toLowerCase().includes(searchLower)
+        );
+    });
 });
 const filteredProjects = computed(() => {
     if (!Array.isArray(projects.value)) {
@@ -107,19 +116,19 @@ const filteredProjects = computed(() => {
     });
 });
 const fetchUsers = async () => {
-  try {
-    const response = await getUserSearch();
-    if (response.data && Array.isArray(response.data.object)) {
-      users.value = response.data.object;
-    } else {
-      console.error('Fetched data is not in expected format:', response.data);
-      users.value = [];
+    try {
+        const response = await getUserSearch();
+        if (response.data && Array.isArray(response.data.object)) {
+            users.value = response.data.object;
+        } else {
+            console.error('Fetched data is not in expected format:', response.data);
+            users.value = [];
+        }
+        console.log('Fetched users:', users.value);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        users.value = [];
     }
-    console.log('Fetched users:', users.value);
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    users.value = [];
-  }
 };
 
 const fetchProjects = async () => {

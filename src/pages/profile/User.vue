@@ -25,8 +25,9 @@
         </vue-bottom-sheet>
 
         <div v-for="(post, id) in feedInfo" :key="id" class="mt-6">
-                    <FeedCard  :post="post" :post-desc-header="post.descriptionHeader || 'Нет заголовка'" :post-desc="post.description || 'Нет описания к посту'" />
-                </div>
+            <FeedCard :post="post" :post-desc-header="post.descriptionHeader || 'Нет заголовка'"
+                :post-desc="post.description || 'Нет описания к посту'" />
+        </div>
     </v-container>
     <Footer />
 </template>

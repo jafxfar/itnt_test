@@ -2,7 +2,7 @@
     <Header showUserMinify showID />
     <ProfileHeader />
     <v-container>
-        <ProfileInfo :read-only="false"/>
+        <ProfileInfo :read-only="false" />
         <!-- <div class="mb-[48px] mt-[32px]">
             <UiCoop v-model="newStatus" :items="items" @changeValue="updateUserStatus" />
         </div> -->
@@ -31,7 +31,7 @@
                 <RatingProjectCard :listID="++id" :projectInfoSet="project" />
             </div>
 
-            <!-- <ProjectsList showAdder /> -->
+            <ProjectsList showAdder />
         </div>
 
         <div class="date mb-4 color-white rounded-xl d-inline-block">{{ $t('feed.today') }}</div>
@@ -39,7 +39,6 @@
         <div class="mt-[48px]">
             <p>Что у меня нового:</p>
             <UiButton @click="modalState.open()" bgColor="def">Расскажите, чем запомнился день</UiButton>
-            <!-- <UiInput  class="mt-2" label="Расскажите, чем запомнился день"/> -->
         </div>
         <vue-bottom-sheet ref="modalState">
             <div class="min-h-[350px]">
@@ -84,9 +83,8 @@ import RatingProjectCard from '~/components/projects/RatingProjectCard.vue'
 import { ref, onMounted } from 'vue'
 import { getUserByID, patchUser } from '~/API/ways/user'
 import { useRouter } from 'vue-router'
-import { storeToRefs } from 'pinia'
 import { useUserStore } from '~/store/user'
-const { userObj } = storeToRefs(useUserStore())
+const { userObj } = useUserStore()
 const userStore = useUserStore()
 const router = useRouter()
 

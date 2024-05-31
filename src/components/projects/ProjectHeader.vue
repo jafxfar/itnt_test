@@ -9,7 +9,7 @@ export default {
         <!-- TODO: READONLY PROJECT PICTURE -->
         <div v-if="props.readOnly || props.commentText" class="">
             <img style="width: 100%; height:fit-content;" src="../../assets/demo/project-head.svg" />
-            <img :src="prjAva" class=" m-8 p-8" />
+            <img :src="props.prjAva" class=" m-8 p-8" />
         </div>
         <div class="back w-full" v-else>
             <div style="display: flex; align-items: start" class="rounded-circle mx-auto mt-6">
@@ -74,8 +74,8 @@ import { addProjectAvatar, addFollow } from '~/API/ways/project.ts';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '~/store/projectStore'
-import { getUserNotifications, getProjectPropositions, getUserProjectPropositions, getUserPropositions } from "~/API/ways/notifications"
-import { onMounted } from "vue"
+// import { getUserNotifications, getProjectPropositions, getUserProjectPropositions, getUserPropositions } from "~/API/ways/notifications"
+// import { onMounted } from "vue"
 const route = useRoute()
 const { prjObject } = storeToRefs(useProjectStore())
 // const onlyENGletters = computed(() => {

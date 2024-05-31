@@ -57,12 +57,13 @@
         </div>
 
         <!-- footer -->
+        
         <div class="feedCard__footer">
-            <UiButton bgColor="def" class="feedCard__footer__button" fit>
+            <!-- <UiButton bgColor="def" class="feedCard__footer__button" fit>
                 <p v-if="props.feedCardType != 'newProjectDiscussed'" class="txt-cap1">{{ $t('feed.GoTo') }}</p>
                 <p v-else class="txt-cap1">{{ $t('feed.comments') }}</p>
-
-            </UiButton>
+            </UiButton> -->
+            <UiButton  onlyIcon :imgSrc="chat" is-Xsmall="true" @click="$router.push('/project/' + '/comment')" bgColor="def"/>
             <div class="d-flex align-center">
                 <UiButton v-if="props.feedCardType != 'newProjectDiscussed'" bgColor="def" class="mr-3" :imgSrc="share"
                     style="padding: 10px 13px 9px 14px" onlyIcon />
@@ -74,6 +75,7 @@
 </template>
 
 <script lang="ts" setup>
+import chat from "~/assets/icons/chat-black.svg"
 import share from "~/assets/icons/share-black.svg";
 import Fire from '../Fire.vue'
 import UiButton from '../ui-kit/UiButton.vue'

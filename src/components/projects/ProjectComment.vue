@@ -1,7 +1,7 @@
 <template>
     <Header showID showUserMinify />
     <ProjectHeader commentText :prj-name="data.name" :prjID="data.id" :prj-slogan="data.slogan" />
-    <div v-for="(comment, index) in comments" :key="comment.id" class="mx-4"> 
+    <div v-for="(comment, index) in comments" :key="comment.id" class="mx-4">
         <div class="feedCard mx-4" v-if="comment.isReply && index < 2 || showAllComments">
             <div class="feedCard__head">
                 <div class="d-flex align-center">
@@ -56,8 +56,15 @@
             </div>
         </div>
     </div>
-    <div class="mx-4" v-for="comments in prjComments">
-        <Comments :comment="true" :id="comments.user.id" :message="comments.message"/>
+    <div class="mx-4" v-for="comments in displayedComments">
+        <Comments :comment="true" :id="comments.user.id" :message="comments.message" />
+    </div>
+    <div v-if="!allCommentsShown" @click="showMoreComments" class="showMore mx-4">
+        <button class="text-[#29B6F6] ml-4">Показать еще</button>
+        <button class="bg-[#E1F5FE] rounded-[8px] px-[8px] gap-1 py-[2px] flex justify-center">
+           <p class="pl-[2px] text-[#1769AA]"> {{ remainingComments }}</p>
+            <v-icon color="#1769AA" :icon="'mdi-chevron-down'"></v-icon>
+        </button>
     </div>
     <div class="input">
         <div v-if="replyToComment">
@@ -75,22 +82,13 @@
 <script setup lang="ts">
 import Header from '~/components/Header.vue';
 import ProjectHeader from '~/components/projects/ProjectHeader.vue';
-import { ref, onMounted } from 'vue';
-import { getProjectByID, getProjectComments, addComment } from '~/API/ways/project.ts'
+import { ref, onMounted, computed } from 'vue';
+import { getProjectComments, addComment } from '~/API/ways/project.ts'
 import { useRoute } from 'vue-router'
 import Comments from '~/components/Comment.vue'
 import send from "~/assets/icons/chat.svg"
 let data = ref({})
 const route = useRoute()
-onMounted(async () => {
-    await getProjectByID(route.params.ID).then((response) => {
-        try {
-            data.value = response.data.object
-        } catch (e) {
-            console.error('error:', e)
-        }
-    })
-})
 const commentText = ref('');
 const comments = ref([]);
 let replyToComment = ref(null);
@@ -115,21 +113,28 @@ const pushComment = async () => {
     }
 }
 let showAllComments = ref(false);
+
 const showMoreComments = () => {
+    displayedComments.value = prjComments.value;
+    allCommentsShown.value = true;
     showAllComments.value = true;
-}
+
+};
+const allCommentsShown = ref(false);
+const displayedComments = ref([]);
 const prjComments = ref([])
 onMounted(async () => {
     await getProjectComments(route.params.ID).then((response) => {
         try {
-            prjComments.value = response.data.object
-            console.log(prjComments.value);
-
+            prjComments.value = response.data.object;
+            displayedComments.value = prjComments.value.slice(0, 5);
         } catch (e) {
-            console.error('error:', e)
+            console.error('error:', e);
         }
-    })
-})
+    });
+});
+const remainingComments = computed(() => prjComments.value.length - displayedComments.value.length);
+
 </script>
 <style scoped lang="scss">
 .input {
@@ -156,6 +161,17 @@ onMounted(async () => {
     }
 }
 
+.showMore {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 16px 14px;
+    margin-bottom: 4px;
+    border-radius: 0 0 12px 12px;
+    background: #fff;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
+    gap: 16px;
+}
 
 .feedCard {
     padding: 16px 14px;

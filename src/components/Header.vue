@@ -22,6 +22,7 @@ export default {
             :src="user.pictureUrl" />
             
         <img @click="toggleUserModal" style="padding: 10px" v-if="props.showControlDots" :src="dots" />
+        <img @click="toggleProjectModal" style="padding: 10px" v-if="props.showControlDotsProject" :src="dots" />
 
         <div v-if="props.search" class="d-flex w-full align-center">
             <UiInput noStyle v-model="searchBarValue" />
@@ -69,6 +70,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    showControlDotsProject: {
+        type: Boolean,
+        default: false,
+    },
     search: {
         type: Boolean,
         default: false,
@@ -92,7 +97,9 @@ function toggleTopModal() {
 function toggleUserModal(){
     user.userModalState = !user.userModalState
 }
-
+function toggleProjectModal(){
+    user.userModalState = !user.userModalState
+}
 const chosenId = computed(() => {
     return '@' + (router.params.ID ? router.params.ID : localStorage.getItem('userId'))
 })

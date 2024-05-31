@@ -33,9 +33,6 @@
             </div>
         </v-container>
     </v-col>
-    <!-- <div class="">
-        {{ feedInfo }}
-    </div> -->
     <Footer />
 </template>
 
@@ -46,7 +43,6 @@ import Footer from '~/components/Footer.vue';
 import Header from '~/components/Header.vue';
 import FeedCard from '~/components/feed/FeedCard.vue';
 import FeedPanels from '~/components/feed/FeedPanels.vue';
-import { getInterestListGrouped } from '~/API/ways/dictionary';
 let posts = ref();
 let feedInfo = ref();
 const getPosts = async () => {
@@ -58,20 +54,8 @@ const getPosts = async () => {
         console.error(error);
     }
 };
-let interestList = ref();
-const getInterestListG = async () => {
-    try {
-        const data = await getInterestListGrouped();
-        interestList.value = data;
-        console.log(data);
-    } catch (error) {
-        console.error(error);
-    }
-};
-console.log(feedInfo);
+// console.log(feedInfo);
 onMounted(getPosts);
-onMounted(getInterestListG)
-console.log(interestList.value)
 </script>
 
 <style lang="scss" scoped>

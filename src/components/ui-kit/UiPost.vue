@@ -12,7 +12,7 @@ export default {
         </div>
 
         <div class="ui-vacancyPanel__inputs">
-            <UiInput label="Текст записи*" v-model="props.data.type" />
+            <UiInput label="Текст записи*" v-model="localData.type" />
             <!-- <UiTextArea label="Описание*"  v-model="props.data.description" /> -->
 
             <!-- Показываем кнопку "Добавить фотографии" только если блок фотографий не отображается -->
@@ -49,7 +49,7 @@ export default {
                 </div>
             </template>
 
-            <UiInput label="Что мы предлагаем* " class="mt-[48px]" v-model="props.data.offer" />
+            <UiInput label="Что мы предлагаем* " class="mt-[48px]" v-model="localData.offer" />
             <UiButton bg-color="def">Добавить обложку для записи <input type="file"></UiButton>
             <UiButton @click="postBlog" bg-color="smBlue" class="mt-[48px]">Опубликовать</UiButton>
         </div>
@@ -58,35 +58,38 @@ export default {
 
 <script lang="ts" setup>
 import scrip from "~/assets/demo/scrip.svg"
-import { defineProps, ref, } from 'vue';
 import UiButton from './UiButton.vue';
 import UiInput from './UiInput.vue';
-import UiTextArea from './UiTextArea.vue';
 import file from "~/assets/icons/media/ppt-blue.svg"
 import { addPost } from "~/API/ways/user";
 import { usePostStore } from '~/store/post';
-import { useRoute } from 'vue-router';
+import { ref, watch, withDefaults } from 'vue';
 const postStore = usePostStore();
-const router = useRoute();
-const props = defineProps({
-    data: {
-        type: Object || Array,
-        default: () => [],
-    },
-    card: {
-        type: Boolean,
-        default: false,
-    },
-    readOnly: {
-        type: Boolean,
-        default: false,
-    },
+
+const props = withDefaults(defineProps<{
+  data?: {
+    type: string;
+    offer: string;
+  };
+}>(), {
+  data: {
+    type: '',
+    offer: '',
+  },
+});
+
+const localData = ref({ ...props.data });
+
+watch(() => props.data, (newVal) => {
+  if (newVal) {
+    localData.value = { ...newVal };
+  }
 });
 // const chosenId = computed(() => {
 //     return '@' + (router.params.ID ? router.params.ID : localStorage.getItem('userId'))
 // })
 async function postBlog() {
-    await addPost(props.data.type,props.data.offer, Number(localStorage.getItem('userId'))).then((response: any) => {
+    await addPost(localData.value.type, localData.value.offer, Number(localStorage.getItem('userId'))).then((response: any) => {
         try {
             console.log(response)
             postStore.addPost(response.data.object)

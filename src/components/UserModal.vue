@@ -49,9 +49,9 @@ function onModalClick(item) {
     }
 }
 
-async function sendComplaint(text) {
+async function sendComplaint() {
     try {
-        const response = await postAddComplaint({ complaintInfo: text });
+        const response = await postAddComplaint(19, 'some text');
         console.log('Жалоба успешно отправлена:', response);
         // Обработка успешного ответа...
     } catch (error) {
@@ -64,7 +64,7 @@ const modalItems: modalActionsList[] = [
     {
         name: 'Написать сообщение',
         icon: msg_route,
-        route: '/me/edit',
+        route: `/messenger/chat/${user.id}`,
     },
     {
         name: 'Поделиться этим профилем',

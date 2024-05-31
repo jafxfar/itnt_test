@@ -42,7 +42,7 @@ export default {
             <!-- <div>{{ card.info }}</div> -->
             <div>
                 <p class="card__main__text txt-cap1">
-                    {{ props.projectInfoSet.description }}
+                    {{ props.projectInfoSet.descriptionHeader }}
                 </p>
 
                 <div @click="$router.push('/project/' + props.projectInfoSet.id)" class="card__main__route">
@@ -150,6 +150,7 @@ const modalItems: modalActionsList[] = [
         icon: warning,
     },
 ]
+console.log(props.projectInfoSet)
 </script>
 
 <style lang="scss" scoped>

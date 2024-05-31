@@ -27,10 +27,10 @@
                 </p>
             </div>
         </div>
-        <h1 class="bg-black">{{ props.id }}</h1>
+        <h1 class="">{{ props.id }}</h1>
 
         <div class="searchProjectCard__footer">
-            <UiButton bgColor="def" class="searchProjectCard__footer__button" fit>Открыть проект </UiButton>
+            <UiButton bgColor="def" class="searchProjectCard__footer__button" fit @click="openProject">Открыть проект </UiButton>
             <UiButton
                 bgColor="def"
                 :imgSrc="share"
@@ -44,6 +44,7 @@
 <script setup lang="ts">
 import share from '../../assets/icons/share-black.svg'
 import UiButton from '../ui-kit/UiButton.vue'
+import { useRouter } from 'vue-router';
 const props = defineProps({
   project: Object,
   desc: String,
@@ -53,6 +54,11 @@ const props = defineProps({
   type: String,
   id: Number
 })
+const router = useRouter()
+const openProject = () => {
+    router.push(`/project/${props.id}`)
+    console.log(props.id)
+}
 </script>
 
 <style scoped lang="scss">

@@ -92,16 +92,21 @@
         <vue-bottom-sheet ref="searchTeammateModal">
             <div class="searchTeammateModal modal">
                 <p class="mb-2">Поиск человека для добавления в проект</p>
-                <UiInput prepend-icon="magnify" label="Введите данные для поиска" v-model="searchTerm" />
+                <UiInput prepend-icon="magnify" label="Введите данные для поиска" v-model="searchQuery" />
                 <div class="searchTeammateModal__items">
-                    <div class="searchTeammateModal__item" v-for="(user, index) in filteredUsers" :key="index">
-                        <img width="37" height="37" src="../../assets/demo/ava-small-header.svg" alt="" />
+                    <div v-for="user in filteredUsers" :key="user.id" class="d-flex align-center">
+                        <img class="mr-3" width="37" height="37" src="../../assets/demo/ava-small-header.svg" />
                         <div>
-                            <p class="txt-body2">{{ user.name }}</p>
-                            <p class="color-gray txt-body2">{{ user.team }}</p>
+                            <div class="d-flex align-center">
+                                <p class="txt-body3">{{ user.id }}</p>
+                            </div>
+                            <!-- <p class="searchUserCard__head__subtitle txt-cap1">г. Санкт-Петербург</p> -->
+                            <p class="searchUserCard__head__subtitle txt-cap1">{{ user.login }}</p>
                         </div>
+                        
                     </div>
                 </div>
+                
             </div>
         </vue-bottom-sheet>
 
@@ -160,20 +165,58 @@
 </template>
 
 <script setup lang="ts">
+import SearchUserCard from "../search/SearchUserCard.vue"
 import account from "~/assets/icons/account-blue.svg"
 import UiButton from '../ui-kit/UiButton.vue'
 import UiInput from '../ui-kit/UiInput.vue'
 import { modalActionsList } from '~/helpers/types'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
-import { ref, watch } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
 import { getUserByID } from '~/API/ways/user';
 import { reactToProposition } from '~/API/ways/notifications.ts';
-// import { getUserSearch } from './user.ts'; 
+import { getUserSearch } from '~/API/ways/user.ts';
+interface User {
+    id: number;
+    roles: Array<any>;
+    login: string;
+    confirmed: boolean;
+    errorConfirm: boolean;
+}
+const users = ref<User[]>([]);
+const searchQuery = ref('');
+
 enum Answer {
     Yes = "YES",
     No = "NO"
 }
+const filteredUsers = computed(() => {
+    if (!Array.isArray(users.value)) {
+        console.error('Users is not an array:', users.value);
+        return [];
+    }
+    return users.value.filter(user => {
+        const searchLower = searchQuery.value.toLowerCase();
+        return Object.values(user).some(value =>
+            String(value).toLowerCase().includes(searchLower)
+        );
+    });
+});
+const fetchUsers = async () => {
+    try {
+        const response = await getUserSearch();
+        if (response.data && Array.isArray(response.data.object)) {
+            users.value = response.data.object;
+        } else {
+            console.error('Fetched data is not in expected format:', response.data);
+            users.value = [];
+        }
+        console.log('Fetched users:', users.value);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        users.value = [];
+    }
+};
 
 const sendProp = async (propositionAnswer: Answer) => {
     try {
@@ -195,31 +238,9 @@ const props = defineProps({
         type: Object,
     },
 })
-let searchTerm = ref('');
-let users = ref([]);
 let approvedUsers = ref([]);
 
-const approveUser = (user) => {
-    approvedUsers.value.push(user);
-    // Закрытие модального окна. Убедитесь, что у вас есть функция modalState.close()
-    //   this.modalState.close();
-};
-
-watch(searchTerm, async (newSearchTerm) => {
-    if (newSearchTerm) {
-        users.value = await getUserByID(Number(newSearchTerm));
-    } else {
-        users.value = [];
-    }
-});
-
-// watch(searchTerm, async (newSearchTerm) => {
-//   if (newSearchTerm) {
-//     users.value = await getUserSearch(undefined, undefined, undefined, undefined, undefined, newSearchTerm);
-//   } else {
-//     users.value = [];
-//   }
-// });
+// 
 const modalState = ref(null)
 const searchTeammateModal = ref(null)
 const joinTeam = ref(null)
@@ -264,6 +285,8 @@ const joinTeamModalItems: modalActionsList[] = [
         icon: 'account',
     },
 ]
+onMounted(fetchUsers);
+
 </script>
 
 <style lang="scss" scoped>

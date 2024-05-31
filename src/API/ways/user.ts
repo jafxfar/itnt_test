@@ -33,8 +33,11 @@ const postAddBackgroundPicture = (picLink: FormData) => {
     return API.post(`${prefix}/addBackgroundPicture`, picLink)
 }
 
-const postAddComplaint = (complaintData: ComplaintData[]) => {
-    return API.post(`${prefix}/addComplaint`, complaintData);
+const postAddComplaint = (id:number , complaintInfo:String) => {
+    return API.post(`${prefix}/${id}/addComplaint`, {
+        id: id,
+        complaintInfo: complaintInfo
+    });
 }
 
 const deleteUserPicture = (id: Number) => {
