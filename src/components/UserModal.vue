@@ -36,11 +36,11 @@ const user = useUserStore()
 const router = useRouter()
 
 function onClickOutside() {
-    user.topModalState = false
+    user.userObj.topModalState = false
 }
 
 function onModalClick(item) {
-    user.topModalState = false;
+    user.userObj.topModalState = false;
     if (item.name === 'Сообщить о нарушении') {
         const complaintText = 'Сообщить о нарушении'; // Текст жалобы
         sendComplaint(complaintText);

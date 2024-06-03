@@ -96,6 +96,7 @@ onMounted(async () => {
         try {
             data.value = response.data.object
             console.log(data.value)
+            console.log(data.value.projects[1].relationType)
         } catch (e) {
             console.error('text error:', e)
         }

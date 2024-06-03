@@ -60,7 +60,7 @@ const modalItems: modalActionsList[] = [
     {
         name: 'Мои подписки',
         icon: subscribe,
-        route: '/me/edit',
+        route: '/me/followed',
     },
     {
         name: 'Поделиться',

@@ -12,7 +12,7 @@
 
     <v-col>
         <!-- Первый этап -->
-        <div v-if="pageStep === 1" class="screening__first mt-[30s%]">
+        <div v-show="pageStep === 1" class="screening__first">
             <UiInput v-model="user.firstName" placeholder="Представьтесь" label="Как другим участникам вас называть?"
                 prepend-icon="account-outline" />
             <!-- Кнопка активна, если длина строки больше двух символов -->
@@ -21,7 +21,7 @@
             </UiButton>
         </div>
         <!-- Навигация этапов -->
-        <div v-else-if="pageStep === 2">
+        <div v-show="pageStep === 2">
             <v-col class="text-center pa-0 pt-16">
                 <p class="ma-0">{{ user.firstName }}, хотите выглядеть особенно?</p>
             </v-col>
@@ -29,7 +29,7 @@
                 <v-file-input height="200" v-model="user.pictureUrl" accept="image/png, image/jpeg, image/bmp"
                     class="input-file">
                 </v-file-input>
-                <img src="../../assets/img/regSteps/addProfilePic.svg" v-if="user.pictureUrl == ''"
+                <img src="../../assets/img/regSteps/addProfilePic.svg" v-show="user.pictureUrl == ''"
                     class="rounded-circle mx-auto" height="208" width="208" />
                 <!-- v-show="user.pictureUrl != ''" -->
                 <img v-if="blobPic" class="rounded-circle mx-auto" height="208" width="208" :src="blobPic" />
@@ -39,15 +39,16 @@
 
             <UiButton @click="pageStep += 1" bgColor="def"> Пропустить </UiButton>
         </div>
-        <div v-else-if="pageStep === 3">
+
+        <div v-show="pageStep === 3">
             <v-col class="text-center pa-0 pt-16">
                 <p class="ma-0">Откуда вы?</p>
             </v-col>
             <v-col class="mt-6">
-                <v-select v-model="user.country" variant="outlined" color="#29b6f6" label="Страна" class="rounded-lg mb-2"
+                <v-select v-model="user.country" variant="outlined" label="Страна" class="rounded-lg mb-2"
                     :items="Object.keys(list)" :item-text="'name'" :menu-props="{ bottom: true, offsetY: true }"
                     hide-details></v-select>
-                <v-select v-model="user.city" :disabled="user.country ? false : true" variant="outlined" color="blue"
+                <v-select v-model="user.city" :disabled="user.country ? false : true" variant="outlined"
                     label="Выберите город" class="rounded-lg" :item-text="'name'"
                     :menu-props="{ bottom: true, offsetY: true, maxHeight: '300' }"
                     :items="(list as any)[user.country]"></v-select>
@@ -56,7 +57,7 @@
                 <UiButton @click="pageStep += 1" bgColor="def" class="mt-4"> Пропустить </UiButton>
             </v-col>
         </div>
-        <div v-else-if="pageStep === 4">
+        <div v-show="pageStep === 4">
             <v-col class="text-center pl-3 pr-3 pt-16">
                 <!-- Подсказка -->
                 <UiPrompt style="margin-bottom: 24px">
@@ -89,29 +90,18 @@ import UiButton from '~/components/ui-kit/UiButton.vue'
 import UiInput from '~/components/ui-kit/UiInput.vue'
 import UiPrompt from '~/components/ui-kit/UiPrompt.vue'
 import UiSkills from '~/components/ui-kit/UiSkills.vue'
-
-import { reactive, ref, watchEffect, onMounted } from 'vue'
-import { postAddUserPicture, patchUser } from '~/API/ways/user'
 import Header from '~/components/Header.vue'
 import Arr from '~/helpers/set.ts'
-import { getCountryList, getCityList } from '~/API/ways/dictionary'
+import { getCountryList } from '~/API/ways/dictionary'
 import { useRouter } from 'vue-router'
-import {useUserStore} from '~/store/user'
+import { reactive, ref, watch, onMounted } from 'vue'
+import { postAddUserPicture, patchUser } from '~/API/ways/user'
+import { useUserStore } from '~/store/user'
+const router = useRouter()
 const list = ref(Arr)
 const userStore = useUserStore() // используем хранилище
 
-onMounted(async () => {
-    try {
-        const countryResponse = await getCountryList();
-        console.log(countryResponse);
-        const cityResponse = await getCityList();
-        console.log(cityResponse);
-    } catch (error) {
-        console.error(error);
-    }
-})
 
-const router = useRouter()
 const blobPic = ref('')
 const pageStep = ref(1)
 const maxReachedStep = ref(4);
@@ -146,76 +136,72 @@ const getProgressBarStyle = (step: number) => {
 
 
 const user = reactive({
-    city: null,
-    country: null,
+    city: '',
+    country: '',
     pictureUrl: '',
     firstEntry: false,
     firstName: '',
     id: localStorage.getItem('userId'),
     roles: [''],
 })
+onMounted(async () => {
+    await getCountryList().then((response: any) => {
+        console.log(response)
+    })
+})
 
-// function sendDataM(data) {
-//     user.roles = data.skills
-// }
+
 
 async function selectProfilePic() {
     let formData = new FormData()
-
     formData.append('file', user.pictureUrl[0])
     formData.append('mainPicture', 'true')
-
-    try {
-        const response = await postAddUserPicture(formData);
-        userStore.pictureUrl = response.data.imageUrl;
-        userStore.backgroundPictureUrl = response.data.backgroundPictureUrl; // сохраняем backgroundPictureUrl в хранилище
-        blobPic.value = URL.createObjectURL(user.pictureUrl[0]) // обновляем blobPic
-        pageStep.value += 1;
-        console.log(useUserStore().pictureUrl);
-        console.log(useUserStore().backgroundPictureUrl); // выводим backgroundPictureUrl в консоль
-        console.log(response);
-        
-    } catch (e) {
-        console.error('error text:', e);
-    }
+    await postAddUserPicture(formData)
+        .then((response: any) => {
+            console.log(response)
+        })
+        .catch((e: Error) => {
+            console.error('error text:', e)
+        })
+        .finally(() => (pageStep.value += 1))
 }
-
 function addAvatar() {
     blobPic.value = URL.createObjectURL(user.pictureUrl[0])
-
 }
-
 async function saveProfile() {
     isLoading.value = true;
-    try {
-        const userStore = useUserStore();
-        const response = userStore.updateUser(user);
-        console.log('Response:', response);
-        console.log(response)
-        if (response.operationResult === 'OK') {
-            setTimeout(() => {
-                isLoading.value = false;
-                showCheckmark.value = true;
+    patchUser(user).then((response: any) => {
+        try {
+            console.log(response)
+            if (response.data.operationResult === 'OK') {
                 setTimeout(() => {
-                    showCheckmark.value = false;
-                    showOverlay.value = true;
+                    isLoading.value = false;
+                    showCheckmark.value = true;
                     setTimeout(() => {
-                        showOverlay.value = false;
-                        router.push('/me');
-                    }, 500);
-                }, 1000);
-            }, 3000);
+                        showCheckmark.value = false;
+                        showOverlay.value = true;
+                        setTimeout(() => {
+                            showOverlay.value = false;
+                            router.push('/me');
+                        }, 500);
+                    }, 1000);
+                }, 3000);
+            }
+        } catch (error) {
+            console.log(error)
         }
-    } catch (error) {
-        console.log(error)
-    }
+    })
 }
 
-watchEffect(() => {
-    if (user.pictureUrl) {
-        addAvatar()
-    }
-})
+watch(
+    user,
+    () => {
+        if (user.pictureUrl) {
+            addAvatar()
+        }
+    },
+    { deep: true }
+)
 
 </script>
 

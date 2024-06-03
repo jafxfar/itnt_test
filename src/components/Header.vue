@@ -19,39 +19,39 @@ export default {
             @click="toggleTopModal"
             style="padding: 10px"
             v-if="props.showUserMinify === true"
-            :src="user.pictureUrl" />
+            :src="user.userObj.pictureUrl" />
             
         <img @click="toggleUserModal" style="padding: 10px" v-if="props.showControlDots" :src="dots" />
         <img @click="toggleProjectModal" style="padding: 10px" v-if="props.showControlDotsProject" :src="dots" />
 
         <div v-if="props.search" class="d-flex w-full align-center">
-            <UiInput noStyle v-model="searchBarValue" />
+            <!-- <UiInput noStyle v-model="searchBarValue" /> -->
             <v-spacer />
-            <v-icon @click="searchValueByHeader" icon="mdi-magnify" />
+            <v-icon icon="mdi-magnify" />
         </div>
     </v-app-bar>
-    <UserModal v-if="user.userModalState === true" />
+    <UserModal v-if="user.userObj.userModalState === true" />
 
-    <TopModal v-if="user.topModalState === true" />
+    <TopModal v-if="user.userObj.topModalState === true" />
 </template>
 
 <script lang="ts" setup>
 import dots from "~/assets/icons/dots-black.svg"
 import UserModal from './UserModal.vue'
 import TopModal from './TopModal.vue'
-import UiInput from './ui-kit/UiInput.vue'
+// import UiInput from './ui-kit/UiInput.vue'
 
-import { storeToRefs } from 'pinia'
+// import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '~/store/user'
 
-import { getProjectsByValue } from '~/API/ways/project'
+// import { getProjectsByValue } from '~/API/ways/project'
 
 const router = useRoute()
 const user = useUserStore()
 
-const { searchBarValue, searchBarResponse } = storeToRefs(useUserStore())
+// const { searchBarValue, searchBarResponse } = storeToRefs(useUserStore())
 
 const props = defineProps({
     showLogo: {
@@ -84,21 +84,15 @@ const props = defineProps({
     },
 })
 
-async function searchValueByHeader() {
-    await getProjectsByValue(searchBarValue.value).then((response) => {
-        console.log(response.data.object.content)
-        searchBarResponse.value = response.data.object.content
-    })
-}
 
 function toggleTopModal() {
-    user.topModalState = !user.topModalState
+    user.userObj.topModalState = !user.userObj.topModalState
 }
 function toggleUserModal(){
-    user.userModalState = !user.userModalState
+    user.userObj.userModalState = !user.userObj.userModalState
 }
 function toggleProjectModal(){
-    user.userModalState = !user.userModalState
+    user.userObj.userModalState = !user.userObj.userModalState
 }
 const chosenId = computed(() => {
     return '@' + (router.params.ID ? router.params.ID : localStorage.getItem('userId'))
