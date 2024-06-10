@@ -74,37 +74,12 @@ import { addProjectAvatar, addFollow } from '~/API/ways/project.ts';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '~/store/projectStore'
-// import { getUserNotifications, getProjectPropositions, getUserProjectPropositions, getUserPropositions } from "~/API/ways/notifications"
-// import { onMounted } from "vue"
 const route = useRoute()
 const { prjObject } = storeToRefs(useProjectStore())
 // const onlyENGletters = computed(() => {
 //     var reg = /^[a-z]+$/i
 //     return '+' + prjObject.nickName.match(reg)[0]
 // })
-// const getUserProp = async () => {
-//     try {
-//         const response = await getUserPropositions(Number(localStorage.getItem("userId")))
-//         console.log(response)
-//     } catch (error) {
-//         console.error('Ошибка при получении предложений пользователя:', error)
-//     }
-// }
-// const getUserProp = async () => {
-//     try {
-//         const response = await getProjectPropositions(route.params.ID)
-//         console.log(response ,"getProjectPropositions")
-//     } catch (error) {
-//         console.error('Ошибка при получении предложений пользователя:', error)
-//     }
-// }
-// const getUserProjectProp = async () => {
-//     try {
-//         const response = await getUserProjectPropositions(route.params.ID, localStorage.getItem("userId"))
-//         console.log(response ,"getUserProjectPropositions")
-//     } catch (error) {
-//         console.error('Ошибка при получении предложений пользователя:', error)
-//     }
 // }
 const props = defineProps({
     readOnly: {
@@ -169,9 +144,6 @@ async function follow() {
         console.error('Ошибка при подписке на проект:', error);
     }
 }
-// onMounted(() => {
-//     getUserProp(),getUserProjectProp()
-// })
 </script>
 
 <style lang="scss" scoped>

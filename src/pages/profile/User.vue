@@ -49,7 +49,28 @@ import { useUserStore } from '~/store/user'; // убедитесь, что пу�
 import { onMounted, ref } from 'vue';
 import { getPost } from '~/API/ways/user';
 import FeedCard from '~/components/feed/FeedCard.vue';
+import { getUserPropositions,getUserNotifications } from '~/API/ways/notifications'
+onMounted (async () => {
+    //есть 6 ответов в id 1
+    await getUserNotifications(1).then((response) => {
+        try {
+            console.log('response', response)
+        } catch (e) {
+            console.error('text error:', e)
+        }
+    })
+})
 
+onMounted (async () => {
+    //есть 2 ответа в userId 1
+    await getUserPropositions(5).then((response) => {
+        try {
+            console.log('response', response)
+        } catch (e) {
+            console.error('text error:', e)
+        }
+    })
+})
 let posts = ref();
 let feedInfo = ref();
 const userId = Number(localStorage.getItem('userId'));
@@ -63,10 +84,7 @@ const getPosts = async () => {
         console.error(error);
     }
 };
-console.log(feedInfo);
 onMounted(getPosts);
-
-
 const userStore = useUserStore(); // Инициализируйте userStore
 let userInfo = ref({})
 const modalState = ref(null)
@@ -95,8 +113,6 @@ onMounted(async () => {
     await getUserByID(Number(localStorage.getItem("userId"))).then((response) => {
         try {
             data.value = response.data.object
-            console.log(data.value)
-            console.log(data.value.projects[1].relationType)
         } catch (e) {
             console.error('text error:', e)
         }

@@ -4,7 +4,8 @@
             <p v-show="props.readOnly" style="color: #263238" class="txt-cap2">Наша команда:</p>
             <p v-show="!props.readOnly" style="color: #263238" class="txt-cap2">Участники проекта:</p>
 
-            <UiButton @click="joinTeam.open()" fit style="height: 36px; padding: 11px 16px" bgColor="smBlue" isSmall>
+            <UiButton @click="searchTeammateModal.open()" fit style="height: 36px; padding: 11px 16px" bgColor="smBlue"
+                isSmall>
                 <p class="txt-cap2">Заявки</p>
             </UiButton>
             <vue-bottom-sheet max-height="115px" full-screen ref="modalState">
@@ -20,13 +21,13 @@
         <!-- READONLY -->
         <div v-if="props.readOnly" class="projectTeam">
             <div class="projectTeam__list">
-                <div v-for="user in approvedUsers">
+                <div v-for="users in teamMembers">
                     <div class="projectTeam__item d-flex justify-space-between">
                         <div class="d-flex projectTeam__item__main">
                             <img class="mr-5" src="../../assets/demo/projectsmallphoto.svg" alt="" />
                             <div class="txt-body2">
-                                <p style="color: #263238">{{ user }}Евгений Анисимов</p>
-                                <p style="color: #9e9e9e"> Database ninja</p>
+                                <p style="color: #263238">{{ users.user.login }}</p>
+                                <p style="color: #9e9e9e"> {{ users.user.id }}</p>
                             </div>
                         </div>
                         <v-icon @click="modalState.open()" icon="mdi-dots-vertical" />
@@ -47,24 +48,28 @@
         <!-- EDITABLE -->
         <div v-else>
             <div class="projectTeam__list">
-                <div v-for="user in approvedUsers">
-                    <div class="projectTeam__item--edit d-flex justify-space-between">
-                        <div class="projectTeam__item__header--edit">
-                            <div class="d-flex">
-                                <img class="mr-7" width="37" height="37" src="../../assets/demo/ava-small-header.svg"
-                                    alt="" />
+                <div class="projectTeam__list">
+                    <div v-for="users in teamMembers">
+                        <div class="projectTeam__item--edit d-flex justify-space-between">
+                            <div class="projectTeam__item__header--edit">
+                                <div class="d-flex">
+                                    <img class="mr-7" width="37" height="37"
+                                        src="../../assets/demo/ava-small-header.svg" alt="" />
 
-                                <p class="txt-body2">{{ user }}Нейромонах Феофан</p>
+                                    <p class="txt-body2"> {{ users.user.login }}</p>
+                                </div>
+                                <div class="d-flex">
+                                    <!-- <div class="isCEO">CEO</div> -->
+                                    <div class="isCEO"> {{ users.user.id }}
+                                    </div>
+
+                                    <v-icon @click="modalState.open()" icon="mdi-dots-vertical" />
+                                </div>
                             </div>
-                            <div class="d-flex">
-                                <!-- TODO: проверка что участник CEO проекта -->
-                                <div class="isCEO">CEO</div>
-                                <v-icon @click="modalState.open()" icon="mdi-dots-vertical" />
+                            <div class="projectTeam__item__body--edit">
+                                <v-icon icon="mdi-eye-off-outline" />
+                                <UiInput style="max-width: 250px" label="Должность*" />
                             </div>
-                        </div>
-                        <div class="projectTeam__item__body--edit">
-                            <v-icon icon="mdi-eye-off-outline" />
-                            <UiInput style="max-width: 250px" label="Должность*" />
                         </div>
                     </div>
                 </div>
@@ -103,79 +108,84 @@
                             <!-- <p class="searchUserCard__head__subtitle txt-cap1">г. Санкт-Петербург</p> -->
                             <p class="searchUserCard__head__subtitle txt-cap1">{{ user.login }}</p>
                         </div>
-                        
+
                     </div>
                 </div>
-                
+
             </div>
         </vue-bottom-sheet>
 
-        <vue-bottom-sheet ref="joinTeam">
-            <p class="mb-2 p-4">К команде iTalent хотят присоединиться пользователи:</p>
-            <div class="searchTeammateModal__items" v-for="item in editableModalItems">
-                <v-expansion-panels>
-                    <v-expansion-panel class="feedPanel">
-                        <v-expansion-panel-title class="feedPanel__head">
-                            <template v-slot:actions="{ expanded }">
-                                <div class="">
-                                    <UiButton class="w-[80px] p-5 mr-24" v-if="!expanded" isxSmall
-                                        @click="modalState.open()" bg-color="def">Чат</UiButton>
+        <vue-bottom-sheet full-screen ref="searchTeammateModal">
+            <div class="searchTeammateModal modal">
+                <p class="mb-2 p-4">К команде iTalent хотят присоединиться пользователи:</p>
+                <div class="searchTeammateModal__item " v-for="users in teamMembers">
+                    <v-expansion-panels>
+                        <v-expansion-panel class="feedPanel">
+                            <v-expansion-panel-title class="feedPanel__head">
+                                <template v-slot:actions="{ expanded }">
+                                    <div class="">
+                                        <UiButton class="w-[80px] p-5 mr-24" v-if="!expanded" isxSmall
+                                            @click="modalState.open()" bg-color="def">Чат</UiButton>
+                                    </div>
+
+                                    <v-icon :class="expanded ? 'px-6 py-3 rounded-xl' : ''"
+                                        class="bg-[#e1f5fe] px-6 mt-[18px] py-3 rounded-xl" color="#1769AA"
+                                        :icon="expanded ? 'mdi-chevron-up' : ' mdi-chevron-down'"></v-icon>
+                                </template>
+                                <img width="30" height="30" class="mr-3" src="../../assets/demo/ava-small-header.svg"
+                                    alt="" />
+
+                                <div>
+                                    <div class="feedPanel__card__title align-center d-flex">
+                                        <p class="txt-body3">{{users.user.login}}</p>
+                                        <img class="mx-2" src="../../assets/icons/singeDot-gray.svg" />
+                                        <span style="color: #9e9e9e" class="txt-cap1">{{ $t('feedPanels.time') }}</span>
+                                    </div>
+                                    <p class="color-gray txt-body2">Team mood</p>
                                 </div>
+                                <v-spacer></v-spacer>
 
-                                <v-icon :class="expanded ? 'px-6 py-3 rounded-xl' : ''"
-                                    class="bg-[#e1f5fe] px-6 mt-[18px] py-3 rounded-xl" color="#1769AA"
-                                    :icon="expanded ? 'mdi-chevron-up' : ' mdi-chevron-down'"></v-icon>
-                            </template>
-                            <img width="30" height="30" class="mr-3" src="../../assets/demo/ava-small-header.svg"
-                                alt="" />
+                                <v-spacer></v-spacer>
+                                <div class="back-messages-after"></div>
+                            </v-expansion-panel-title>
 
-                            <div>
-                                <div class="feedPanel__card__title align-center d-flex">
-                                    <p class="txt-body3">Danger Flower</p>
-                                    <img class="mx-2" src="../../assets/icons/singeDot-gray.svg" />
-                                    <span style="color: #9e9e9e" class="txt-cap1">{{ $t('feedPanels.time') }}</span>
+                            <v-expansion-panel-text v-if="!props.readOnly" v-for="(info, id) in demoInfo" :key="id">
+                                <div class="feedPanel__card d-flex align-center">
+                                    <div class="ui-vacancyPanel__head mb-2">
+                                        Здравствуйте! Кажется я тот, кого вы ищете!
+                                    </div>
+
+                                    <v-spacer />
                                 </div>
-                                <p class="color-gray txt-body2">Team mood</p>
-                            </div>
-                            <v-spacer></v-spacer>
-
-                            <v-spacer></v-spacer>
-                            <div class="back-messages-after"></div>
-                        </v-expansion-panel-title>
-
-                        <v-expansion-panel-text v-if="!props.readOnly" v-for="(info, id) in demoInfo" :key="id">
-                            <div class="feedPanel__card d-flex align-center">
-                                <div class="ui-vacancyPanel__head mb-2">
-                                    Здравствуйте! Кажется я тот, кого вы ищете!
+                                <div class="flex flex-row gap-8">
+                                    <UiButton isSmall bg-color="def" @click="react(Answer.No)">Отклонить</UiButton>
+                                    <UiButton isxSmall bg-color="def">Чат</UiButton>
+                                    <UiButton isSmall @click="react(Answer.Yes)" bg-color="smBlue">Одобрить
+                                    </UiButton>
                                 </div>
-
-                                <v-spacer />
-                            </div>
-                            <div class="flex flex-row gap-8">
-                                <UiButton isSmall bg-color="def" @click="sendProp(Answer.No)">Отклонить</UiButton>
-                                <UiButton isxSmall bg-color="def">Чат</UiButton>
-                                <UiButton isSmall @click="sendProp(Answer.Yes)" bg-color="smBlue">Одобрить</UiButton>
-                            </div>
-                        </v-expansion-panel-text>
-                    </v-expansion-panel>
-                </v-expansion-panels>
+                            </v-expansion-panel-text>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </div>
             </div>
+
         </vue-bottom-sheet>
     </div>
 </template>
 
 <script setup lang="ts">
-import SearchUserCard from "../search/SearchUserCard.vue"
 import account from "~/assets/icons/account-blue.svg"
 import UiButton from '../ui-kit/UiButton.vue'
 import UiInput from '../ui-kit/UiInput.vue'
 import { modalActionsList } from '~/helpers/types'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
-import { ref, watch, computed, onMounted } from 'vue'
-import { getUserByID } from '~/API/ways/user';
+import { ref, computed, onMounted } from 'vue'
 import { reactToProposition } from '~/API/ways/notifications.ts';
 import { getUserSearch } from '~/API/ways/user.ts';
+import { getProjectPropositions, getUserProjectPropositions } from "~/API/ways/notifications.ts"
+import { useRoute } from 'vue-router'
+const route = useRoute()
 interface User {
     id: number;
     roles: Array<any>;
@@ -183,6 +193,15 @@ interface User {
     confirmed: boolean;
     errorConfirm: boolean;
 }
+const props = defineProps({
+    readOnly: {
+        type: Boolean,
+        default: false,
+    },
+    team: {
+        type: Object,
+    },
+})
 const users = ref<User[]>([]);
 const searchQuery = ref('');
 
@@ -190,9 +209,26 @@ enum Answer {
     Yes = "YES",
     No = "NO"
 }
+const teamMembers = ref([]);
+onMounted(async () => {
+    //есть два ответа в id 10
+    const response = await getProjectPropositions(Number(route.params.ID));
+    teamMembers.value = response.data.object;
+    console.log('getProjectPropositions', response )
+})
+onMounted (async () => {
+    //есть 2 ответов в projectId 10 и userId 1
+    await getUserProjectPropositions(Number(route.params.ID),localStorage.getItem('userId')).then((response) => {
+        try {
+            console.log('getUserProjectPropositions', response)
+        } catch (e) {
+            console.error('text error:', e)
+        }
+    })
+})
 const filteredUsers = computed(() => {
     if (!Array.isArray(users.value)) {
-        console.error('Users is not an array:', users.value);
+        // console.error('Users is not an array:', users.value);
         return [];
     }
     return users.value.filter(user => {
@@ -211,16 +247,15 @@ const fetchUsers = async () => {
             console.error('Fetched data is not in expected format:', response.data);
             users.value = [];
         }
-        console.log('Fetched users:', users.value);
+        // console.log('Fetched users:', users.value);
     } catch (error) {
         console.error('Error fetching users:', error);
         users.value = [];
     }
 };
-
-const sendProp = async (propositionAnswer: Answer) => {
+const react = async (propositionAnswer: Answer) => {
     try {
-        const propositionId = 1; // replace with actual proposition id
+        const propositionId = 3;
 
         const response = await reactToProposition(propositionAnswer, propositionId);
         console.log(response);
@@ -229,16 +264,6 @@ const sendProp = async (propositionAnswer: Answer) => {
         console.error('Error sending proposition:', error);
     }
 };
-const props = defineProps({
-    readOnly: {
-        type: Boolean,
-        default: false,
-    },
-    team: {
-        type: Object,
-    },
-})
-let approvedUsers = ref([]);
 
 // 
 const modalState = ref(null)

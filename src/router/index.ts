@@ -6,6 +6,8 @@ import User from '~/pages/profile/User.vue'
 import UserEdit from '~/pages/profile/UserEdit.vue'
 import UserRead from '~/pages/profile/UserRead.vue'
 import UserFollowed from '~/pages/profile/UserFollowed.vue'
+import UserNotification from '~/pages/profile/UserNotification.vue'
+
 // project
 import ProjectInfo from '~/pages/project/ProjectInfo.vue'
 import ProjectEdit from '~/pages/project/ProjectEdit.vue'
@@ -72,6 +74,10 @@ const routes: Array<routes> = [
     {
         path: '/me/followed',
         component: UserFollowed,
+    },
+    {
+        path:'/me/notification',
+        component: UserNotification,
     },
     // Проекты
     {

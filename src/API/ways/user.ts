@@ -1,5 +1,5 @@
 import { API } from '../main'
-import ComplaintData from "~/helpers/types"
+// import ComplaintData from "~/helpers/types"
 const prefix = '/user'
 
 export const addPost = (description: string, descriptionHeader: string, id: number) => {
@@ -15,7 +15,7 @@ export const getPost = () => {
 const postUserLoginCode = (phone: String) => {
     return API.post(`${prefix}/loginCode`, {
         login: phone,
-    })
+    })  
 }
 
 const postUserConfirm = (phone: String, token: String) => {
@@ -33,12 +33,22 @@ const postAddBackgroundPicture = (picLink: FormData) => {
     return API.post(`${prefix}/addBackgroundPicture`, picLink)
 }
 
-const postAddComplaint = (id:number , complaintInfo:String) => {
+const postAddComplaint = (id : number, userId: number, complaint:String) => {
+    const now = new Date();
+    const insertDate = now.toISOString();
+
     return API.post(`${prefix}/${id}/addComplaint`, {
-        id: id,
-        complaintInfo: complaintInfo
+        "complaintInfo": complaint,
+        "id": 0,
+        "insertDate": insertDate,
+        "targetUser": {
+            "id": id 
+        },
+        "user": {
+            "id": userId
+        }
     });
-}
+};
 
 const deleteUserPicture = (id: Number) => {
     return API.delete(`${prefix}/delUserPicture?id=${id}`);

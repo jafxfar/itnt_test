@@ -5,6 +5,7 @@ export const API = axios.create({
     responseType: 'json',
     headers: {
         'X-Custom-Header': 'foobar',
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('userToken')}`,
     },
 })

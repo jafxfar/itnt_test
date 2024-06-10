@@ -1,5 +1,8 @@
 import { API } from '../main'
 
+const sendMessage = (dialogId: number, dialog: Object) => {
+    return API.post(`${prefix}/${dialogId}/message`, dialog);
+};
 const prefix = '/dialog'
 
 const getDialog = () => {
@@ -11,9 +14,5 @@ const getDialogMessages = (dialogId: number) => {
 const getDialogByID = (id: number) => {
     return API.get(`${prefix}/${id}`)
 }
-const sendMessage = (dialogId: number) => {
-    return API.post(`${prefix}/${dialogId}/message`)
-}
-
 
 export { getDialog, getDialogMessages, getDialogByID, sendMessage }

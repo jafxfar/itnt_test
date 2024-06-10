@@ -34,7 +34,7 @@
 
                                 <v-expansion-panel-text>
                                     <UiVacancyPanel card :data="demoVacancy" />
-                                    <UiButton bg-color="smBlue" @click="sendProp">Опубликовать</UiButton>
+                                    <UiButton bg-color="smBlue" @click="sendPropositions">Опубликовать</UiButton>
                                 </v-expansion-panel-text>
                             </v-expansion-panel>
                         </v-expansion-panels>
@@ -70,7 +70,7 @@ const sendProp = async () => {
     
     if (localStorage.getItem('userId') && router.params.ID){
         try {
-            const response = await sendProposition( router.params.ID,1, 'vacancy',"PROJECT_TO_USER")
+            const response = await sendProposition( router.params.ID,1, 'vacancy',"US")
             console.log(response)
         } catch (error) {
             console.error('Error sending proposition:', error)

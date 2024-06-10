@@ -43,10 +43,10 @@ export default {
                         <p>Driver</p>
                     </div>
 
-                    <UiTextArea label="Сопроводительное письмо*" v-model="propositionAnswer" />
+                    <UiTextArea label="Сопроводительное письмо*" v-model="propMessage" />
                 </div>
 
-                <UiButton bgColor="blue" @click="sendProp" class="mt-8">Подтвердить</UiButton>
+                <UiButton bgColor="blue" @click="sendPropositions" class="mt-8">Подтвердить</UiButton>
             </div>
         </vue-bottom-sheet>
     </div>
@@ -91,8 +91,9 @@ import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import { ref, defineEmits, onMounted } from 'vue'
 import { modalActionsList } from '~/helpers/types'
-import { sendNotification } from '~/API/ways/notifications';
-let propositionAnswer = ref('');
+import { sendProposition} from '~/API/ways/notifications';
+import { useRoute } from 'vue-router';
+const router = useRoute()
 // let propositionId = ref(2);
 // watch(() => props.data.id, (newId) => {
 //   propositionId.value = newId;
@@ -101,15 +102,25 @@ const emit = defineEmits(['confirm'])
 
 const modalState = ref(null)
 const vacancyPanel = ref(null)
-const sendProp = async () =>{
+const propMessage = ref('')
+const sendPropositions = async () => {
+    const proposition = {
+        answer: 'YES',
+        message: propMessage.value,
+        project: {
+            id:router.params.ID,
+        },
+        propositionDirection:'USER_TO_PROJECT',
+        user: {
+            id: localStorage.getItem('userId'),
+        },
+    };
     try {
-        await sendNotification(localStorage.getItem('userId'),'s', 1,) ;
-        modalState.value.close();
+        await sendProposition(proposition);
     } catch (error) {
-       console.log(error);
-        
+        console.error(error);
     }
-}
+};
 const props = defineProps({
     data: {
         type: Object || Array,

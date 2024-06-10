@@ -5,39 +5,27 @@ enum Answer {
     Yes = "YES",
     No = "NO"
 }
-type PropositionDirection = "PROJECT_TO_USER" | "USER_TO_PROJECT";
-
-
-const sendNotification = (fromUserId: any, message: string, toUser: any) => {
-    return API.post(`${prefix}/sendNotification`, {
-        "fromUser": {
-            id: fromUserId
-        },
-        message: message,
-        'toUser': {
-            id: toUser
-        }
-    })
+const markAsRead = (notificationId: number) => {
+    return API.post(`${prefix}/markAsRead`, { notificationId })
 }
-const sendProposition = (projectId: any, userId: any, message: string, propositionDirection: PropositionDirection) => {
-    return API.post(`${prefix}/sendProposition`, {
-        'user': {
-            id: userId
-        },
-        project: {
-            id: projectId
-        },
-        message: message,
-        propositionDirection: propositionDirection
-    })
+const sendNotification = (notification: Object) => {
+    return API.post(`${prefix}/sendNotification`, notification)
+}
+const sendProposition = (proposition: Object) => {
+    return API.post(`${prefix}/sendProposition`,proposition )
 }
 const reactToProposition = (propositionAnswer: Answer, propositionId: number) => {
     if (propositionAnswer !== Answer.Yes && propositionAnswer !== Answer.No) {
         throw new Error("Invalid argument: propositionAnswer should be either 'Yes' or 'No'");
     }
-    return API.post(`${prefix}/reactToProposition?propositionAnswer=${propositionAnswer}&propositionId=${propositionId}`);
+    return API.post(`${prefix}/reactToProposition?propositionAnswer=${propositionAnswer}&propositionId=${propositionId}`,
+        {params:{
+            propositionAnswer,
+            propositionId
+        }}
+    );
 }
-const getUserNotifications = ( userId: number) => {
+const getUserNotifications = (userId: number) => {
     return API.get(`${prefix}/userNotifications`, {
         params: {
             userId
@@ -59,15 +47,15 @@ const getUserProjectPropositions = (projectId: any, userId: any) => {
         }
     })
 }
-const getUserPropositions = (userID: any) => {
+const getUserPropositions = (userId: any) => {
     return API.get(`${prefix}/userPropositions`, {
         params: {
-            userID
+            userId
         }
     })
 }
 export {
     sendNotification, sendProposition, reactToProposition,
     getProjectPropositions, getUserNotifications, getUserProjectPropositions,
-    getUserPropositions
+    getUserPropositions, markAsRead
 }

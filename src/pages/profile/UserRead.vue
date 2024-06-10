@@ -42,7 +42,7 @@ let userInfo = ref({})
 
 let data = ref({})
 onMounted(async () => {
-    await getUserByID(localStorage.getItem('userId')).then((response) => {
+    await getUserByID(Number(localStorage.getItem('userId'))).then((response) => {
         try {
             data.value = response.data.object
         } catch (e) {

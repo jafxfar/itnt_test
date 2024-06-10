@@ -52,9 +52,11 @@ export default {
             <div class="txt-body1 mb-2 mx-4">Выбрано : {{ chosenSkills.length }}</div>
             <UiInput v-model="searchTerm" class="mx-4" label="Введите навык для поиска" />
             <div class="ui-skills__choser mt-2 " v-for="(skill, id) in categories" :key="id">
-                <div class="m-0" v-for="(interest, id) in skills" :key="id">
-                    <div class="m-0 p-0" v-for="(name, id) in interest" :key="id">
-                        <p class="text-[#29b6f6] text-lg mx-5 ml-[3%] ui-skills__choser__title">{{ name.title }}</p>
+                <div class="m-0" v-for="(interest, id) in skill.object" :key="id">
+                    <p class="text-[#29b6f6] text-lg mx-5 ml-[3%] ui-skills__choser__title">
+                        {{ interest.name }}
+                    </p>
+                    <div class="m-0 p-0" v-for="(name, id) in interest.interests" :key="id">
                         <p @click="addSkill(name.name)" v-if="name.name" class="txt-body1 ui-skills__choser__skill"
                             :class="{ 'skill-chosen': chosenSkills.includes(name.name) }">
                             {{ name.name }}
@@ -62,8 +64,8 @@ export default {
                     </div>
                 </div>
             </div>
+            <UiAgree class="close" @click="showPopup = false" />
         </div>
-        <UiAgree class="close" @click="showPopup = false" />
     </div>
 </template>
 <script lang="ts" setup>
@@ -72,7 +74,7 @@ import UiInput from './UiInput.vue'
 import UiButton from './UiButton.vue'
 import UiAgree from './UiAgree.vue'
 import { ref, Ref, onMounted } from 'vue'
-import { skills } from '~/helpers/skills'
+// import { skills } from '~/helpers/skills'
 import { getInterestListGrouped } from '~/API/ways/dictionary'
 let showPopup = ref(false)
 const props = defineProps({
@@ -90,6 +92,7 @@ const getInterst = async () => {
     try {
         const res = await getInterestListGrouped();
         categories.value = res;
+        console.log(categories.value)
     } catch (error) {
         console.error("Error fetching interests:", error);
     }
