@@ -19,7 +19,7 @@ export default {
             :src="user.userObj.pictureUrl" />
 
         <img @click="toggleUserModal" style="padding: 10px" v-if="props.showControlDots" :src="dots" />
-        <img @click="toggleProjectModal" style="padding: 10px" v-if="props.showControlDotsProject" :src="dots" />
+        <!-- <img @click="toggleProjectModal" style="padding: 10px" v-if="props.showControlDotsProject" :src="dots" /> -->
 
         <img @click="modalState.open()" style="padding: 10px" v-if="props.chat" :src="dots" />
         <vue-bottom-sheet ref="modalState">
@@ -75,9 +75,9 @@ export default {
             <v-icon icon="mdi-magnify" />
         </div>
     </v-app-bar>
-    <UserModal v-if="user.userObj.userModalState === true" />
+    <UserModal @close="isModalOpen = false"  v-if="user.userObj.userModalState === true" />
 
-    <TopModal v-if="user.userObj.topModalState === true" />
+    <TopModal @close="isModalOpen = false"  v-if="user.userObj.topModalState === true" />
 </template>
 
 <script lang="ts" setup>

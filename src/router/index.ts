@@ -7,7 +7,9 @@ import UserEdit from '~/pages/profile/UserEdit.vue'
 import UserRead from '~/pages/profile/UserRead.vue'
 import UserFollowed from '~/pages/profile/UserFollowed.vue'
 import UserNotification from '~/pages/profile/UserNotification.vue'
-
+import UserSetting from '~/pages/profile/UserSetting.vue'
+import UserInvite from '~/pages/profile/UserInvite.vue'
+import UserVallet from '~/pages/profile/UserVallet.vue'
 // project
 import ProjectInfo from '~/pages/project/ProjectInfo.vue'
 import ProjectEdit from '~/pages/project/ProjectEdit.vue'
@@ -78,6 +80,18 @@ const routes: Array<routes> = [
     {
         path:'/me/notification',
         component: UserNotification,
+    },
+    {
+        path:'/me/settings',
+        component: UserSetting,
+    },
+    {
+        path:'/me/invite',
+        component: UserInvite,
+    },
+    {
+        path:'/me/vallet',
+        component: UserVallet,
     },
     // Проекты
     {

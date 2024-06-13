@@ -1,7 +1,7 @@
 import { API } from '../main'
 
-const sendMessage = (dialogId: number, dialog: Object) => {
-    return API.post(`${prefix}/${dialogId}/message`, dialog);
+const sendMessage = (dialogId: number, project: Object) => {
+    return API.post(`${prefix}/${dialogId}/message`, project);
 };
 const prefix = '/dialog'
 

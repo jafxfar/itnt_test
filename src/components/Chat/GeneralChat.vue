@@ -6,8 +6,8 @@
             <div class="flex flex-row justify-between flex-1">
                 <h1>1ddsdsdsdsd</h1>
                 <div class="flex flex-row items-center gap-[6px]">
-                    <h2>time</h2>
                     <img :src="send" alt="">
+                    <h2>time</h2>
                 </div>
             </div>
             <h1><span class="text-gray-400">Вы:</span>Lorem ipsum dolor sit amet, consectetur adipisicing,
@@ -21,8 +21,8 @@
             <div class="flex flex-row justify-between flex-1">
                 <h1>1ddsdsdsdsd</h1>
                 <div class="flex flex-row items-center gap-[6px]">
-                    <h2>time</h2>
                     <img :src="delivered" alt="">
+                    <h2>time</h2>
                 </div>
             </div>
             <h1><span class="text-gray-400">Вы:</span>Lorem ipsum dolor sit amet, consectetur adipisicing,
@@ -36,8 +36,8 @@
             <div class="flex flex-row justify-between flex-1">
                 <h1>1ddsdsdsdsd</h1>
                 <div class="flex flex-row items-center gap-[6px]">
-                    <h2>time</h2>
                     <img :src="seen" alt="">
+                    <h2>time</h2>
                 </div>
             </div>
             <h1><span class="text-gray-400">Вы:</span>Lorem ipsum dolor sit amet, consectetur adipisicing,
@@ -50,9 +50,9 @@
         <div class="flex flex-col flex-1">
             <div class="flex flex-row justify-between flex-1">
                 <h1>1ddsdsdsdsd</h1>
-                <div class="flex flex-row items-center mr-2">
-                    <h2>time</h2>
+                <div class="flex flex-row items-center">
                     <img class='hidden' :src="seen" alt="">
+                    <h2>time</h2>
                 </div>
             </div>
             <h1>Lorem ipsum dolor sit amet, consectetur adipisicing,

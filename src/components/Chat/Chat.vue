@@ -1,60 +1,43 @@
 <template>
     <div class="">
         <Header showUserMinify :routeName="lastPart" :chat="true" />
-        <div class="messages">
-            <div class="messages__message">
-                <div class="flex justify-center">
-                    <div class="date mb-4 rounded-xl d-inline-block ">{{ $t('feed.today') }}</div>
-                </div>
-                <div class="messages__message__you">
-                    <p class="text">Полундра! Вчера я был пъян. Баг нужно исправлять срочно! Top Priority 🔥</p>
-                    <div class="messages__info">
-                        12:22 <img :src="seen" alt="">
-                    </div>
-                </div>
-                <div class="messages__message__you">
-                    <p class="text">Полундра! Вчера я был пъян. Баг нужно исправлять срочно! Top Priority 🔥</p>
-                    <div class="messages__info">
-                        12:22 <img :src="delivered" alt="">
-                    </div>
-                </div>
-                <div class="messages__message__you">
-                    <p class="text">Полундра! Вчера я был пъян. Баг нужно исправлять срочно! Top Priority 🔥</p>
-                    <div class="messages__info">
-                        12:22 <img :src="send" alt="">
-                    </div>
-                </div>
-                <div class="messages__message__other">
-                    <p class="text">Полундра! Вчера я был пъян. Баг нужно исправлять срочно! Top Priority 🔥</p>
-                    <div class="messages__info">
-                        12:22
-                    </div>
-                </div>
-            </div>
-
+        <div class="input px-2 pt-5 pb-0">
+            <ChatInput :imgSrc="chat" v-model="currentMessage" :action="sendApiMessage" placeholder="Hey..."/>
         </div>
-        <!-- <div v-for="(messageContent, index) in messageList" :key="index" class="py-[10px] px-[15px] m-[16px]"
-            :class="['message ', { 'you': username === messageContent.author, 'other': username !== messageContent.author }]">
-            <div clыыass="flex justify-center">
-                <p>{{ messageContent.message }}</p>
-            </div>
-            <div class="message-meta flex justify-end">
-                <p class="time">{{ messageContent.time }}</p>
-            </div>
-        </div> -->
-        <div class="input">
-            <div class="input-container">
-                <input class="pl-[16px] outline-none w-full" type="text" v-model="currentMessage" placeholder="Hey..."
-                    @keypress.enter="sendApiMessage">
-                <button @click="sendApiMessage" class="cursor pointer py-[9px] pr-[13px]">
-                    <img src="../../assets/icons/chat.svg" alt="">
-                </button>
-            </div>
-        </div>
+        <v-container class="chat-screen">
+            <v-row justify="space-around d-flex flex-column">
+                <v-card v-for="message in messages" :key="message.time" flat>
+                    <v-list-item :key="message.time" v-if="message.from != 'You'" class="shadow-none">
+                        <v-list-item-content class="received-message">
+                            <v-card color="white" class="flex-none-sent">
+                                <v-card-text class="white--text pa-2 d-flex flex-column">
+                                    <!-- <span class="text-caption">{{ message.from }} </span> -->
+                                    <span class="align-self-start text-subtitle-1">{{ message.message }}</span>
+                                    <span class="text-caption font-italic align-self-end">{{ message.time }}</span>
+                                </v-card-text>
+                            </v-card>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item v-else :key="message.time">
+                        <v-list-item-content class="sent-message justify-end">
+                            <v-card color="#E1F5FE" class="flex-none ">
+                                <v-card-text class="white--text pa-2 d-flex flex-column ">
+                                    <span class="text-subtitle-1 chat-message">{{ message.message }}</span>
+                                    <span class="text-caption align-self-end flex flex-row gap-2">{{ message.time }}<img
+                                            :src="delivered" alt=""></span>
+                                </v-card-text>
+                            </v-card>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-card>
+            </v-row>
+        </v-container>
     </div>
 </template>
 
 <script setup>
+import chat from "../../assets/icons/chat.svg"
+import ChatInput from '~/components/ui-kit/ChatInput.vue'
 import send from '~/assets/chat/send.svg'
 import seen from '~/assets/chat/seen.svg'
 import delivered from '~/assets/chat/delivered.svg'
@@ -66,7 +49,50 @@ import { getDialogByID } from "~/API/ways/dialog";
 import { useRoute } from "vue-router";
 const route = useRoute();
 const lastPart = ref(null);
+const messages = ref([
+    {
+        from: 'You',
+        message: `Sure, I'll see you later.`,
+        time: '10:42am',
+        color: 'deep-purple lighten-1',
+    },
+    {
+        from: 'John Doe',
+        message: 'Yeah, sure. Does 1:00pm work?',
+        time: '10:37am',
+        color: 'green',
+    },
+    {
+        from: 'You',
+        message: 'Did you still want to grab lunch today?',
+        time: '9:47am',
+        color: 'deep-purple lighten-1',
+    },
+    {
+        from: 'John Doe',
+        message: 'Yeah, sure. Does 1:00pm work?',
+        time: '10:37am',
+        color: 'green',
+    },
+    {
+        from: 'You',
+        message: 'Did you still want to grab lunch today?',
+        time: '9:47am',
+        color: 'deep-purple lighten-1',
+    }, {
+        from: 'John Doe',
+        message: 'Yeah, sure. Does 1:00pm work?',
+        time: '10:37am',
+        color: 'green',
+    },
+    {
+        from: 'You',
+        message: 'Did you still want to grab lunch today?',
+        time: '9:47am',
+        color: 'deep-purple lighten-1',
+    },
 
+]);
 onMounted(() => {
     const fullPath = window.location.origin + route.fullPath;
     const parts = fullPath.split('/');
@@ -81,7 +107,7 @@ const showMessages = async () => {
     }
 };
 // let socket;
-// let currentMessage = ref('');
+let currentMessage = ref('');
 // let messageList = ref([]); // Объявите messageList как реактивное свойство
 
 // onMounted(() => {
@@ -98,13 +124,13 @@ const showMessages = async () => {
 // })
 
 const sendApiMessage = async () => {
-    const dialog = {
+    const project = {
         messageText: currentMessage.value,
         readStatus: true,
     };
 
     try {
-        const response = await sendMessage(1, dialog);
+        const response = await sendMessage(1, project);
         return response.data;
     } catch (error) {
         console.error('Failed to send message:', error);
@@ -114,76 +140,75 @@ onMounted(showMessages);
 </script>
 
 <style scoped lang="scss">
-.text{
-    padding:10px 15px;
+.v-application .v-card {
+    box-shadow: none !important;
+    background: none;
+
 }
-.messages {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+
+.v-application .v-list-item {
+    box-shadow: none !important;
+    background: none;
+
+}
+
+.v-application .v-card-text {
+    box-shadow: none !important;
+    background: none;
+
+}
+
+.chat-message {
+    background: none;
+    display: unset !important;
+    white-space: break-spaces;
+}
+
+.chat-screen {
     height: calc(100vh - 140px);
     overflow-y: auto;
+}
 
-    &__info {
-        color: #9E9E9E;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        justify-content: flex-end;
-        padding-bottom:4px;
-        padding-right:8px;
+.sent-message {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
 
-    }
+.received-message {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
 
-    &__message {
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        margin: 16px;
-        gap: 16px;
+.flex-none {
+    flex: unset;
+    border: 1px solid rgba(133, 207, 171, 0.15);
+    border-radius: 12px 12px 2px 12px;
+}
+.flex-none-sent {
+    flex: unset;
+    border: 1px solid rgba(133, 207, 171, 0.15);
+    border-radius: 12px 12px 12px 2px;
+}
+.radius-sent{
+    border-radius: 12px 2px 12px 12px;
 
-        &__you {;
-            // width:100px;
-            border-radius: 12px 12px 2px 12px;
-            border: 1px solid rgba(133, 207, 171, 0.15);
-            background: var(--Primary-Variant2, #E1F5FE);
-        }
-
-        &__other {
-            // padding: 10px 15px;
-            border-radius: 12px 12px 12px 2px;
-            border: 1px solid rgba(224, 224, 224, 0.80);
-            background: var(--Background-Surface, #FFF);
-        }
-
-    }
-
-
+}
+.radius-recieved{
+    border-radius: 12px 12px 12px 2px;
 }
 
 .input {
     position: absolute;
-    bottom: 1px;
+    bottom: 0px;
     left: 0;
     right: 0;
     background-color: white;
-    padding: 10px;
-
-    .input-container {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        border: 1px solid #e0e0e0;
-        border-radius: 12px;
-        margin-bottom: 10px;
-        padding: 10px;
-
-        input {
-            width: 100%;
-            outline: none;
-        }
-    }
+    z-index: 999;
+    padding-top:10px;
 }
+
 .date {
     display: flex;
     justify-content: center;

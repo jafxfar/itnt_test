@@ -33,16 +33,20 @@ import warning from "~/assets/icons/warning-red.svg";
 import { modalActionsList } from '~/helpers/types'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '~/store/user'
+import {defineEmits } from 'vue';
 
 const user = useUserStore()
 const router = useRouter()
 
+const emit = defineEmits(['close'])
+
 function onClickOutside() {
-    user.topModalState = false
+    user.userObj.topModalState = false
+    emit('close')
 }
 
 function onModalClick(route: string) {
-    user.topModalState = false
+    user.userObj.topModalState = false
     router.push(route)
 }
 
@@ -50,7 +54,7 @@ const modalItems: modalActionsList[] = [
     {
         name: 'Настройки аккаунта',
         icon: settings,
-        route: '/me/edit',
+        route: '/me/settings',
     },
     {
         name: 'Редактировать мой профиль',
@@ -61,11 +65,6 @@ const modalItems: modalActionsList[] = [
         name: 'Мои подписки',
         icon: subscribe,
         route: '/me/followed',
-    },
-    {
-        name: 'Мои уведомления',
-        icon: subscribe,
-        route: '/me/notification',
     },
     {
         name: 'Поделиться',

@@ -20,6 +20,7 @@ export const useUserStore = defineStore('user',
             bgPicUrl: "",
             status: '', 
             chosenSkills: [],
+            
         }
     }),
     actions: {

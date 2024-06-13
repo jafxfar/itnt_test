@@ -12,7 +12,8 @@ export default {
             <template v-for="(item, id) in modalItems" :key="id">
                 <div @click="onModalClick(item)" class="modal__list__item">
                     <img :src="item.icon" alt="" />
-                    <p  :class="item.name === 'Сообщить о нарушении' && 'error-txt'" class="txt-body1">{{ item.name }}</p>
+                    <p :class="item.name === 'Сообщить о нарушении' && 'error-txt'" class="txt-body1">{{ item.name }}
+                    </p>
                 </div>
             </template>
 
@@ -27,6 +28,7 @@ import complain from "~/assets/icons/coplain.svg"
 import share from "~/assets/project_modal/share.svg"
 
 import { postAddComplaint } from "~/API/ways/user" // Импорт функции отправки жалобы на сервер
+import { defineEmits } from 'vue';
 
 import { modalActionsList } from '~/helpers/types'
 import { useRouter } from 'vue-router'
@@ -35,8 +37,11 @@ import { useUserStore } from '~/store/user'
 const user = useUserStore()
 const router = useRouter()
 
+const emit = defineEmits(['close'])
+
 function onClickOutside() {
     user.userObj.topModalState = false
+    emit('close')
 }
 
 function onModalClick(item) {
