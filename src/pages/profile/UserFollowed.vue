@@ -1,38 +1,126 @@
 <template>
-    <Header showID showUserMinify showControlDots />
-    <div v-for="(project, idx) in followed" :key="idx" class="searchProjectCard m-4">
-        <div class="searchProjectCard__head">
+    <Header showUserMinify :routeName="'Мои подписки'" />
+    <v-container style="padding: 0 20px">
+        <UiSwitch @changeValue="searchPageSwitchState = $event" :items="['Проекты', 'Люди']" />
+        <UiInput v-model="searchQuery" placeholder="Поиск..." />
+        <FeedPanels :followed="true" />
+
+    </v-container>
+    <div v-for="(project, idx) in followed" :key="idx" class="searchUserCard m-4">
+        <div class="searchUserCard__head">
             <div class="d-flex align-center">
                 <img class="mr-3" width="37" height="37" src="../../assets/demo/ava-small-header.svg" />
                 <div>
                     <div class="d-flex align-center">
                         <p class="txt-body3">{{ project.project.name }}</p>
                     </div>
-                    <p class="searchProjectCard__head__subtitle txt-cap1">
+                    <p class="searchUserCard__head__subtitle txt-cap1">
                         {{ project.project.slogan }}
                         {{ project.project.id }}
                     </p>
                 </div>
             </div>
-            <UiButton  @click="follow(project.project.id)" style="max-width: 152px">{{ isFollowing ? 'Отписаться' :'Подписаться' }}</UiButton>
+            <v-icon @click="modalState.open()" icon="mdi-dots-vertical" color="#263238" class="font-weight-bold" />
         </div>
     </div>
+    <vue-bottom-sheet max-height="270px" full-screen ref="modalState">
+        <div class="modal">
+            <div class="modal__list">
+                <div v-for="(item, id) in modalItems" @click="item?.func" :key="id" class="modal__list__item cursor-pointer">
+                    <img :src="item.icon" alt="" />
+                    <p :class="item.name === 'Пожаловаться' && 'error-txt'" class="txt-body1">{{ item.name }}</p>
+                </div>
+            </div>
+        </div>
+    </vue-bottom-sheet>
+
     <Footer />
 </template>
 
 <script setup lang="ts">
+import UiSwitch from '~/components/ui-kit/UiSwitch.vue'
+import FeedPanels from '~/components/feed/FeedPanels.vue';
+import UiInput from '~/components/ui-kit/UiInput.vue'
+
 // ui-kit
 import Header from '~/components/Header.vue'
 import Footer from '~/components/Footer.vue'
-import UiButton from '~/components/ui-kit/UiButton.vue'
-
 import { onMounted, ref } from 'vue'
 import { getUserByID } from '~/API/ways/user.ts'
 import { addFollow } from '~/API/ways/project'
+import project from "~/assets/project_modal/project.svg"
+import share from "~/assets/icons/share-blue.svg"
+import warning from "~/assets/icons/warning-red.svg"
+
+// import statistic from "~/assets/modal_icon/statistic.svg"
+import follow from "~/assets/modal_icon/follow.svg"
+import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
+import '@webzlodimir/vue-bottom-sheet/dist/style.css'
+import { modalActionsList } from '~/helpers/types'
+
+import { useRouter } from 'vue-router'
+const router = useRouter()
 let data = ref({})
 let followed = ref([])
 const isFollowing = ref(true)
+const searchPageSwitchState = ref(0)
+const modalState = ref(false)
 
+const props = defineProps({
+    projectInfoSet: {
+        type: Object || Array,
+        default: () => { },
+    },
+    listID: {
+        type: Number,
+    },
+})
+
+const modalItems: modalActionsList[] = [
+    {
+        name: 'Открыть проект',
+        icon: project,
+        func: () => {
+            router.push('/project/' + project.project.id)
+        },
+    },
+    {
+        name: 'Отписаться',
+        icon: follow,
+        func: async () => {
+            try {
+                const response = await addFollow(Number(9), Number(localStorage.getItem("userId")));
+                console.log(response);
+                isFollowing.value = false
+            } catch (error) {
+                console.error('Ошибка при подписке на проект:', error);
+            }
+        }
+    },
+    {
+        name: 'Поделиться',
+        icon: share,
+        func: () => {
+            try {
+                navigator.share({
+                    title: 'ITNT',
+                    text: 'Откройте для себя ITNT.',
+                    url: 'http://62.113.105.220/project/' + props.projectInfoSet.id,
+                })
+            } catch (error) {
+                console.log('error :' + error)
+            }
+        },
+    },
+    // {
+    //     name: 'Статистика проекта',
+    //     icon: statistic,
+    // },
+    {
+        name: 'Пожаловаться',
+        icon: warning,
+    },
+]
 
 onMounted(async () => {
     await getUserByID(Number(localStorage.getItem("userId"))).then((response) => {
@@ -55,19 +143,13 @@ onMounted(async () => {
         }
     })
 })
-async function follow() {
-    try {
-        const response = await addFollow(Number(9), Number(localStorage.getItem("userId")));
-        console.log(response);
-        isFollowing.value = false
-    } catch (error) {
-        console.error('Ошибка при подписке на проект:', error);
-    }
-}
+// async function follow() {
+//    
+// }
 
 </script>
 <style scoped lang="scss">
-.searchProjectCard {
+.searchUserCard {
     padding: 16px 14px;
     border-radius: 12px;
     background: #fff;
@@ -80,7 +162,6 @@ async function follow() {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 16px;
 
         &__subtitle {
             color: #9e9e9e;
@@ -91,25 +172,24 @@ async function follow() {
     }
 
     &__body {
-        &__slider {
-            display: flex;
-            gap: 11px;
-            -ms-overflow-style: none;
-            /* Internet Explorer 10+ */
-            scrollbar-width: none;
-            overflow-x: scroll;
+        padding: 0px 2px;
 
-            &::-webkit-scrollbar {
-                display: none;
-                /* Safari and Chrome */
+        &__skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+
+            &__item {
+                padding: 3px 10px;
+                color: $def-black;
+                max-width: fit-content;
+                border: 1.5px solid $primary;
+                border-radius: 4px;
             }
         }
 
         &__info {
-            &__title {
-                margin-top: 24px;
-                margin-bottom: 12px;
-            }
+            margin-top: 16px;
         }
     }
 

@@ -32,7 +32,7 @@ const patchProject = (prjInfo: Object) => {
 const addLike = (projectID: number) => {
     return API.post(`${prefix}/${projectID}/addLike`, projectID)
 }
-const addComment = ( projectID: number, userID: number, message: string) => {
+const addComment = (projectID: number, userID: number, message: string) => {
     // const now = new Date();
     // const insertDate = now.toISOString();
     return API.post(`${prefix}/addComment`, {
@@ -84,11 +84,16 @@ const addProjectAvatar = (avatarUrl: FormData, projectID: number) => {
 // const addProjectFile = (picLink: string, projectID: number) => {
 //     return API.post(`${prefix}/addProjectFile?projectId=${projectID}`, { link: picLink });
 // };
-const addProjectFile = (file: File, projectID: number) => {
+const addProjectFile = (fileOrLink: File | string, projectID: number, link: string) => {
     const formData = new FormData();
-    formData.append('file', file);
 
-    return API.post(`${prefix}/addProjectFile?projectId=${projectID}`, formData, {
+    if (fileOrLink instanceof File) {
+        formData.append('file', fileOrLink);
+    } else {
+        formData.append('link', fileOrLink);
+    }
+
+    return API.post(`${prefix}/addProjectFile?link=${link}&projectId=${projectID}`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }

@@ -15,13 +15,17 @@ export default {
             <div v-else @click="deleteMode = false" class="ui-skills__btn">
                 <p class="txt-body1">{{ $t('me.cancel') }} </p>
             </div>
-            <div v-if="chosenSkills?.length > 0" @click="deleteMode = true" class="ui-skills__trash">
+            <div v-if="chosenSkills?.length > 0" @click="deleteMode ? deleteSelectedSkills() : deleteMode = true"
+                class="ui-skills__trash">
                 <img src="../../assets/icons/trash.svg" alt="" />
             </div>
         </div>
         <div class="ui-skills__list">
             <div v-for="(skill, id) in chosenSkills" :key="id">
-                <div @click="openModal(skill)" class="ui-skills__skill txt-body1">{{ skill }}</div>
+                <div @click="toggleSkillSelection(id)"
+                    :class="{ 'ui-skills__skill': true, 'selected border-[1.5px] border-red-500': deleteMode && selectedSkills.includes(id) }">
+                    {{ skill }}
+                </div>
             </div>
         </div>
     </v-card>
@@ -47,7 +51,7 @@ export default {
             </div>
         </v-card>
     </v-dialog>
-    <div v-if="showPopup" class="popup-overlay pb-0" @click="showPopup = false">
+    <div v-if="showPopup" class="popup-overlay text-left pb-0" @click="showPopup = false">
         <div class="popup" style="overflow-y: auto;" @click.stop>
             <div class="txt-body1 mb-2 mx-4">Выбрано : {{ chosenSkills.length }}</div>
             <UiInput v-model="searchTerm" class="mx-4" label="Введите навык для поиска" />
@@ -62,13 +66,25 @@ export default {
                             {{ name.name }}
                         </p>
                     </div>
+                    <!-- <UiAgree class=" ui-skills__choser__close" @click="showPopup = false" /> -->
                 </div>
             </div>
-            <UiAgree class="close" @click="showPopup = false" />
         </div>
     </div>
+    <!-- <v-snackbar color='white' rounded="lg" v-model="snackbar" :timeout="timeout">
+        <div class="snacbar">
+            <img :src="trashBlack" alt="">
+            Навык удалён
+        </div>
+        <template v-slot:actions>
+            <v-btn color="blue" variant="text" @click="cancelDelete">
+                Отмена
+            </v-btn>
+        </template>
+    </v-snackbar> -->
 </template>
 <script lang="ts" setup>
+import trashBlack from '~/assets/demo/trash_black.svg'
 // ui-kit
 import UiInput from './UiInput.vue'
 import UiButton from './UiButton.vue'
@@ -77,6 +93,8 @@ import { ref, Ref, onMounted } from 'vue'
 // import { skills } from '~/helpers/skills'
 import { getInterestListGrouped } from '~/API/ways/dictionary'
 let showPopup = ref(false)
+const snackbar = ref(false)
+const timeout = 1000
 const props = defineProps({
     readOnly: {
         type: Boolean,
@@ -92,7 +110,6 @@ const getInterst = async () => {
     try {
         const res = await getInterestListGrouped();
         categories.value = res;
-        console.log(categories.value)
     } catch (error) {
         console.error("Error fetching interests:", error);
     }
@@ -104,7 +121,7 @@ function openModal(skill: any) {
     chosenModalSkill.value = skill
     searchModalState.value = true
 }
-const addSkill = (skillName) => {
+const addSkill = (skillName: any) => {
     const index = chosenSkills.value.indexOf(skillName);
     if (index !== -1) {
         chosenSkills.value.splice(index, 1);
@@ -116,26 +133,48 @@ const chosenSkills: Ref<Array<string>> = ref([])
 onMounted(() => {
     getInterst()
 })
+const showDeleteConfirmation = ref(false);
+const selectedSkills = ref<number[]>([]);
+function toggleSkillSelection(id: number) {
+    if (deleteMode.value) {
+        const index = selectedSkills.value.indexOf(id);
+        if (index === -1) {
+            // Навык еще не выбран, добавляем его
+            selectedSkills.value.push(id);
+        } else {
+            // Навык уже выбран, убираем его
+            selectedSkills.value.splice(index, 1);
+        }
+    } else {
+        // Если не в режиме удаления, открываем модальное окно для редактирования навыка
+        openModal(chosenSkills.value[id]);
+    }
+}
+function deleteSelectedSkills() {
+    selectedSkills.value.forEach(id => {
+        chosenSkills.value.splice(id, 1);
+    });
+    snackbar.value = !snackbar.value
+
+    // Очищаем массив выбранных навыков
+    selectedSkills.value = [];
+    // Выключаем режим удаления
+    deleteMode.value = false;
+    showDeleteConfirmation.value = true;
+
+}
+function cancelDelete() {
+    snackbar.value = !snackbar.value
+    showDeleteConfirmation.value = false;
+}
 </script>
 
 <style lang="scss">
-.close {
-    position: absolute;
-    bottom: 0;
-    left: 68%;
-    width: 40px;
-    height: 40px;
-    padding: 10px;
-    cursor: pointer;
-
-}
-
-.close {
-    @media (max-width: 768px) {
-        left: 84%;
-        width: auto;
-        height: auto;
-    }
+.snacbar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 19px;
 }
 
 .popup-overlay {
@@ -247,6 +286,23 @@ onMounted(() => {
         display: flex;
         flex-direction: column;
         margin-bottom: 0px;
+        position: relative;
+
+        &__close {
+            position: absolute;
+            bottom: 0;
+            left: 10%;
+            width: 40px;
+            height: 40px;
+            // padding: 10px;
+            cursor: pointer;
+
+            @media (max-width: 768px) {
+                right: 40px;
+                width: auto;
+                height: auto;
+            }
+        }
 
         &__title {
             color: $def-gray;
@@ -276,5 +332,7 @@ onMounted(() => {
             box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
         }
     }
+
+
 }
 </style>

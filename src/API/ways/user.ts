@@ -2,12 +2,21 @@ import { API } from '../main'
 // import ComplaintData from "~/helpers/types"
 const prefix = '/user'
 
-export const addPost = (description: string, descriptionHeader: string, id: number) => {
-    return API.post('/main/addPost', {
+export const addPost = (description:String, descriptionHeader:String, id:Number, authorProject = null, authorUser = null) => {
+    let requestBody = {
         description,
         descriptionHeader,
-        id
-    });
+        id,
+        authorProject,
+        authorUser
+    };
+    // if (postType === 'PROJECT' && authorProject) {
+    //     requestBody.authorProject = authorProject;
+    // } else if (postType === 'USER' && authorUser) {
+    //     requestBody.authorUser = authorUser;
+    // }
+
+    return API.post('/main/addPost', requestBody);
 }
 export const getPost = () => {
     return API.get('/main/getPosts');
@@ -15,7 +24,7 @@ export const getPost = () => {
 const postUserLoginCode = (phone: String) => {
     return API.post(`${prefix}/loginCode`, {
         login: phone,
-    })  
+    })
 }
 
 const postUserConfirm = (phone: String, token: String) => {
@@ -25,15 +34,18 @@ const postUserConfirm = (phone: String, token: String) => {
     })
 }
 
-const postAddUserPicture = (picLink: FormData) => {
-    return API.post(`${prefix}/addUserPicture?mainPicture=true`, picLink)
-}
-
+const postAddUserPicture = (formData: FormData, mainPicture: boolean ,) => {
+    return API.post(`http://62.217.181.172:8080/api/user/addUserPicture?mainPicture=${mainPicture}` ,formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+};
 const postAddBackgroundPicture = (picLink: FormData) => {
     return API.post(`${prefix}/addBackgroundPicture`, picLink)
 }
 
-const postAddComplaint = (id : number, userId: number, complaint:String) => {
+const postAddComplaint = (id: number, userId: number, complaint: String) => {
     const now = new Date();
     const insertDate = now.toISOString();
 
@@ -42,7 +54,7 @@ const postAddComplaint = (id : number, userId: number, complaint:String) => {
         "id": 0,
         "insertDate": insertDate,
         "targetUser": {
-            "id": id 
+            "id": id
         },
         "user": {
             "id": userId

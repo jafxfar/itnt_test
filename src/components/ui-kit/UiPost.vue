@@ -43,7 +43,11 @@ export default {
                 truncateFileName(fileNames[index])
             }}</p>
                             </div>
-
+                            <button v-show="fileNames[index]" @click="deleteFile(index)" class="delete p-1">
+                                <div class="rounded-[50%] bg-[#FFEBEE] p-[2px]">
+                                    <v-icon icon="mdi-close" />
+                                </div>
+                            </button>
                         </label>
                     </div>
                 </div>
@@ -54,10 +58,22 @@ export default {
             <UiButton @click="postBlog" bg-color="smBlue" class="mt-[48px]">Опубликовать</UiButton>
         </div>
     </div>
+    <v-snackbar color='white' rounded="lg" v-model="snackbar" :timeout="timeout">
+        <div class="snacbar">
+            <img :src="trashBlack" alt="">
+            Навык удалён
+        </div>
+        <template v-slot:actions>
+            <v-btn color="blue" variant="text" @click="cancelDelete">
+                Отмена
+            </v-btn>
+        </template>
+    </v-snackbar>
 </template>
 
 <script lang="ts" setup>
-import scrip from "~/assets/demo/scrip.svg"
+import trashBlack from '~/assets/demo/trash_black.svg';
+import scrip from "~/assets/demo/scrip.svg";
 import UiButton from './UiButton.vue';
 import UiInput from './UiInput.vue';
 import file from "~/assets/icons/media/ppt-blue.svg"
@@ -65,39 +81,58 @@ import { addPost } from "~/API/ways/user";
 import { usePostStore } from '~/store/post';
 import { ref, watch, withDefaults } from 'vue';
 const postStore = usePostStore();
+let snackbar = ref(true)
+const timeout = 2000
 
 const props = withDefaults(defineProps<{
-  data?: {
-    type: string;
-    offer: string;
-  };
+    data?: {
+        type: string;
+        offer: string;
+    };
 }>(), {
-  data: {
-    type: '',
-    offer: '',
-  },
+    data: {
+        type: '',
+        offer: '',
+    },
 });
-
+const deleteFile = (index: number) => {
+    imageUrls.value[index] = null;
+    fileNames.value[index] = null;
+    fileTypes.value[index] = null;
+    snackbar.value = true
+    // Adjust activeIndex if needed
+    if (index < activeIndex.value) {
+        activeIndex.value = index;
+    } else if (index === activeIndex.value && index > 0) {
+        activeIndex.value = index - 1;
+    }
+};
 const localData = ref({ ...props.data });
 
 watch(() => props.data, (newVal) => {
-  if (newVal) {
-    localData.value = { ...newVal };
-  }
+    if (newVal) {
+        localData.value = { ...newVal };
+    }
 });
 // const chosenId = computed(() => {
 //     return '@' + (router.params.ID ? router.params.ID : localStorage.getItem('userId'))
 // })
 async function postBlog() {
-    await addPost(localData.value.type, localData.value.offer, Number(localStorage.getItem('userId'))).then((response: any) => {
+    const description = localData.value.type;
+    const descriptionHeader = localData.value.offer;
+    const id = Number(localStorage.getItem('userId'));
+    // const postType = 'PROJECT';
+    const authorProject = { id: 10};
+
+    await addPost(description, descriptionHeader, id, authorProject).then((response: any) => {
         try {
-            console.log(response)
-            postStore.addPost(response.data.object)
+            console.log(response);
+            postStore.addPost(response.data.object);
             console.log(postStore.posts);
         } catch (e) {
-            console.log('error : ', e)
+            console.log('error : ', e);
         }
-    })
+    });
 }
 
 const showPhotos = ref(false);
@@ -148,10 +183,6 @@ const truncateFileName = (fileName: string): string => {
     return fileName;
 };
 
-// Функция для подсчета загруженных фотографий
-const countUploadedPhotos = () => {
-    return imageUrls.value.filter(url => url !== null).length;
-};
 
 // Функция для проверки типа файла на изображение
 const isImageType = (type: string | null): boolean => {
@@ -212,6 +243,17 @@ const isImageType = (type: string | null): boolean => {
     background-position: center;
     box-sizing: border-box;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
+    position: relative;
+
+    .delete {
+        position: absolute;
+        right: -8px;
+        bottom: -8px;
+        background-color: white;
+        border-radius: 50%;
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
+
+    }
 }
 
 @media (max-width: 576px) {

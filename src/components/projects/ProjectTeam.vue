@@ -84,10 +84,29 @@
         <vue-bottom-sheet ref="modalState">
             <div class="modal">
                 <div class="modal__list">
-                    <div v-for="(item, id) in editableModalItems" :key="id" class="modal__list__item">
-                        <img :src="item.icon" alt="" />
+                    <div class="modal__list__item">
+                        <img :src="account" alt="" />
                         <p class="txt-body1">
-                            {{ item.name }}
+                            Открыть профиль
+                        </p>
+                    </div>
+                    <div @click="authorityModal" class="modal__list__item">
+                        <img :src="commit" alt="" />
+                        <p class="txt-body1">
+                            Настроить полномочия
+
+                        </p>
+                    </div>
+                    <div class="modal__list__item">
+                        <img :src="close" alt="" />
+                        <p class="txt-body1">
+                            Удалить человека из проекта
+                        </p>
+                    </div>
+                    <div class="modal__list__item">
+                        <img :src="key" alt="" />
+                        <p class="txt-body1">
+                            Передать полномочия владельца проекта
                         </p>
                     </div>
                 </div>
@@ -137,7 +156,7 @@
 
                                 <div>
                                     <div class="feedPanel__card__title align-center d-flex">
-                                        <p class="txt-body3">{{users.user.login}}</p>
+                                        <p class="txt-body3">{{ users.user.login }}</p>
                                         <img class="mx-2" src="../../assets/icons/singeDot-gray.svg" />
                                         <span style="color: #9e9e9e" class="txt-cap1">{{ $t('feedPanels.time') }}</span>
                                     </div>
@@ -170,10 +189,47 @@
             </div>
 
         </vue-bottom-sheet>
+        <vue-bottom-sheet ref="searchTeammateModal">
+            <div class="searchTeammateModal modal">
+                <p class="mb-2">Поиск человека для добавления в проект</p>
+                <UiInput prepend-icon="magnify" label="Введите данные для поиска" v-model="searchQuery" />
+                <div class="searchTeammateModal__items">
+                    <div v-for="user in filteredUsers" :key="user.id" class="d-flex align-center">
+                        <img class="mr-3" width="37" height="37" src="../../assets/demo/ava-small-header.svg" />
+                        <div>
+                            <div class="d-flex align-center">
+                                <p class="txt-body3">{{ user.id }}</p>
+                            </div>
+                            <!-- <p class="searchUserCard__head__subtitle txt-cap1">г. Санкт-Петербург</p> -->
+                            <p class="searchUserCard__head__subtitle txt-cap1">{{ user.login }}</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </vue-bottom-sheet>
+        <v-dialog v-model="authority" width="100%">
+            <v-card class="ui-skills__search">
+                <p>
+                    <span>Изменение фонового изображения</span>
+                </p>
+                <div class="ui-skills__search__actions">
+                    <UiButton @click="removeBackgroundPicture(id)" bgColor="smOutlined" isSmall>Удалить</UiButton>
+                    <UiButton bgColor="smOutlined" isSmall>Заменить</UiButton>
+                </div>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
 <script setup lang="ts">
+///icon
+import close from '~/assets/project_team/close.svg'
+import commit from '~/assets/project_team/commit.svg'
+import key from '~/assets/project_team/key.svg'
+
+//
 import account from "~/assets/icons/account-blue.svg"
 import UiButton from '../ui-kit/UiButton.vue'
 import UiInput from '../ui-kit/UiInput.vue'
@@ -186,6 +242,11 @@ import { getUserSearch } from '~/API/ways/user.ts';
 import { getProjectPropositions, getUserProjectPropositions } from "~/API/ways/notifications.ts"
 import { useRoute } from 'vue-router'
 const route = useRoute()
+let authority = ref(false)
+const authorityModal = () => {
+    authority.value = true
+    modalState.close()
+}
 interface User {
     id: number;
     roles: Array<any>;
@@ -214,11 +275,11 @@ onMounted(async () => {
     //есть два ответа в id 10
     const response = await getProjectPropositions(Number(route.params.ID));
     teamMembers.value = response.data.object;
-    console.log('getProjectPropositions', response )
+    console.log('getProjectPropositions', response)
 })
-onMounted (async () => {
+onMounted(async () => {
     //есть 2 ответов в projectId 10 и userId 1
-    await getUserProjectPropositions(Number(route.params.ID),localStorage.getItem('userId')).then((response) => {
+    await getUserProjectPropositions(Number(route.params.ID), localStorage.getItem('userId')).then((response) => {
         try {
             console.log('getUserProjectPropositions', response)
         } catch (e) {
@@ -268,7 +329,7 @@ const react = async (propositionAnswer: Answer) => {
 // 
 const modalState = ref(null)
 const searchTeammateModal = ref(null)
-const joinTeam = ref(null)
+let joinTeam = ref(false)
 const demoInfo = [
     {
         name: 'Евгений Анисимов',
@@ -299,15 +360,15 @@ const joinTeamModalItems: modalActionsList[] = [
     },
     {
         name: 'Настроить полномочия',
-        icon: 'account',
+        icon: commit,
     },
     {
         name: 'Удалить человека из проекта',
-        icon: 'account',
+        icon: close,
     },
     {
         name: 'Передать полномочия владельца проекта',
-        icon: 'account',
+        icon: key,
     },
 ]
 onMounted(fetchUsers);

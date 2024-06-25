@@ -8,11 +8,11 @@
         <div class="projectMedia__list">
             <!-- READONLY -->
 
-            <div class="projectMedia__item" v-if="props.readOnly === true">
+            <!-- <div class="projectMedia__item" v-if="props.readOnly === true">
                 <div style="gap: 10px" class="d-flex align-center">
-                    <img v-if="uploadedFile" :src="uploadedFile" alt="Uploaded file" />
+                    <img v-if="uploadedFile" :src="uploadedFile" alt="" />
                 </div>
-            </div>
+            </div> -->
             <!-- <div class="projectMedia__item">
                 <div style="gap: 10px" class="d-flex align-center">
                     <img src="../../assets/icons/media/video.svg" />
@@ -34,10 +34,8 @@
                             Добавьте ссылку на видео-хостинг или загрузите файл в удобное облако и прикрепите ссылку на
                             него.
                         </p>
-                        <!-- <UiInput id="linkInput" label="Ссылка*" /> -->
-                        <v-file-input id="fileInput" label="Ссылка*">
+                        <UiInput id="linkInput" label="Ссылка*" />
 
-                        </v-file-input>
                         <UiInput label="Описание ссылки*" class="my-8" />
                         <UiButton @click="submitProjectLink" bgColor="blue">Добавить</UiButton>
                     </div>
@@ -63,33 +61,16 @@ import { useRoute } from 'vue-router'
 const router = useRoute()
 const uploadedFile = ref<string | null>(null)
 // Функция для отправки файла
-// const submitProjectLink = async () => {
-//   const linkInput = document.getElementById('linkInput') as HTMLInputElement;
 
-//   if (linkInput && linkInput.value) {
-//     try {
-//       const response = await addProjectFile(linkInput.value, projectStore.prjObject.id);
-//       console.log('Ссылка успешно добавлена', response);
-//     } catch (error) {
-//       console.error('Ошибка при добавлении ссылки', error);
-//     }
-//   } else {
-//     alert('Пожалуйста, введите URL-ссылку.');
-//   }
-// };
 const submitProjectLink = async () => {
-    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    // const fileInput = document.getElementById('fileInput') as HTMLInputElement;
 
-    if (fileInput && fileInput.files && fileInput.files.length > 0) {
-        try {
-            const response = await addProjectFile(fileInput.files[0], Number(router.params.ID));
-            console.log('Файл успешно добавлен', response);
-            uploadedFile.value = URL.createObjectURL(fileInput.files[0]);
-        } catch (error) {
-            console.error('Ошибка при добавлении файла', error);
-        }
-    } else {
-        alert('Пожалуйста, выберите файл.');
+    try {
+        const response = await addProjectFile('', Number(router.params.ID), 'https://www.youtube.com/results?search_query=%D0%BA%D0%B0%D0%BA+%D0%BE%D1%81%D0%B2%D0%BE%D0%B1%D0%BE%D0%B4%D0%B8%D1%82%D1%8C+%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%B8%D0%B2%D0%BD%D1%83%D1%8E+%D0%BF%D0%B0%D0%BC%D1%8F%D1%82%D1%8C+%D0%BD%D0%B0+%D0%BD%D0%BE%D1%83%D1%82%D0%B1%D1%83%D0%BA%D0%B5');
+        console.log('Файл успешно добавлен', response);
+        // uploadedFile.value = URL.createObjectURL('');
+    } catch (error) {
+        console.error('Ошибка при добавлении файла', error);
     }
 };
 const modalState = ref(false)

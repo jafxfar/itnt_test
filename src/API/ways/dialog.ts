@@ -1,10 +1,18 @@
 import { API } from '../main'
+const prefix = '/dialog'
 
 const sendMessage = (dialogId: number, project: Object) => {
     return API.post(`${prefix}/${dialogId}/message`, project);
 };
-const prefix = '/dialog'
-
+const createDialog = (dialogType: String, userId: any) => {
+    return API.post(`${prefix}/`, {
+        'dialogType': dialogType,
+        'users': [{
+            'id': userId
+        }
+        ],
+    });
+}
 const getDialog = () => {
     return API.get(`${prefix}/`)
 }
@@ -15,4 +23,4 @@ const getDialogByID = (id: number) => {
     return API.get(`${prefix}/${id}`)
 }
 
-export { getDialog, getDialogMessages, getDialogByID, sendMessage }
+export { getDialog, getDialogMessages, getDialogByID, sendMessage, createDialog }

@@ -14,9 +14,10 @@ export default {
 
         <h2 v-show="props.routeName">{{ props.routeName }}</h2>
         <v-spacer v-if="search === false" />
-
-        <img @click="toggleTopModal" style="padding: 10px" v-if="props.showUserMinify === true"
-            :src="user.userObj.pictureUrl" />
+        <div class="ava">
+            <img @click="toggleTopModal" style="padding: 10px" v-if="props.showUserMinify === true"
+                :src="fullAvatarUrl" />
+        </div>
 
         <img @click="toggleUserModal" style="padding: 10px" v-if="props.showControlDots" :src="dots" />
         <!-- <img @click="toggleProjectModal" style="padding: 10px" v-if="props.showControlDotsProject" :src="dots" /> -->
@@ -49,7 +50,7 @@ export default {
                         <input type="radio" name="project" id="">{{ project.project.name }}
                     </div>
                     <UiTextArea v-model="props.textarea" />
-                    <UiButton bg-color="blue" @click="sendProp" >Отправить приглашение</UiButton>
+                    <UiButton bg-color="blue" @click="sendProp">Отправить приглашение</UiButton>
                 </div>
             </div>
         </vue-bottom-sheet>
@@ -65,7 +66,7 @@ export default {
                 <div class="searchTeammateModal__item">
                     <input type="radio" name="complaint" id=""> Взрослый контент (ссылки, картинки, видео и т.п.)
                 </div>
-                <UiTextArea v-model="complaint"/>
+                <UiTextArea v-model="complaint" />
                 <UiButton bg-color="blue" @click="sendComplaint">Отправить жалобу</UiButton>
             </div>
         </vue-bottom-sheet>
@@ -75,9 +76,9 @@ export default {
             <v-icon icon="mdi-magnify" />
         </div>
     </v-app-bar>
-    <UserModal @close="isModalOpen = false"  v-if="user.userObj.userModalState === true" />
+    <UserModal @close="isModalOpen = false" v-if="user.userObj.userModalState === true" />
 
-    <TopModal @close="isModalOpen = false"  v-if="user.userObj.topModalState === true" />
+    <TopModal @close="isModalOpen = false" v-if="user.userObj.topModalState === true" />
 </template>
 
 <script lang="ts" setup>
@@ -120,7 +121,7 @@ const me: modalActionsList[] = [
     }
 ]
 const sendProp = async () => {
-    await sendProposition(1, 1,1,'dd',"PROJECT_TO_USER")
+    await sendProposition(1, 1, 1, 'dd', "PROJECT_TO_USER")
 }
 const complaint = ref('')
 const sendComplaint = async () => {
@@ -170,11 +171,9 @@ onMounted(async () => {
 
             if (Array.isArray(data.value.projects)) {
                 data.value.projects.forEach((project, index) => {
-                    // console.log(`Project ${index}:`, project)
                 })
 
                 followed.value = data.value.projects.filter(project => project.relationType === 'PROJECT_OWNER')
-                // console.log('Followed projects:', followed.value)
             } else {
                 // console.warn('Expected projects to be an array, but got:', data.value.projects)
             }
@@ -183,7 +182,11 @@ onMounted(async () => {
         }
     })
 })
+const baseURL = 'http://62.217.181.172/';
 
+const fullAvatarUrl = computed(() => {
+    return data.value.pictureUrl ? `${baseURL}files/${data.value.pictureUrl}` : '';
+});
 function toggleTopModal() {
     user.userObj.topModalState = !user.userObj.topModalState
 }
@@ -216,6 +219,18 @@ function copyID() {
         display: flex;
         align-items: center;
         gap: 16px;
+    }
+}
+
+.ava {
+    max-width: 62px;
+    max-height: 58px;
+    padding: 0;
+    margin:0;
+    img {
+        width:62px;
+        height:58px;
+        border-radius: 100%;
     }
 }
 </style>

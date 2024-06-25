@@ -16,13 +16,14 @@
     </div>
     <v-container style="padding: 0 20px; margin-bottom: 48px">
         <div class="card">
-    <h3 style="font-weight: 500;"> Подключить кошелёк</h3>
-    <div class="card__item" :class="item.addClass" v-for="(item, index) in walletItems" :key="index" :style="{ borderColor: item.color }">
-      <img :src="item.src" :alt="item.alt">
-      <p style="font-weight: 500;"> {{ item.alt }}</p>
-    </div>
-    <div class="help">Мне нужна помощь</div>
-  </div>
+            <h3 style="font-weight: 500;"> Подключить кошелёк</h3>
+            <div class="card__item" :class="item.addClass" v-for="(item, index) in walletItems" :key="index"
+                :style="{ borderColor: item.color }">
+                <img :src="item.src" :alt="item.alt">
+                <p style="font-weight: 500;"> {{ item.alt }}</p>
+            </div>
+            <div class="help">Мне нужна помощь</div>
+        </div>
     </v-container>
 </template>
 
@@ -37,9 +38,9 @@ import UiPrompt from '~/components/ui-kit/UiPrompt.vue';
 import Header from '../../components/Header.vue'
 
 const walletItems = [
-  { src: tonKeeper, alt: 'Tonkeeper', color: '#7BB3E3' },
-  { src: metamask, alt: 'Metamask', color: '#F89D35' },
-  { src: wallet, alt: 'Walletconnect', color: '#3B99FB' ,addClass:'addClass' },
+    { src: tonKeeper, alt: 'Tonkeeper', color: '#7BB3E3' },
+    { src: metamask, alt: 'Metamask', color: '#F89D35' },
+    { src: wallet, alt: 'Walletconnect', color: '#3B99FB', addClass: 'addClass' },
 ];
 const cardItems = [
     { title: 'Вы в клубе фаундеров с 12.07.21', text: "За вас поручился:", showIcon: false },
@@ -79,12 +80,14 @@ const cardItems = [
     }
 
 }
+
 .help {
     color: #29B6F6;
     font-weight: 400;
     cursor: pointer;
 }
-.addClass{
+
+.addClass {
     margin-bottom: 20px;
 }
 </style>

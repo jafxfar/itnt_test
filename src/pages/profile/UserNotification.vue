@@ -22,7 +22,7 @@ import { onMounted, ref } from 'vue'
 import { getUserNotifications } from '~/API/ways/notifications'
 onMounted(async () => {
     //есть 6 ответов в id 1
-    await getUserNotifications(5).then((response) => {
+    await getUserNotifications(1).then((response) => {
         try {
             console.log('response', response)
         } catch (e) {

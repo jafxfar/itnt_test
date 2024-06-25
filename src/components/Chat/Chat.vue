@@ -2,7 +2,8 @@
     <div class="">
         <Header showUserMinify :routeName="lastPart" :chat="true" />
         <div class="input px-2 pt-5 pb-0">
-            <ChatInput :imgSrc="chat" v-model="currentMessage" :action="sendApiMessage" placeholder="Hey..."/>
+            <ChatInput :imgSrc="chat" :action="sendApiMessage" placeholder="Hey..."/>
+            <input type="text" @click="sendApiMessage">
         </div>
         <v-container class="chat-screen">
             <v-row justify="space-around d-flex flex-column">
@@ -43,7 +44,8 @@ import seen from '~/assets/chat/seen.svg'
 import delivered from '~/assets/chat/delivered.svg'
 import Header from "~/components/Header.vue";
 import { ref, onMounted } from "vue";
-// import { io } from "socket.io-client";
+import  io  from "socket.io-client";
+// import io from 'socket.io-client/dist/socket.io.js';
 import { sendMessage } from '~/API/ways/dialog'
 import { getDialogByID } from "~/API/ways/dialog";
 import { useRoute } from "vue-router";
@@ -106,30 +108,33 @@ const showMessages = async () => {
         console.error('Error fetching users:', error);
     }
 };
-// let socket;
-let currentMessage = ref('');
-// let messageList = ref([]); // Объявите messageList как реактивное свойство
+let socket;
+onMounted(() => {
+    socket = io("http://62.217.181.172/dialog", {
+        query: {
+            userId: 1,
+            dialogId: 9
+        }
+    });
 
-// onMounted(() => {
-//     socket = io("http://localhost:8080")
+    socket.on('connect', () => {
+        // console.log('Connected to the server.')
+    })
 
-//     socket.on('connect', () => {
-//         console.log('Connected to the server.')
-//     })
-
-//     socket.on('receive_message', (data) => {
-//         console.log('Message from server: ', data)
-//         messageList.value.push(data);
-//     })
-// })
+    // socket.on('receive_message', (data) => {
+    //     console.log('Message from server: ', data)
+    //     messageList.value.push(data);
+    // })
+})
 
 const sendApiMessage = async () => {
     const project = {
-        messageText: currentMessage.value,
+        messageText: 'sdsd',
         readStatus: true,
     };
 
     try {
+        // socket.emit('send_message', project);
         const response = await sendMessage(1, project);
         return response.data;
     } catch (error) {

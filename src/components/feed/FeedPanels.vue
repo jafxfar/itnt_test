@@ -261,6 +261,7 @@ export default {
             </v-expansion-panels>
         </v-expansion-panel>
     </v-expansion-panels>
+    <div class="" v-if="props.followed"></div>
 </template>
 
 <script setup lang="ts">

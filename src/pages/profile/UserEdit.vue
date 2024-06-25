@@ -112,6 +112,7 @@ async function patchUserInfo() {
     userStore.$state.userObj.id = Number(localStorage.getItem('userId'))
     await patchUser(userStore.$state.userObj).then(() => {
         try {
+            console.log('patching user ', userStore.$state.userObj)
             router.push('/me')
         } catch (e) {
             console.error('error :', e)

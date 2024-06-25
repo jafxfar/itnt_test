@@ -17,7 +17,7 @@
                     </p>
                 </div>
             </div>
-            <v-icon icon="mdi-dots-vertical" />
+            <v-icon @click="modalState.open()" icon="mdi-dots-vertical" color="#263238" class="font-weight-bold" />
         </div>
 
         <!-- body -->
@@ -72,17 +72,42 @@
             </div>
         </div>
     </div>
+    <vue-bottom-sheet max-height="100px" full-screen ref="modalState">
+        <div class="modal">
+            <div class="modal__list">
+                <div v-for="(item, id) in modalItems" @click="item?.func" :key="id" class="modal__list__item">
+                    <img :src="item.icon" alt="" />
+                    <p class="error-txt txt-body1">{{ item.name }}</p>
+                </div>
+            </div>
+        </div>
+    </vue-bottom-sheet>
 </template>
 
 <script lang="ts" setup>
+import warning from "~/assets/icons/warning-red.svg"
+
 import chat from "~/assets/icons/chat-black.svg"
 import share from "~/assets/icons/share-black.svg";
 import Fire from '../Fire.vue'
 import UiButton from '../ui-kit/UiButton.vue'
 import UiVacancyPanel from '../ui-kit/UiVacancyPanel.vue'
-import { computed } from 'vue'
+import { computed,ref } from 'vue'
+import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
+import '@webzlodimir/vue-bottom-sheet/dist/style.css'
+import { modalActionsList } from '~/helpers/types'
 // import { postAddUserPicture } from "~/API/ways/user";
-
+const modalState = ref(false)
+const modalItems: modalActionsList[] = [
+    // {
+    //     name: 'Статистика проекта',
+    //     icon: statistic,
+    // },
+    {
+        name: 'Сообщить о нарушении',
+        icon: warning,
+    },
+]
 const props = defineProps({
     feedCardType: {
         type: String,

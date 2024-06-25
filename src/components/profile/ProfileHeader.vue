@@ -1,6 +1,6 @@
 <template>
     <div v-if="props.readOnly" class="userPics">
-        <div class="userPics__uploadEdit">
+        <div class="userPics__bg">
             <img v-show="props.bgPic" :src="props.bgPic" alt="User background picture">
         </div>
         <div class="userPics__ava">
@@ -14,7 +14,7 @@
             <img v-else-if="props.bgPic" :src="props.bgPic" />
         </div>
 
-        <v-dialog v-model="searchModalState" width="100%">
+        <v-dialog v-model="avaModal" width="100%">
             <v-card class="ui-skills__search">
                 <p>
                     <span>Изменение фонового изображения</span>
@@ -51,10 +51,8 @@
 import bg from "~/assets/demo/project-head.svg"
 import ava from "~/assets/Profile/Photo.svg"
 import { ref } from 'vue'
-import { useUserStore } from '~/store/user';
 import { postAddUserPicture, postAddBackgroundPicture, deleteUserPicture } from '~/API/ways/user';
 import UiButton from '../ui-kit/UiButton.vue';
-const userStore = useUserStore();
 const props = defineProps({
     readOnly: {
         type: Boolean,
@@ -72,7 +70,6 @@ const props = defineProps({
 const searchModalState = ref(false)
 
 function openModal() {
-    // chosenModalSkill.value = skill
     searchModalState.value = true
 }
 const bgFileInput = ref<HTMLInputElement | null>(null);
@@ -93,8 +90,6 @@ const handleFileInputChange = () => {
                 const formData = new FormData();
                 formData.append('file', selectedFile);
                 const response = await postAddBackgroundPicture(formData); // Используйте postAddBackgroundPicture для отправки запроса
-                userStore.bgPicUrl = response.data.backgroundPictureUrl; // Используйте URL изображения, возвращенный сервером
-                console.log(userStore.bgPicUrl, userStore.pictureUrl) // Обновляем URL аватара в глобальном состоянии
             } catch (error) {
                 console.error('error:', error);
             }
@@ -112,9 +107,7 @@ const handleFileAva = () => {
             try {
                 const formData = new FormData();
                 formData.append('file', selectedFile);
-                const response = await postAddUserPicture(formData); // Используйте функцию для загрузки аватара
-                userStore.pictureUrl = response.data.pictureUrl;
-                console.log(userStore.bgPicUrl, userStore.pictureUrl) // Обновляем URL аватара в глобальном состоянии
+                const response = await postAddUserPicture(formData, true); // Используйте функцию для загрузки аватара
             } catch (error) {
                 console.error('error:', error);
             }
@@ -130,7 +123,7 @@ const uploadAva = async () => {
     avaFleInput.value?.click();
 }
 
-const id = ref<number>(0); // Пример инициализации, возможно, значение придет с props
+const id = ref<number>(0);
 
 const removeBackgroundPicture = async (id: Number) => {
     try {
@@ -198,6 +191,10 @@ const removeBackgroundPicture = async (id: Number) => {
         width: 100vw;
         height: 120px;
         display: hidden;
+        img{
+            height: 100px;
+            width: 100%;
+        }
     }
 
     &__btn {

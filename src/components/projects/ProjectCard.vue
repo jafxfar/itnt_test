@@ -3,7 +3,12 @@
         <!-- READONLY -->
         <div v-if="props.readOnly">
             <div class="projectCard__slider">
-                <img width="335" height="492" v-for="i in 3" src="../../assets/demo/demo-rec1.png" />
+                <v-carousel class="slider elevation-0" cycle :show-arrows="false">
+                    <v-carousel-item :eager="true" :src="slide"></v-carousel-item>
+                    <v-carousel-item :eager="true" :src="slide"></v-carousel-item>
+                    <v-carousel-item :eager="true" :src="slide"></v-carousel-item>
+                    <v-carousel-item :eager="true" :src="slide"></v-carousel-item>
+                </v-carousel>
             </div>
             <div class="projectCard__tags">
                 <div class="projectCard__tags--tag txt-body2">Инвестиции</div>
@@ -22,7 +27,7 @@
         <div v-else>
             <!-- Фотографии проекта -->
             <div class="projectCard__editable__pics">
-                <ProjectAddPhoto/>
+                <ProjectAddPhoto />
                 <!-- <div class="projectCard__editable__pics__grid">
                     <img v-for="i in 7" width="73" height="106" src="@/assets/demo/projectSmallCard.svg" />
                     <div @click="addProjectPhoto" class="projectCard__editable__pics__adder">
@@ -46,15 +51,11 @@
 
                 <div>
                     <!-- TODO: сделатб хелпер под правила -->
-                    <UiTextArea
-                        :rules="[(v) => v.length <= 1024 || 'Max 1024 characters']"
-                        counter
-                        label="Описание проекта*"
-                        v-model="prjObject.description"
-                    />
+                    <UiTextArea :rules="[(v) => v.length <= 1024 || 'Max 1024 characters']" counter
+                        label="Описание проекта*" v-model="prjObject.description" />
 
-                    <UiPrompt
-                        >Текст, выделенный зелёным цветом, будет отображаться на мини-карточке проекта в разных местах
+                    <UiPrompt>Текст, выделенный зелёным цветом, будет отображаться на мини-карточке проекта в разных
+                        местах
                         приложения, где пространство ограничено. А полное описание будет отображаться на странице вашего
                         проекта.
                     </UiPrompt>
@@ -65,6 +66,7 @@
 </template>
 
 <script setup lang="ts">
+import slide from '../../assets/demo/projectSmallCard.svg'
 import UiPrompt from '../ui-kit/UiPrompt.vue'
 import UiInput from '../ui-kit/UiInput.vue'
 import UiTextArea from '../ui-kit/UiTextArea.vue'
@@ -112,10 +114,12 @@ const props = defineProps({
         -ms-overflow-style: none;
         scrollbar-width: none;
         overflow-x: scroll;
+
         &::-webkit-scrollbar {
             display: none;
         }
     }
+
     &__tags {
         display: flex;
         justify-content: space-between;
@@ -129,6 +133,7 @@ const props = defineProps({
             color: #1769aa;
         }
     }
+
     &__info {
         &__title {
             margin-bottom: 12px;
@@ -141,11 +146,13 @@ const props = defineProps({
             p {
                 margin-bottom: 18px;
             }
+
             &__grid {
                 display: flex;
                 gap: 16px;
                 flex-wrap: wrap;
             }
+
             &__adder {
                 height: 106px;
                 width: 73px;
@@ -160,6 +167,7 @@ const props = defineProps({
         &__tags {
             margin-top: 43px;
             margin-bottom: 48px;
+
             p {
                 margin-bottom: 16px;
             }

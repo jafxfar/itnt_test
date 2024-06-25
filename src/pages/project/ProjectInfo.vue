@@ -1,18 +1,19 @@
 <template>
-    <Header showID showControlDotsProject />
-    <ProjectHeader :prjAva="data.avatarUrl" readOnly :prj-name="data.name" :prjID="data.id" :prj-slogan="data.slogan" />
+    <Header showID show-user-minify />
+    <ProjectHeader :prjAva="fullAvatarUrl" readOnly :prj-name="data.name" :prjID="data.id" :prj-slogan="data.slogan" />
     <v-container>
         <ProjectCard readOnly class="mt-12" :prj-desc-body="data.description" :prj-desc-head="data.descriptionHeader" />
         <ProjectTeam :team="data.users" class="mt-12" readOnly />
         <ProjectVacancys class="mt-12" readOnly />
-        <ProjectMedia class="mt-12" readOnly />
+        <ProjectMedia class="mt-12"  readOnly />
+        <!-- <img :src="fullAvatarUrl" alt="1" /> -->
     </v-container>
     <Footer />
 </template>
 
 <script setup lang="ts">
 // import ProjectStage from '~/components/projects/ProjectStage.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { getProjectByID } from '~/API/ways/project.ts'
 import { useRoute } from 'vue-router'
 
@@ -27,6 +28,11 @@ onMounted(async () => {
         }
     })
 })
+const baseURL = 'http://62.217.181.172/';
+
+const fullAvatarUrl = computed(() => {
+    return data.value.avatarUrl ? `${baseURL}files/${data.value.avatarUrl}` : '';
+});
 console.log(data);
 
 import Footer from '~/components/Footer.vue'

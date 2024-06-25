@@ -8,8 +8,10 @@ export default {
     <div class="projectHeader">
         <!-- TODO: READONLY PROJECT PICTURE -->
         <div v-if="props.readOnly || props.commentText" class="">
-            <img style="width: 100%; height:fit-content;" src="../../assets/demo/project-head.svg" />
-            <img :src="props.prjAva" class=" m-8 p-8" />
+            <!-- <img style="width: 100%; height:fit-content;" src="../../assets/demo/project-head.svg" /> -->
+            <div class="ava">
+                <img :src="props.prjAva" class="" />
+            </div>
         </div>
         <div class="back w-full" v-else>
             <div style="display: flex; align-items: start" class="rounded-circle mx-auto mt-6">
@@ -114,7 +116,7 @@ async function uploadImage(e: any) {
     const formData = new FormData()
     formData.append('file', file)
     try {
-        const response = await addProjectAvatar(formData,Number(route.params.ID), )
+        const response = await addProjectAvatar(formData, Number(route.params.ID),)
         prjAva.value = URL.createObjectURL(file)
         console.log(response)
     } catch (error) {
@@ -184,5 +186,17 @@ async function follow() {
     transform: translate(-50%, -12%);
     position: absolute;
     opacity: 0;
+}
+
+.ava {
+    display: flex;
+    padding:0 0 0 20px;
+    justify-content: start;
+
+    img {
+        width:20%;
+        height: 20%;
+        border-radius: 100%;
+    }
 }
 </style>

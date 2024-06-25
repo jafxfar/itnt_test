@@ -60,6 +60,9 @@
             </h1>
         </div>
     </div>
+
+
+
     <div class="absolute bottom-20 right-6 bg-marine  rounded-[12px]">
         <button @click="searchTeammateModal.open()" class="p-[10px]"><img :src="plus" alt=""></button>
         <vue-bottom-sheet ref="searchTeammateModal">
@@ -68,8 +71,8 @@
                 <UiInput prepend-icon="magnify" label="Введите данные для поиска" v-model="searchQuery" />
                 <div class="searchTeammateModal__items">
                     <div v-for="user in filteredUsers" :key="user.id" class="d-flex align-center"
-                        @click="openUser(user.id)">
-                        <img class="mr-3" width="37" height="37" src="../../assets/demo/ava-small-header.svg" />
+                    @click="() => handleUserClick(user.id)">
+                    <img class="mr-3" width="37" height="37" src="../../assets/demo/ava-small-header.svg" />
                         <div>
                             <div class="d-flex align-center">
                                 <p class="txt-body3">{{ user.id }}</p>
@@ -97,11 +100,25 @@ import UiInput from '~/components/ui-kit/UiInput.vue'
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from 'vue-router'
 import { getUserSearch } from '~/API/ways/user'
-import { getDialog } from '~/API/ways/dialog';
+import { getDialog, createDialog } from '~/API/ways/dialog';
 const router = useRouter()
 const openUser = (id) => {
+
     router.push(`/messenger/chat/${id}`);
 };
+const createDialogAPI = async () => {
+    try {
+        const response = await createDialog('GROPE', 1)
+        console.log(response)
+    }
+    catch (error) {
+        console.error('Error fetching users:', error);
+    }
+}
+const handleUserClick = async (id) => {
+    const dialogResponse = await createDialogAPI();
+    openUser(id);
+}
 const showDialog = async () => {
     try {
         const response = await getDialog();
@@ -200,5 +217,4 @@ p {
         gap: 16px;
     }
 }
-
 </style>
