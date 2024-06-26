@@ -19,7 +19,7 @@ export default defineConfig({
     build: {
         minify: true,
         rollupOptions: {
-            external: ['socket.io-client', 'vuedraggable']
+            external: ['', 'vuedraggable']
           }
     },
 
