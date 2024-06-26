@@ -87,9 +87,9 @@ const messages = ref([
         time: '9:47am',
     },
 ]);
-const socket = io('http://62.217.181.172/dialog');
+const socket = io('http://62.217.181.172:8080/dialog');
 const initializeSocket = () => {
-  socket.value = io('http://62.217.181.172/dialog', {
+  socket.value = io('http://62.217.181.172:8080/dialog', {
     query: {
       userId: 1,
       dialogId: 9,
