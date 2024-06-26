@@ -18,6 +18,9 @@ export default defineConfig({
     // TODO: поменять пути динамических иконок
     build: {
         minify: true,
+        rollupOptions: {
+            external: ['socket.io-client']
+          }
     },
 
     css: {

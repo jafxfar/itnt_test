@@ -2,7 +2,7 @@
     <div class="">
         <Header showUserMinify :routeName="lastPart" :chat="true" />
         <div class="input px-2 pt-5 pb-0">
-            <ChatInput :imgSrc="chat" :action="sendApiMessage" placeholder="Hey..."/>
+            <ChatInput :imgSrc="chat" :action="sendApiMessage" placeholder="Hey..." />
             <input type="text" @click="sendApiMessage">
         </div>
         <v-container class="chat-screen">
@@ -21,11 +21,10 @@
                     </v-list-item>
                     <v-list-item v-else :key="message.time">
                         <v-list-item-content class="sent-message justify-end">
-                            <v-card color="#E1F5FE" class="flex-none ">
-                                <v-card-text class="white--text pa-2 d-flex flex-column ">
+                            <v-card color="#E1F5FE" class="flex-none">
+                                <v-card-text class="white--text pa-2 d-flex flex-column">
                                     <span class="text-subtitle-1 chat-message">{{ message.message }}</span>
-                                    <span class="text-caption align-self-end flex flex-row gap-2">{{ message.time }}<img
-                                            :src="delivered" alt=""></span>
+                                    <span class="text-caption align-self-end flex flex-row gap-2">{{ message.time }}<img :src="delivered" alt=""></span>
                                 </v-card-text>
                             </v-card>
                         </v-list-item-content>
@@ -37,18 +36,18 @@
 </template>
 
 <script setup>
-import chat from "../../assets/icons/chat.svg"
-import ChatInput from '~/components/ui-kit/ChatInput.vue'
-import send from '~/assets/chat/send.svg'
-import seen from '~/assets/chat/seen.svg'
-import delivered from '~/assets/chat/delivered.svg'
+import chat from "../../assets/icons/chat.svg";
+import ChatInput from '~/components/ui-kit/ChatInput.vue';
+import send from '~/assets/chat/send.svg';
+import seen from '~/assets/chat/seen.svg';
+import delivered from '~/assets/chat/delivered.svg';
 import Header from "~/components/Header.vue";
-import { ref, onMounted } from "vue";
-import  io  from "socket.io-client";
-// import io from 'socket.io-client/dist/socket.io.js';
-import { sendMessage } from '~/API/ways/dialog'
+import { ref, onMounted, onUnmounted } from "vue";
+import io from "socket.io-client";
+import { sendMessage } from '~/API/ways/dialog';
 import { getDialogByID } from "~/API/ways/dialog";
 import { useRoute } from "vue-router";
+
 const route = useRoute();
 const lastPart = ref(null);
 const messages = ref([
@@ -56,76 +55,85 @@ const messages = ref([
         from: 'You',
         message: `Sure, I'll see you later.`,
         time: '10:42am',
-        color: 'deep-purple lighten-1',
     },
     {
         from: 'John Doe',
         message: 'Yeah, sure. Does 1:00pm work?',
         time: '10:37am',
-        color: 'green',
     },
     {
         from: 'You',
         message: 'Did you still want to grab lunch today?',
         time: '9:47am',
-        color: 'deep-purple lighten-1',
     },
     {
         from: 'John Doe',
         message: 'Yeah, sure. Does 1:00pm work?',
         time: '10:37am',
-        color: 'green',
     },
     {
         from: 'You',
         message: 'Did you still want to grab lunch today?',
         time: '9:47am',
-        color: 'deep-purple lighten-1',
-    }, {
+    },
+    {
         from: 'John Doe',
         message: 'Yeah, sure. Does 1:00pm work?',
         time: '10:37am',
-        color: 'green',
     },
     {
         from: 'You',
         message: 'Did you still want to grab lunch today?',
         time: '9:47am',
-        color: 'deep-purple lighten-1',
     },
-
 ]);
+const socket = ref(null);
+const initializeSocket = () => {
+  socket.value = io('http://62.217.181.172/dialog', {
+    query: {
+      userId: 1,
+      dialogId: 9,
+    },
+  });
+
+  socket.value.on('connect', () => {
+    console.log('Connected to the server.');
+  });
+
+  socket.value.on('disconnect', () => {
+    console.log('Disconnected from the server.');
+  });
+};
+
+onMounted(() => {
+  initializeSocket();
+});
+
+onUnmounted(() => {
+  if (socket.value) {
+    socket.value.disconnect();
+  }
+});
+
 onMounted(() => {
     const fullPath = window.location.origin + route.fullPath;
     const parts = fullPath.split('/');
     lastPart.value = parts[parts.length - 1];
+    showMessages();
 });
+
+onUnmounted(() => {
+    disconnectSocket();
+});
+
 const showMessages = async () => {
     try {
         const response = await getDialogByID(lastPart.value);
-        console.log('response', response)
+        console.log('response', response);
     } catch (error) {
-        console.error('Error fetching users:', error);
+        console.error('Error fetching messages:', error);
     }
 };
-let socket;
-onMounted(() => {
-    socket = io("http://62.217.181.172/dialog", {
-        query: {
-            userId: 1,
-            dialogId: 9
-        }
-    });
-
-    socket.on('connect', () => {
-        // console.log('Connected to the server.')
-    })
-
-    // socket.on('receive_message', (data) => {
-    //     console.log('Message from server: ', data)
-    //     messageList.value.push(data);
-    // })
-})
 
 const sendApiMessage = async () => {
     const project = {
@@ -140,27 +148,23 @@ const sendApiMessage = async () => {
     } catch (error) {
         console.error('Failed to send message:', error);
     }
-}
-onMounted(showMessages);
+};
 </script>
 
 <style scoped lang="scss">
 .v-application .v-card {
     box-shadow: none !important;
     background: none;
-
 }
 
 .v-application .v-list-item {
     box-shadow: none !important;
     background: none;
-
 }
 
 .v-application .v-card-text {
     box-shadow: none !important;
     background: none;
-
 }
 
 .chat-message {
@@ -196,11 +200,10 @@ onMounted(showMessages);
     border: 1px solid rgba(133, 207, 171, 0.15);
     border-radius: 12px 12px 12px 2px;
 }
-.radius-sent{
+.radius-sent {
     border-radius: 12px 2px 12px 12px;
-
 }
-.radius-recieved{
+.radius-recieved {
     border-radius: 12px 12px 12px 2px;
 }
 
@@ -211,7 +214,7 @@ onMounted(showMessages);
     right: 0;
     background-color: white;
     z-index: 999;
-    padding-top:10px;
+    padding-top: 10px;
 }
 
 .date {
