@@ -93,7 +93,6 @@ import seen from '~/assets/chat/seen.svg'
 import delivered from '~/assets/chat/delivered.svg'
 import ChatFolders from './ChatFolders.vue'
 import plus from '~/assets/modal_icon/plus.svg'
-// import { io } from "socket.io-client";
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import UiInput from '~/components/ui-kit/UiInput.vue'
