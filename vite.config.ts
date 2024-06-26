@@ -19,7 +19,7 @@ export default defineConfig({
     build: {
         minify: true,
         rollupOptions: {
-            external: ['', 'vuedraggable']
+            external: ['vuedraggable']
           }
     },
 
