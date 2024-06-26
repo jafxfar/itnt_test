@@ -43,7 +43,7 @@ import seen from '~/assets/chat/seen.svg';
 import delivered from '~/assets/chat/delivered.svg';
 import Header from "~/components/Header.vue";
 import { ref, onMounted, onUnmounted } from "vue";
-import io from "socket.io-client";
+import {io} from "socket.io-client";
 import { sendMessage } from '~/API/ways/dialog';
 import { getDialogByID } from "~/API/ways/dialog";
 import { useRoute } from "vue-router";
@@ -87,7 +87,7 @@ const messages = ref([
         time: '9:47am',
     },
 ]);
-const socket = ref(null);
+const socket = io('http://62.217.181.172/dialog');
 const initializeSocket = () => {
   socket.value = io('http://62.217.181.172/dialog', {
     query: {
