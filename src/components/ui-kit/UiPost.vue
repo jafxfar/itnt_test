@@ -120,11 +120,9 @@ watch(() => props.data, (newVal) => {
 async function postBlog() {
     const description = localData.value.type;
     const descriptionHeader = localData.value.offer;
-    const id = Number(localStorage.getItem('userId'));
-    // const postType = 'PROJECT';
-    const authorProject = { id: 10};
+    const authorUser =  localStorage.getItem("userId");
 
-    await addPost(description, descriptionHeader, id, authorProject).then((response: any) => {
+    await addPost(description, descriptionHeader, false, authorUser).then((response: any) => {
         try {
             console.log(response);
             postStore.addPost(response.data.object);

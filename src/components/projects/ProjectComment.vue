@@ -1,6 +1,6 @@
 <template>
     <Header showID showUserMinify />
-    <ProjectHeader commentText :prj-name="data.name" :prjID="data.id" :prj-slogan="data.slogan" />
+    <!-- <ProjectHeader  commentText :prj-name="data.name" :prjID="data.id" :prj-slogan="data.slogan" /> -->
     <div v-for="(comment, index) in comments" :key="comment.id" class="mx-4">
         <div class="feedCard mx-4" v-if="comment.isReply && index < 2 || showAllComments">
             <div class="feedCard__head">
@@ -59,13 +59,13 @@
     <div class="mx-4" v-for="comments in displayedComments">
         <Comments :comment="true" :id="comments.user.id" :message="comments.message" />
     </div>
-    <div v-if="!allCommentsShown" @click="showMoreComments" class="showMore mx-4">
+    <!-- <div v-if="!allCommentsShown" @click="showMoreComments" class="showMore mx-4">
         <button class="text-[#29B6F6] ml-4">Показать еще</button>
         <button class="bg-[#E1F5FE] rounded-[8px] px-[8px] gap-1 py-[2px] flex justify-center">
            <p class="pl-[2px] text-[#1769AA]"> {{ remainingComments }}</p>
             <v-icon color="#1769AA" :icon="'mdi-chevron-down'"></v-icon>
         </button>
-    </div>
+    </div> -->
     <div class="input">
         <div v-if="replyToComment">
             <p>В ответ Save and Brave</p>
@@ -138,7 +138,7 @@ const remainingComments = computed(() => prjComments.value.length - displayedCom
 </script>
 <style scoped lang="scss">
 .input {
-    position: sticky;
+    position: absolute;
     bottom: 0px;
     left: 0;
     right: 0;

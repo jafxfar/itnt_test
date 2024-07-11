@@ -19,11 +19,18 @@
                 </div>
             </div>
         </vue-bottom-sheet>
-
-        <div v-for="(post, id) in feedInfo" :key="id" class="mt-6">
-            <FeedCard :post="post" :post-desc-header="post.descriptionHeader || 'Нет заголовка'"
-                :post-desc="post.description || 'Нет описания к посту'" />
+        <!-- {{ userInfo.projects }} -->
+        <ProjectsList class="mt-12" :projects="userInfo.projects" />
+        <div class="" v-for="(prj, id) in userInfo.projects" :key="id">
+            <!-- {{ prj.relationType }} -->
+            <ProjectsList v-show="prj.relationType == 'PROJECT_OWNER'" class="mt-12" :projects="[prj.project]" />
         </div>
+        <div v-for="(post, id) in posts" :key="id" class="mt-6">
+            <div class="" v-for="(object, id) in post.object" :key="id">
+                <FeedPost :post="object" :id="object.id" />
+            </div>
+        </div>
+
     </v-container>
     <Footer />
 </template>
@@ -43,43 +50,54 @@ import { getUserByID } from '~/API/ways/user.ts'
 import { isAuth } from '~/helpers/routerHandler'
 import { onMounted, ref, computed } from 'vue';
 import { getPost } from '~/API/ways/user';
-import FeedCard from '~/components/feed/FeedCard.vue';
-
+import FeedPost from '~/components/feed/FeedPost.vue';
+import {projectStatByID} from "~/API/ways/project-stat"
 let posts = ref();
-let feedInfo = ref();
-const userId = Number(localStorage.getItem('userId'));
 
 const getPosts = async () => {
     try {
-        const data = await getPost(userId);
+        const data = await getPost();
         posts.value = data;
-        feedInfo.value = data;
     } catch (error) {
         console.error(error);
     }
 };
+let stat = ref()
+// const projectStatByIDAPI = async () => {
+//     try {
+//         const data = await projectStatByID('sds',10, 'sdsd');
+//         stat.value = data;
+//     } catch (error) {
+//         console.error(error);
+//     }
+// };
 onMounted(getPosts);
+// onMounted(projectStatByIDAPI)
 const modalState = ref(null);
 
 isAuth();
 
-let data = ref({});
+let userInfo = ref({});
 onMounted(async () => {
     await getUserByID(Number(localStorage.getItem("userId"))).then((response) => {
         try {
-            data.value = response.data.object;
+            userInfo.value = response.data.object;
+            console.log(userInfo.value)
         } catch (e) {
             console.error('text error:', e);
         }
     })
 })
+const ownerProjects = computed(() => {
+    return userInfo.value?.projects?.filter(project => project.relationType === 'PROJECT_OWNER') || [];
+});
 const baseURL = 'http://62.217.181.172/';
 
 const fullAvatarUrl = computed(() => {
-    return data.value.pictureUrl ? `${baseURL}files/${data.value.pictureUrl}` : '';
+    return userInfo.value.pictureUrl ? `${baseURL}files/${userInfo.value.pictureUrl}` : '';
 });
 const fullBannerUrl = computed(() => {
-    return data.value.backgroundPictureUrl ? `${baseURL}files/${data.value.backgroundPictureUrl}` : '';
+    return userInfo.value.backgroundPictureUrl ? `${baseURL}files/${userInfo.value.backgroundPictureUrl}` : '';
 });
 </script>
 

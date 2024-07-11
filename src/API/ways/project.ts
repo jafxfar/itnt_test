@@ -47,16 +47,13 @@ const addComment = (projectID: number, userID: number, message: string) => {
         "message": message
     });
 };
-const addComplaint = (projectId: number, userId: number) => {
-    const now = new Date();
-    const insertDate = now.toISOString();
+const addComplaint = (projectId: number, userId: number,complaint: String) => {
+
 
     return API.post(`${prefix}/addComplaint`, {
-        complaintInfo: "Your complaint info here",
-        id: 0,
-        insertDate: insertDate,
-        project: {
-            id: projectId
+        "complaintInfo": complaint,   
+        "project": {
+            "id": projectId
         },
         "user": {
             "id": userId
@@ -84,16 +81,16 @@ const addProjectAvatar = (avatarUrl: FormData, projectID: number) => {
 // const addProjectFile = (picLink: string, projectID: number) => {
 //     return API.post(`${prefix}/addProjectFile?projectId=${projectID}`, { link: picLink });
 // };
-const addProjectFile = (fileOrLink: File | string, projectID: number, link: string) => {
+const addProjectFile = (file:FormData, projectID: number) => {
     const formData = new FormData();
 
-    if (fileOrLink instanceof File) {
-        formData.append('file', fileOrLink);
-    } else {
-        formData.append('link', fileOrLink);
-    }
+    // if (fileOrLink instanceof File) {
+    //     formData.append('file', fileOrLink);
+    // } else {
+    //     formData.append('link', fileOrLink);
+    // }
 
-    return API.post(`${prefix}/addProjectFile?link=${link}&projectId=${projectID}`, formData, {
+    return API.post(`${prefix}/addProjectFile?projectId=${projectID}`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }

@@ -5,14 +5,14 @@
                 <img class="mr-3" width="37" height="37" src="../../assets/demo/ava-small-header.svg" />
                 <div>
                     <div class="d-flex align-center">
-                        <p class="txt-body3">{{ props.name }}</p>
+                        <p class="txt-body3">{{ props.projectInfoSet.name }}</p>
                     </div>
                     <p class="searchProjectCard__head__subtitle txt-cap1">
-                        {{ props.slogan }}
+                        {{ props.projectInfoSet.slogan }}
                     </p>
                 </div>
             </div>
-            <v-icon icon="mdi-dots-vertical" />
+            <v-icon @click="modalState.open()" icon="mdi-dots-vertical" color="#263238" class="font-weight-bold" />
         </div>
 
         <div class="searchProjectCard__body">
@@ -21,43 +21,145 @@
             </div>
 
             <div class="searchProjectCard__body__info">
-                <p class="searchProjectCard__body__info__title txt-body1">{{ props?.descHeader }}</p>
+                <p class="searchProjectCard__body__info__title txt-body1">{{ props?.projectInfoSet.descHeader }}</p>
                 <p class="searchProjectCard__body_info__sub txt-body2">
-                    {{ props?.desc }}
+                    {{ props?.projectInfoSet.desc }}
                 </p>
             </div>
         </div>
-        <h1 class="">{{ props.id }}</h1>
 
         <div class="searchProjectCard__footer">
-            <UiButton bgColor="def" class="searchProjectCard__footer__button" fit @click="openProject">Открыть проект </UiButton>
-            <UiButton
-                bgColor="def"
-                :imgSrc="share"
-                style="padding: 10px 13px 9px 14px"
-                onlyIcon
-            />
+            <UiButton bgColor="def" class="searchProjectCard__footer__button" fit
+                @click="$router.push('/project/' + props.projectInfoSet.id)">Открыть проект
+            </UiButton>
+            <UiButton @click="shareProject" bgColor="def" :imgSrc="share" style="padding: 10px 13px 9px 14px" onlyIcon />
         </div>
+        <vue-bottom-sheet max-height="270px" full-screen ref="modalState">
+            <div class="modal">
+                <div class="modal__list">
+                    <div v-for="(item, id) in modalItems" @click="item?.func" :key="id" class="modal__list__item">
+                        <img :src="item.icon" alt="" />
+                        <p @click="complainState.open()" :class="item.name === 'Пожаловаться' && 'error-txt'"
+                         class="txt-body1">{{ item.name }}</p>
+                    </div>
+                </div>
+            </div>
+        </vue-bottom-sheet>
+        <vue-bottom-sheet max-height="380px" full-screen ref="complainState">
+            <div class="searchTeammateModal modal">
+                <p class="mb-2">Выберите причину жалобы на пользователя:</p>
+                <div class="searchTeammateModal__item">
+                    <input type="radio" name="complaint" id=""> Спам
+                </div>
+                <div class="searchTeammateModal__item">
+                    <input type="radio" name="complaint" id=""> Агрессивное поведение
+                </div>
+                <div class="searchTeammateModal__item">
+                    <input type="radio" name="complaint" id=""> Взрослый контент (ссылки, картинки, видео и
+                    т.п.)
+                </div>
+                <UiTextArea v-model="complaint" />
+                <UiButton bg-color="blue" @click="sendComplaint">Отправить жалобу</UiButton>
+            </div>
+        </vue-bottom-sheet>
     </div>
 </template>
 
 <script setup lang="ts">
-import share from '../../assets/icons/share-black.svg'
 import UiButton from '../ui-kit/UiButton.vue'
-import { useRouter } from 'vue-router';
+import project from "~/assets/project_modal/project.svg"
+import share from "~/assets/icons/share-blue.svg"
+import warning from "~/assets/icons/warning-red.svg"
+import UiTextArea from "~/components/ui-kit/UiTextArea.vue"
+// import statistic from "~/assets/modal_icon/statistic.svg"
+import follow from "~/assets/modal_icon/follow.svg"
+import { ref, computed } from 'vue'
+import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
+import '@webzlodimir/vue-bottom-sheet/dist/style.css'
+import { modalActionsList } from '~/helpers/types'
+import { addFollow, addComplaint } from "~/API/ways/project"
+import { useRouter } from 'vue-router'
+const modalState = ref(false)
+const complainState = ref(false)
+
+// const props = defineProps({
+//     project: Object,
+//     desc: String,
+//     descHeader: String,
+//     name: String,
+//     slogan: String,
+//     type: String,
+//     id: Number
+// })
 const props = defineProps({
-  project: Object,
-  desc: String,
-  descHeader: String,
-  name: String,
-  slogan: String,
-  type: String,
-  id: Number
+    projectInfoSet: {
+        type: Object || Array,
+        default: () => { },
+    },
+    listID: {
+        type: Number,
+    },
 })
 const router = useRouter()
-const openProject = () => {
-    router.push(`/project/${props.id}`)
-    console.log(props.id)
+const complaint = ref('')
+
+const sendComplaint = async () => {
+    await addComplaint(props.projectInfoSet.id, Number(localStorage.getItem('userId')), complaint.value,)
+}
+const modalItems: modalActionsList[] = [
+    {
+        name: 'Открыть проект',
+        icon: project,
+        func: () => {
+            router.push('/project/' + props.projectInfoSet.id)
+        },
+    },
+    {
+        name: 'Подписаться',
+        icon: follow,
+        func: async () => {
+            try {
+                const response = await addFollow(Number(props.projectInfoSet.id), Number(localStorage.getItem("userId")));
+                console.log(response);
+            } catch (error) {
+                console.error('Ошибка при подписке на проект:', error);
+            }
+        }
+    },
+    {
+        name: 'Поделиться',
+        icon: share,
+        func: () => {
+            try {
+                navigator.share({
+                    title: 'ITNT',
+                    text: 'Откройте для себя ITNT.',
+                    url: 'http://62.113.105.220/project/' + props.projectInfoSet.id,
+                })
+            } catch (error) {
+                console.log('error :' + error)
+            }
+        },
+    },
+    // {
+    //     name: 'Статистика проекта',
+    //     icon: statistic,
+    // },
+    {
+        name: 'Пожаловаться',
+        icon: warning,
+    },
+]
+const shareProject = () => {
+    try {
+        navigator.share({
+            title: 'ITNT',
+            text: 'Откройте для себя ITNT.',
+            url: 'http://62.113.105.220/project/' + props.projectInfoSet.id,
+        })
+    } catch (error) {
+        console.log('error :' + error)
+    }
 }
 </script>
 
@@ -70,11 +172,13 @@ const openProject = () => {
     display: flex;
     flex-direction: column;
     gap: 16px;
+
     &__head {
         display: flex;
         align-items: center;
         justify-content: space-between;
         margin-bottom: 16px;
+
         &__subtitle {
             color: #9e9e9e;
             margin-top: 1px;
@@ -87,13 +191,17 @@ const openProject = () => {
         &__slider {
             display: flex;
             gap: 11px;
-            -ms-overflow-style: none; /* Internet Explorer 10+ */
+            -ms-overflow-style: none;
+            /* Internet Explorer 10+ */
             scrollbar-width: none;
             overflow-x: scroll;
+
             &::-webkit-scrollbar {
-                display: none; /* Safari and Chrome */
+                display: none;
+                /* Safari and Chrome */
             }
         }
+
         &__info {
             &__title {
                 margin-top: 24px;
@@ -106,6 +214,7 @@ const openProject = () => {
         display: flex;
         justify-content: space-between;
         align-items: center;
+
         &__button {
             padding: 17px 20px;
             font-size: 13px;

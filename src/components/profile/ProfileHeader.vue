@@ -9,7 +9,7 @@
     </div>
 
     <div v-else class="userPics">
-        <div @click="openModal" v-if="uploadedBgImageUrl || userStore.bgPicUrl" class="userPics__bg">
+        <div @click="openModal" v-if="uploadedBgImageUrl" class="userPics__bg">
             <img v-if="uploadedBgImageUrl" :src="props.bgPic" />
             <img v-else-if="props.bgPic" :src="props.bgPic" />
         </div>
@@ -27,8 +27,8 @@
         </v-dialog>
 
         <div class="userPics__ava">
-            <img v-if="userStore.pictureUrl" :src="userStore.pictureUrl" />
-            <img v-else-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" />
+            <img :src="uploadedAvaImageUrl" />
+            <img v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" />
         </div>
 
         <div v-if="!uploadedBgImageUrl" class="userPics__upload">

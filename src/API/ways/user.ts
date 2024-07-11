@@ -2,20 +2,17 @@ import { API } from '../main'
 // import ComplaintData from "~/helpers/types"
 const prefix = '/user'
 
-export const addPost = (description:String, descriptionHeader:String, id:Number, authorProject = null, authorUser = null) => {
+export const addPost =(description:String, descriptionHeader:String, authorProject:any, authorUser:any) => {
     let requestBody = {
+        "authorProject":{
+            "id": authorProject
+        },
+        "authorUser":{
+            "id": authorUser
+        },
         description,
         descriptionHeader,
-        id,
-        authorProject,
-        authorUser
     };
-    // if (postType === 'PROJECT' && authorProject) {
-    //     requestBody.authorProject = authorProject;
-    // } else if (postType === 'USER' && authorUser) {
-    //     requestBody.authorUser = authorUser;
-    // }
-
     return API.post('/main/addPost', requestBody);
 }
 export const getPost = () => {
@@ -46,13 +43,9 @@ const postAddBackgroundPicture = (picLink: FormData) => {
 }
 
 const postAddComplaint = (id: number, userId: number, complaint: String) => {
-    const now = new Date();
-    const insertDate = now.toISOString();
 
     return API.post(`${prefix}/${id}/addComplaint`, {
         "complaintInfo": complaint,
-        "id": 0,
-        "insertDate": insertDate,
         "targetUser": {
             "id": id
         },

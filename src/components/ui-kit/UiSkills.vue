@@ -47,7 +47,7 @@ export default {
             </p>
             <div class="ui-skills__search__actions">
                 <UiButton @click="searchModalState = false" bgColor="smOutlined" isSmall> Отмена </UiButton>
-                <UiButton bgColor="smBlue" isSmall>Найти</UiButton>
+                <UiButton @click="goToSearchPage" bgColor="smBlue" isSmall>Найти</UiButton>
             </div>
         </v-card>
     </v-dialog>
@@ -66,25 +66,14 @@ export default {
                             {{ name.name }}
                         </p>
                     </div>
-                    <!-- <UiAgree class=" ui-skills__choser__close" @click="showPopup = false" /> -->
+                    <UiAgree class="ui-skills__choser__close" @click="patchSkills" />
                 </div>
             </div>
         </div>
     </div>
-    <!-- <v-snackbar color='white' rounded="lg" v-model="snackbar" :timeout="timeout">
-        <div class="snacbar">
-            <img :src="trashBlack" alt="">
-            Навык удалён
-        </div>
-        <template v-slot:actions>
-            <v-btn color="blue" variant="text" @click="cancelDelete">
-                Отмена
-            </v-btn>
-        </template>
-    </v-snackbar> -->
 </template>
 <script lang="ts" setup>
-import trashBlack from '~/assets/demo/trash_black.svg'
+// import trashBlack from '~/assets/demo/trash_black.svg'
 // ui-kit
 import UiInput from './UiInput.vue'
 import UiButton from './UiButton.vue'
@@ -92,9 +81,13 @@ import UiAgree from './UiAgree.vue'
 import { ref, Ref, onMounted } from 'vue'
 // import { skills } from '~/helpers/skills'
 import { getInterestListGrouped } from '~/API/ways/dictionary'
+import { useRouter } from 'vue-router'
+import { patchUser } from '~/API/ways/user'
+const router = useRouter();
+
 let showPopup = ref(false)
-const snackbar = ref(false)
-const timeout = 1000
+// const snackbar = ref(false)
+// const timeout = 1000
 const props = defineProps({
     readOnly: {
         type: Boolean,
@@ -163,10 +156,27 @@ function deleteSelectedSkills() {
     showDeleteConfirmation.value = true;
 
 }
-function cancelDelete() {
-    snackbar.value = !snackbar.value
-    showDeleteConfirmation.value = false;
+const goToSearchPage = () => {
+    const skill = chosenModalSkill.value;
+    router.push({ path: '/search', query: { skill } });
+};
+const patchSkills = async () => {
+    const data = {
+        "id": localStorage.getItem("userId"),
+        "interests": [
+            {
+                name: chosenSkills.value
+            }
+        ]
+    };
+    try {
+        const response = await patchUser(data);
+        console.log(response); // Выводим ответ для проверки
+    } catch (error) {
+        console.error('Error patching user:', error); // Обработка ошибки
+    }
 }
+
 </script>
 
 <style lang="scss">
@@ -291,7 +301,7 @@ function cancelDelete() {
         &__close {
             position: absolute;
             bottom: 0;
-            left: 10%;
+            right: 10%;
             width: 40px;
             height: 40px;
             // padding: 10px;

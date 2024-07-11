@@ -37,7 +37,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { io } from '../../../node_modules/socket.io-client';
+import { io } from '../../../node_modules/socket.io-client/build/esm/index';
 import { sendMessage, getDialogByID } from '~/API/ways/dialog';
 import { useRoute } from 'vue-router';
 import chat from '../../assets/icons/chat.svg';

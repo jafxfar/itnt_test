@@ -36,16 +36,14 @@
         <!-- Карточки проектов -->
         <div v-if="searchPageSwitchState === 0">
             <div v-for="project in filteredProjects" :key="project.id">
-                <SearchProjectCard :name="project.name" :desc-header="project.descriptionHeader"
-                    :avatar-url="project.avatarUrl" :slogan="project.slogan" :id="project.id"
-                    @click="openProject(project.id)" />
+                <SearchProjectCard :projectInfoSet="project" />
             </div>
         </div>
 
         <!-- Карточки пользователей -->
         <div v-if="searchPageSwitchState === 1">
             <div v-for="user in filteredUsers" :key="user.id">
-                <SearchUserCard :id="user.id" :login="user.login" @click="openUser(user.id)" />
+                <SearchUserCard :user-info-set="user" />
             </div>
         </div>
     </v-container>
@@ -63,9 +61,11 @@ import SearchProjectCard from '~/components/search/SearchProjectCard.vue'
 import { ref, computed, onMounted } from 'vue';
 import { getAllProjects } from '~/API/ways/project'
 import { getUserSearch } from '~/API/ways/user'
-import { useRouter } from 'vue-router';
-const router = useRouter();
-
+import { useRoute } from 'vue-router';
+const route = useRoute();
+onMounted(() => {
+    searchQuery.value = route.query.skill as string || '';
+});
 const searchPageSwitchState = ref(0)
 const detailsValue = ref(false)
 interface User {
@@ -82,12 +82,12 @@ interface Project {
     avatarUrl: string;
     slogan: string;
 }
-const openProject = (id) => {
-    router.push(`/project/${id}`);
-};
-const openUser = (id) => {
-    router.push(`/user/${id}`);
-};
+// const openProject = (id) => {
+//     router.push(`/project/${id}`);
+// };
+// const openUser = (id) => {
+//     router.push(`/user/${id}`);
+// };
 const users = ref<User[]>([]);
 const projects = ref<Project[]>([]);
 const searchQuery = ref('');

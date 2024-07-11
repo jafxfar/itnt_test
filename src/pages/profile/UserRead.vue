@@ -11,9 +11,7 @@
         />
         <UiSkills readOnly />
 
-        <!-- <ProjectsList :projects="userInfo.projects" /> -->
-        <ProjectsList class="my-8" :projects="userInfo.projects" />
-
+        <ProjectsList class="my-8" :projects="data.projects" />
         <div class="date color-white mb-4 rounded-xl d-inline-block">{{ $t('feed.today') }}</div>
 
         <ProjectBlog userType="user" feedCardType="newProjectStage"/>
@@ -37,7 +35,6 @@ import ProfileHeader from '~/components/profile/ProfileHeader.vue'
 import ProjectBlog from '~/components/projects/ProjectBlog.vue'
 import { onMounted, ref } from 'vue'
 import { getUserByID } from '~/API/ways/user.ts'
-let userInfo = ref({})
 // import { useRoute } from 'vue-router'
 
 let data = ref({})

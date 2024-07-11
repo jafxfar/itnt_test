@@ -18,16 +18,18 @@
                     </span>
                     <div class="">
                         <!-- Отображение иконки, если файл не является изображением и был добавлен -->
-                        <span class="file-icon flex justify-center" v-show="fileNames[index] && !isImageType(fileTypes[index])">
-                       <img :src="file" alt="">
-                    </span>
-                    <!-- Отображение имени файла внутри блока фотографии, если файл не является изображением -->
-                    <p class="text-center" v-show="fileNames[index] && !isImageType(fileTypes[index])">{{ truncateFileName(fileNames[index])
-                        }}</p>
+                        <span class="file-icon flex justify-center"
+                            v-show="fileNames[index] && !isImageType(fileTypes[index])">
+                            <img :src="file" alt="">
+                        </span>
+                        <!-- Отображение имени файла внутри блока фотографии, если файл не является изображением -->
+                        <p class="text-center" v-show="fileNames[index] && !isImageType(fileTypes[index])">{{
+                truncateFileName(fileNames[index])
+                            }}</p>
                     </div>
-                    
                 </label>
             </div>
+            <button @click="addFile">access</button>
         </div>
     </div>
 </template>
@@ -35,13 +37,21 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import file from "~/assets/icons/media/ppt-blue.svg"
+import { addProjectFile } from "~/API/ways/project"
+import { useRoute } from 'vue-router';
+const route = useRoute()
 const inputIds = Array.from({ length: 8 }, (_, i) => `file-upload-${i}`);
 const imageUrls = ref(Array(8).fill(null));
 const activeIndex = ref(0);
 const fileTypes = ref(Array(8).fill(null));
 const fileTypeText = ref('');
 const fileNames = ref(Array(8).fill(null));
-
+const addFile = async ()  => {
+    const formData = new FormData();
+    formData.append('file', fileNames.value[activeIndex.value]);
+    const response = await addProjectFile(formData, route.params.ID)
+    console.log(response)
+}
 const handleFileChange = (event: Event, index: number) => {
     const file = (event.target as HTMLInputElement).files[0];
     if (file) {

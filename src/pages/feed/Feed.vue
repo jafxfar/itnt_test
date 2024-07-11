@@ -2,34 +2,35 @@
     <Header :routeName="'Центр событий'" showUserMinify />
     <v-col class="pa-0 text-center">
         <v-container class="pa-6">
-            <div class="date mb-4 rounded-xl d-inline-block">{{ $t('feed.today') }}</div>
+            <div class="date rounded-xl d-inline-block">{{ $t('feed.today') }}</div>
 
-            <div class="feed__column">
+            <!-- <div class="feed__column">
                 <FeedPanels />
                 <FeedCard feedCardType="newProjectStage" />
-            </div>
+            </div> -->
         </v-container>
 
-        <v-container class="pa-6 pt-0">
+        <!-- <v-container class="pa-6 pt-0"> -->
             <!-- Дата -->
-            <div class="date mb-4 rounded-xl d-inline-block">{{ $t('feed.yesterday') }}</div>
+            <!-- <div class="date mb-4 rounded-xl d-inline-block">{{ $t('feed.yesterday') }}</div> -->
 
-            <div class="feed__column">
+            <!-- <div class="feed__column"> -->
                 <!-- Карточка с документом на 7.5мб -->
                 <!-- <FeedCard feedCardType="newFile" />
                 <FeedCard feedCardType="newProjectVacancies" /> -->
-            </div>
-        </v-container>
+            <!-- </div> -->
+        <!-- </v-container> -->
 
         <v-container class="pa-6 pt-0">
-            <div class="date mb-4 rounded-xl d-inline-block">12.07.21</div>
 
             <div class="feed__column">
                 <!-- Карточка с двумя слайдами в одном carousel-item -->
 
-                <div v-for="(post, id) in feedInfo" :key="id" class="mt-6">
-                    <FeedCard  :post="post" :post-desc-header="post.descriptionHeader || 'Нет заголовка'" :post-desc="post.description || 'Нет описания к посту'" />
-                </div>
+                <div v-for="(post, id) in posts" :key="id" class="mt-6">
+                    <div class="" v-for="(object, id) in post.object" :key="id">
+                        <FeedPost :post="object" :id="object.id" />
+                    </div>
+                </div>  
             </div>
         </v-container>
     </v-col>
@@ -41,20 +42,18 @@ import { onMounted, ref } from 'vue';
 import { getPost } from '~/API/ways/user';
 import Footer from '~/components/Footer.vue';
 import Header from '~/components/Header.vue';
-import FeedCard from '~/components/feed/FeedCard.vue';
+import FeedPost from '~/components/feed/FeedPost.vue';
 import FeedPanels from '~/components/feed/FeedPanels.vue';
 let posts = ref();
-let feedInfo = ref();
 const getPosts = async () => {
     try {
         const data = await getPost();
         posts.value = data;
-        feedInfo.value = data;
     } catch (error) {
         console.error(error);
     }
 };
-// console.log(feedInfo);
+console.log(posts, 'postes');
 onMounted(getPosts);
 </script>
 

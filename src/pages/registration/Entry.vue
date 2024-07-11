@@ -8,7 +8,9 @@
           </UiButton>
         </div>
         <p class="button-purse-subtitle ma-0 mt-2 text-center">
-          Зачем нужен кошелёк и где его взять? <br />
+          Зачем нужен кошелёк и где его взять?   
+          {{ os }}
+          <br />
           <router-link class="button-purse-subtitle-href" to="">Узнать</router-link>
         </p>
         <div style="margin-top: 48px" @click="$router.push('/reg')">
@@ -16,8 +18,8 @@
         </div>
         <v-col class="mt-6">
           <v-row class="social" justify="center">
-            <UiButton @click="googleLogin" onlyIcon imgSrc="../src/assets/icons/companies/google.svg" />
-            <UiButton onlyIcon imgSrc="../src/assets/icons/companies/apple.svg" />
+            <UiButton @click="googleSignIn" onlyIcon imgSrc="../src/assets/icons/companies/google.svg" />
+            <UiButton v-if="showAppleButton" @click="signInWithApple" onlyIcon imgSrc="../src/assets/icons/companies/apple.svg" />
             <UiButton onlyIcon imgSrc="../src/assets/icons/companies/facebook.svg" />
 
             <!-- <vue-apple-login
@@ -72,31 +74,108 @@
 
 <script setup lang="ts">
 import UiButton from '~/components/ui-kit/UiButton.vue'
-import { ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import tonKeeper from '../../assets/vallet/tonkeeper.svg'
 import metamask from '../../assets/vallet/metamask.svg'
 import wallet from '../../assets/vallet/wallet-connect.svg'
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+// import { auth, provider } from '../firebaseConfig';
 
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const dialog = ref(false)
 const walletItems = [
   { src: tonKeeper, alt: 'Tonkeeper', color: '#7BB3E3' },
   { src: metamask, alt: 'Metamask', color: '#F89D35' },
   { src: wallet, alt: 'Walletconnect', color: '#3B99FB', addClass: 'addClass' },
 ];
-// import { googleTokenLogin } from 'vue3-google-login'
+const os = ref('');
 
-// const googleLogin = () => {
-//     googleTokenLogin().then((response) => {
-//         console.log('Handle the response', response)
+const getOS = () => {
+  let userAgent = window.navigator.userAgent;
+  let platform = window.navigator.platform;
+  let macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
+  let windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
+  let iosPlatforms = ['iPhone', 'iPad', 'iPod'];
+
+  let detectedOS = null;
+
+  if (macosPlatforms.includes(platform)) {
+    detectedOS = 'Mac OS';
+  } else if (iosPlatforms.includes(platform)) {
+    detectedOS = 'iOS';
+  } else if (windowsPlatforms.includes(platform)) {
+    detectedOS = 'Windows';
+  } else if (/Android/.test(userAgent)) {
+    detectedOS = 'Android';
+  } else if (/Linux/.test(platform)) {
+    detectedOS = 'Linux';
+  }
+  console.log(detectedOS);
+
+  os.value = detectedOS;
+}
+onMounted(getOS);
+const showAppleButton = computed(() => {
+      return os.value === 'iOS' || os.value === 'Mac OS';
+    });
+
+const email = ref('')
+const password = ref('')
+// const register = () => {
+//   const auth = getAuth()
+//   createUserWithEmailAndPassword(auth, email.value, password.value)
+//     .then((data) => {
+//       console.log("Registred success", data);
+//       router.push('/me')
+//       console.log("Registred success", auth.currentUser);
+//     })
+//     .catch((error) => {
+//       console.log(error.code);
+//       alert(error.message)
 //     })
 // }
 
-// function onSuccess(data) {
-//     console.log(data)
+// const signInWithGoogle = () => {
+//   const auth = getAuth()
+//   signInWithEmailAndPassword(auth, email.value, password.value)
+//     .then((data) => {
+//       console.log("sign in success", data);
+//       router.push('/me')
+//       console.log("Registred success", auth.currentUser);
+//     })
+//     .catch((error) => {
+//       console.log(error.code);
+//       alert(error.message)
+//     })
 // }
-// function onFailure(error) {
-//     console.log(error)
-// }
+const googleSignIn = async () => {
+  try {
+    const auth = getAuth()
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    console.log('User signed in:', result.user.displayName);
+    console.log('User signed in:', result.user.email);
+    console.log('User signed in:', result.user);
+    router.push('/screening')
+  } catch (error) {
+    console.error('Error signing in:', error);
+  }
+}
+const signInWithApple = async () => {
+  try {
+    const auth = getAuth()
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    router.push('/screening')
+    console.log('User signed in:', result.user.displayName);
+    console.log('User signed in:', result.user.email);
+    console.log('User signed in:', result.user);
+  } catch (error) {
+    console.error('Error signing in:', error);
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -8,32 +8,30 @@ export default {
     <div v-if="projects?.length > 0" class="list">
         <div :class="props.showAdder ? 'list__head--showAdder' : 'list__head'">
             <p class="txt-cap2">Участие в проектах:</p>
-
             <div v-if="props.showAdder" class="blue-small-btn">
                 <p class="txt-body1">Новый</p>
                 <v-icon icon="mdi-plus" size="x-small" />
             </div>
         </div>
-
         <UiSwitch @changeValue="currentProjects = $event" :items="['Текущие', 'Прошлые']" />
-
         <!-- <div style="box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05)"> -->
         <template v-for="(project, id) in projects" :key="id">
-            <ProjectCard v-if="!project.isAnon && !project.isHiden" :prjID="project.id" />
+            <ProjectCard v-if="!project.isAnon && !project.isHiden" :defaultAvatarUrl="defaultAvatarUrl" :projectInfo="project" />
+            <!-- {{project}} -->
         </template>
         <!-- </div> -->
     </div>
 
+    <!-- <UiButton v-else @click="$router.push('/project/new')" bgColor="blue">Создать проект</UiButton> -->
 </template>
 
 <script setup lang="ts">
 import ProjectCard from './ProjectCard.vue'
 import UiSwitch from '../ui-kit/UiSwitch.vue'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
+import UiButton from '../ui-kit/UiButton.vue'
 import { ref } from 'vue'
-
 const currentProjects = ref(null)
-
 const props = defineProps({
     projects: {
         type: Array,

@@ -6,7 +6,7 @@
         <ProjectTeam :team="data.users" class="mt-12" readOnly />
         <ProjectVacancys class="mt-12" readOnly />
         <ProjectMedia class="mt-12"  readOnly />
-        <!-- <img :src="fullAvatarUrl" alt="1" /> -->
+        <!-- <img :src="fullFileUrl" alt="1" /> -->
     </v-container>
     <Footer />
 </template>
@@ -33,8 +33,11 @@ const baseURL = 'http://62.217.181.172/';
 const fullAvatarUrl = computed(() => {
     return data.value.avatarUrl ? `${baseURL}files/${data.value.avatarUrl}` : '';
 });
+const fullFileUrl = computed(() => {
+    return data.value.projectFiles[1] ? `${baseURL}var/itnt/${data.value.projectFiles[1]}` : '';
+});
 console.log(data);
-
+console.log(fullFileUrl)
 import Footer from '~/components/Footer.vue'
 import Header from '~/components/Header.vue'
 

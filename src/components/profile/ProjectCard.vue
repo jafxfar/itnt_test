@@ -9,66 +9,39 @@ export default {
         <div v-if="!isAnonimus" class="">
             <div :style="props.projectInfo.isAnon === false ? 'padding-left: 52px' : ''" class="project-card__info">
                 <img v-if="props.projectInfo.isAnon" width="41" height="38" src="../../assets/icons/anonProject.svg" />
-                <div class="text-start px-[16vw]">
+                <div class="text-start px-4">
                     <p class="project-card__info__name">{{ props.projectInfo.project.name }}</p>
                     <p class="project-card__info__position">{{ props.projectInfo.project.slogan }}</p>
                 </div>
             </div>
-            <img class="project-card__img" :src="props.projectInfo.project.avatarUrl" alt="" />
-        </div>
-        <div v-else class="">
-            <div :style="props.projectInfo.isAnon === false ? 'padding-left: 52px' : ''" class="project-card__info">
-                <img v-if="props.projectInfo.isAnon" width="41" height="38" src="../../assets/icons/anonProject.svg" />
-                <div class="text-start px-[16vw]">
-                    <p class="project-card__info__name">{{ props.projectInfo.project.name }}</p>
-                    <p class="project-card__info__position">{{ props.projectInfo.project.slogan }}</p>
-                </div>
-            </div>
-            <div class="project-card__anominus">
-                <img class="" :src="anonimus" alt="" />
-            </div>
+            <img class="project-card__img" :src="fullAvatarUrl" alt=" " />
         </div>
     </div>
-    <div v-else class="project-anonim " @click="modalState.open()">
+    <div v-else class="">
         <div :style="props.projectInfo.isAnon === false ? 'padding-left: 52px' : ''" class="project-card__info">
-            <img class="img" width="41" height="38" :src="hidden" />
-            <div class="text-start px-[16vw]">
-                <p class="project-anonim__info__name">{{ props.projectInfo.project.name }}</p>
-                <p class="project-anonim__info__position">{{ props.projectInfo.project.slogan }}</p>
+            <img v-if="props.projectInfo.isAnon" width="41" height="38" src="../../assets/icons/anonProject.svg" />
+            <div class="text-start px-4">
+                <p class="project-card__info__name">{{ props.projectInfo.project.name }}</p>
+                <p class="project-card__info__position">{{ props.projectInfo.project.slogan }}</p>
             </div>
+        </div>
+        <div class="project-card__anominus">
+            <img class="" :src="anonimus" alt="" />
         </div>
     </div>
     <vue-bottom-sheet ref="modalState">
         <div class="modal">
             <div class="modal__list">
-                <button class="modal__list__item" @click="hideContent"><img :src="hide" alt="">
-                    <p v-if="!isHidden">Не показывать проект в профиле</p>
-                    <p v-else>Показать проект в профиле</p>
-
-                </button>
-                <button class="modal__list__item" @click="anonimeContent"><img :src="anonimus" alt="">
-                    <p v-if="!isAnonimus">Включить анонимное участие</p>
-                    <p v-else>Выключить анонимное участие</p>
-
-                </button>
-                <button class="modal__list__item" @click="$router.push('/project/' + props.prjID)"><img :src="project" alt="">
-                    <p>Открыть проект</p>
-                </button>
-                <button class="modal__list__item" @click="shareProject()"><img :src="share" alt="">
-                    <p>Поделиться проектом</p>
-                </button>
-                <div v-for="(item, id) in modalItems" :key="id" class="modal__list__item cursor-pointer">
+                <div v-for="(item, id) in modalItems" @click="item?.func" :key="id" class="modal__list__item">
                     <img :src="item.icon" alt="" />
-                    <p class="txt-body1">{{ item.name }}</p>
+                    <p :class="item.name === 'Пожаловаться' && 'error-txt'" class="txt-body1">{{ item.name }}</p>
                 </div>
-                <button class="btn"><img :src="plus" alt="">Добавить проект в быстрое меню</button>
             </div>
         </div>
     </vue-bottom-sheet>
 </template>
 
 <script setup lang="ts">
-// icons
 import hidden from "~/assets/Profile/hideProjectCard.svg"
 
 import anonimus from "~/assets/project_modal/annonimus.svg"
@@ -77,26 +50,24 @@ import project from "~/assets/project_modal/project.svg"
 import share from "~/assets/project_modal/share.svg"
 import plus from "~/assets/project_modal/plus.svg"
 
-import { ref, defineProps } from 'vue'
+import { useRouter } from 'vue-router';
+import { ref, computed } from 'vue'
 import { modalActionsList } from '~/helpers/types'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
-import { useRouter } from 'vue-router';
-import { storeToRefs } from 'pinia'
-import { useProjectStore } from '~/store/projectStore'
-const projectStore = useProjectStore()
-const { prjObject } = storeToRefs(useProjectStore())
+
 
 const props = defineProps({
     projectInfo: {
         type: Object || Array,
     },
-    projectInfoSet: {
-        type: Object || Array,
-        default: () => {},
-    },
     prjID: {
         type: Number,
-    },})
+    },
+    defaultAvatarUrl: {
+        type: String,
+        default:  "~/assets/project_modal/project.svg"
+    }
+})
 
 const router = useRouter();
 
@@ -104,18 +75,6 @@ const isHidden = ref(false)
 
 const hideContent = () => {
     isHidden.value = !isHidden.value
-}
-
-function shareProject() {
-    try {
-        navigator.share({
-            title: 'ITNT',
-            text: 'Откройте для себя ITNT.',
-            url: 'http://62.113.105.220/',
-        })
-    } catch (error) {
-        console.log('error :' + error)
-    }
 }
 const isAnonimus = ref(false)
 
@@ -125,9 +84,48 @@ const anonimeContent = () => {
 const modalState = ref(false)
 
 const modalItems: modalActionsList[] = [
+    {
+        name: 'Не показывать проект в профиле',
+        icon: hide,
 
+    },
+    {
+        name: 'Включить анонимное участие',
+        icon: anonimus,
+
+    },
+    {
+        name: 'Открыть проект',
+        icon: project,
+        func: () => {
+            router.push('/project/' + props.projectInfo.project.id)
+        },
+    },
+    {
+        name: 'Поделиться проектом',
+        icon: share,
+        func: () => {
+            try {
+                navigator.share({
+                    title: 'ITNT',
+                    text: 'Откройте для себя ITNT.',
+                    url: 'http://62.113.105.220/project/' + props.projectInfo.project.id,
+                })
+            } catch (error) {
+                console.log('error :' + error)
+            }
+        },
+    },
 ]
+const baseURL = 'http://62.217.181.172/';
 
+const fullAvatarUrl = computed(() => {
+    if (props.projectInfo.project.avatarUrl) {
+        return `${baseURL}files/${props.projectInfo.project.avatarUrl}`;
+    } else {
+        return props.defaultAvatarUrl;
+    }
+})
 
 </script>
 
@@ -153,7 +151,7 @@ const modalItems: modalActionsList[] = [
     margin-bottom: 2px;
     border-top-left-radius: 12px;
     border-bottom-right-radius: 12px;
-
+    overflow: hidden;
 
     &__info {
         display: flex;
@@ -176,8 +174,15 @@ const modalItems: modalActionsList[] = [
     }
 
     &__img {
-        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
-        // position: absolute;
+        // box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
+        position: absolute;
+        right: -18px;
+        top: -18px;
+        overflow: hidden;
+        width: 96px;
+        height: 96px;
+        border-radius: 100%;
+        border: 6px #E1F5FE solid;
     }
 
     &__anominus {

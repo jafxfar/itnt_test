@@ -1,5 +1,5 @@
 <template>
-    <div class="feedCard">
+    <div class="feedCard mb-4">
         <!-- head -->
         <div class="feedCard__head">
             <div class="d-flex align-center">
@@ -22,53 +22,20 @@
 
         <!-- body -->
         <div class="feedCard__body">
-            <p> {{ postDescHeader }}</p>
-            <p> {{ postDesc }}</p>
+            <p>desc-header {{ props.post.descriptionHeader }}</p>
+            <p>desc {{ props.post.description }}</p>
 
-            <!-- Новый этап проекта -->
-            <div v-if="props.feedCardType === 'newProjectStage'">
-                <p class="txt-cap1">
-                    {{ $t('feed.feedBack') }}
-                </p>
-            </div>
-            <!-- !Новый этап проекта -->
-
-            <!-- Новый файл -->
-            <div v-if="props.feedCardType === 'newFile'" class="d-flex">
-                <img style="margin-right: 3px" src="../../assets/icons/media/ppt-blue.svg" alt="" />
-                <div class="d-flex flex-column justify-space-between">
-                    <p class="txt-cap1 color-blue">{{ $t('feed.invest') }}</p>
-                    <p style="color: #9e9e9e" class="txt-cap1">7.2 Mb</p>
-                </div>
-            </div>
-
-            <!-- Слайдер -->
-            <div class="feedCard__body__slider" v-if="props.feedCardType === 'newProjectPhotos'">
-                <img width="135" v-for="i in 5" height="204" src="../../assets/demo/demo-rec1.png" />
-            </div>
-
-            <!-- Проекту требуются специалисты -->
-            <div v-if="props.feedCardType === 'newProjectVacancies'">
-                <UiVacancyPanel readOnly :data="demoVacancy" />
-            </div>
-
-            <!-- Проект активно обсуждается -->
-            <div v-if="props.feedCardType === 'newProjectDiscussed'"></div>
         </div>
 
         <!-- footer -->
-        
-        <div class="feedCard__footer">
-            <!-- <UiButton bgColor="def" class="feedCard__footer__button" fit>
-                <p v-if="props.feedCardType != 'newProjectDiscussed'" class="txt-cap1">{{ $t('feed.GoTo') }}</p>
-                <p v-else class="txt-cap1">{{ $t('feed.comments') }}</p>
-            </UiButton> -->
-            <UiButton  onlyIcon :imgSrc="chat" is-Xsmall="true" @click="$router.push('/project/'+ props.postID + '/comment')" bgColor="def"/>
-            <div class="d-flex align-center">
-                <UiButton v-if="props.feedCardType != 'newProjectDiscussed'" bgColor="def" class="mr-3" :imgSrc="share"
-                    style="padding: 10px 13px 9px 14px" onlyIcon />
 
-                <Fire :id="props.postID" />
+        <div class="feedCard__footer">
+            <UiButton onlyIcon :imgSrc="chat" is-Xsmall="true"
+                @click="$router.push('/blog/' + `${props.id}` + '/blogComment')" bgColor="def" />
+            <div class="d-flex align-center">
+                <UiButton @click="sharePost" bgColor="def" class="mr-3" :imgSrc="share" style="padding: 10px 13px 9px 14px" onlyIcon />
+
+                <Fire :id="props.post.ID" />
             </div>
         </div>
     </div>
@@ -91,12 +58,10 @@ import chat from "~/assets/icons/chat-black.svg"
 import share from "~/assets/icons/share-black.svg";
 import Fire from '../Fire.vue'
 import UiButton from '../ui-kit/UiButton.vue'
-import UiVacancyPanel from '../ui-kit/UiVacancyPanel.vue'
-import { computed,ref } from 'vue'
+import { computed, ref } from 'vue'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import { modalActionsList } from '~/helpers/types'
-// import { postAddUserPicture } from "~/API/ways/user";
 const modalState = ref(false)
 const modalItems: modalActionsList[] = [
     // {
@@ -109,18 +74,6 @@ const modalItems: modalActionsList[] = [
     },
 ]
 const props = defineProps({
-    feedCardType: {
-        type: String,
-        default: '',
-    },
-    comment: {
-        type: Boolean,
-        default: '',
-    },
-    message: {
-        type: String,
-        default: '',
-    },
     id: {
         type: String,
         default: '',
@@ -129,33 +82,19 @@ const props = defineProps({
         type: Object,
         default: () => { },
     },
-    postID: {
-        type: Number,
-        default: 0,
-    },
-    postDescHeader: {
-        type: String,
-        required: false,
-    },
-    postDesc: {
-        reqired: false,
-        type: String
-    }
 })
+const sharePost = () => {
+    try {
+        navigator.share({
+            title: 'ITNT',
+            text: 'Откройте для себя ITNT.',
+            url: 'http://62.113.105.220/post/' + props.id,
+        })
+    } catch (error) {
+        console.log('error :' + error)
+    }
+}
 
-const feedCardSubtitle = computed(() => {
-    if (props.feedCardType === 'newProjectDiscussed') {
-        return 'Проект активно обсуждается'
-    } else if (props.feedCardType === 'newProjectVacancies') {
-        return 'Проекту требуются специалисты'
-    } else if (props.feedCardType === 'newProjectStage') {
-        return ' Перешли на новый этап:'
-    } else if (props.feedCardType === 'newProjectPhotos') {
-        return ' В проекте обновились фото: '
-    } else if (props.feedCardType === 'newFile') {
-        return 'Добавили вложение: '
-    }
-})
 </script>
 
 <style scoped lang="scss">

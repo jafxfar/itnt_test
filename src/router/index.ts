@@ -103,8 +103,8 @@ const routes: Array<routes> = [
         component: ProjectComment,
     },
     {
-        path: '/project/:ID/blogComment',
-        component: BlogPage,
+        path: '/blog/:ID/blogComment',
+        component: ProjectComment,
     },
     {
         path: '/project/new',

@@ -14,7 +14,7 @@
             <!-- Статус предложений -->
             <div class="flex flex-row justify-between">
                 <!-- Отображение статуса -->
-                <div class="userInfo__status" v-if="status === 0">
+                <div class="userInfo__status" v-if="props.readOnly">
                     <p class="userInfo__status__title txt-body1">Открыт к предложениям</p>
                     <img src="../../assets/icons/footer/message.svg" alt="" />
                 </div>
