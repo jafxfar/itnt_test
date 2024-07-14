@@ -15,7 +15,7 @@
         <vue-bottom-sheet ref="modalState">
             <div class="min-h-[350px]">
                 <div class="searchTeammateModal__items">
-                    <UiPost card :data="demoVacancy" />
+                    <UiPost :author="User" card :data="demoVacancy" />
                 </div>
             </div>
         </vue-bottom-sheet>

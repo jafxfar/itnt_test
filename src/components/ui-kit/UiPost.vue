@@ -58,7 +58,7 @@ export default {
             <UiButton @click="postBlog" bg-color="smBlue" class="mt-[48px]">Опубликовать</UiButton>
         </div>
     </div>
-    <v-snackbar color='white' rounded="lg" v-model="snackbar" :timeout="timeout">
+    <!-- <v-snackbar color='white' rounded="lg" v-model="snackbar" :timeout="timeout">
         <div class="snacbar">
             <img :src="trashBlack" alt="">
             Навык удалён
@@ -68,7 +68,7 @@ export default {
                 Отмена
             </v-btn>
         </template>
-    </v-snackbar>
+    </v-snackbar> -->
 </template>
 
 <script lang="ts" setup>
@@ -76,65 +76,77 @@ import trashBlack from '~/assets/demo/trash_black.svg';
 import scrip from "~/assets/demo/scrip.svg";
 import UiButton from './UiButton.vue';
 import UiInput from './UiInput.vue';
-import file from "~/assets/icons/media/ppt-blue.svg"
+import file from "~/assets/icons/media/ppt-blue.svg";
 import { addPost } from "~/API/ways/user";
 import { usePostStore } from '~/store/post';
 import { ref, watch, withDefaults } from 'vue';
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 const postStore = usePostStore();
-let snackbar = ref(true)
-const timeout = 2000
+// const snackbar = ref(true);
+// const timeout = 2000;
 
 const props = withDefaults(defineProps<{
     data?: {
         type: string;
         offer: string;
     };
+    author: {
+        type: string,
+    }
 }>(), {
     data: {
         type: '',
         offer: '',
     },
 });
+
+const localData = ref({ ...props.data });
+
 const deleteFile = (index: number) => {
     imageUrls.value[index] = null;
     fileNames.value[index] = null;
     fileTypes.value[index] = null;
-    snackbar.value = true
-    // Adjust activeIndex if needed
+    snackbar.value = true;
     if (index < activeIndex.value) {
         activeIndex.value = index;
     } else if (index === activeIndex.value && index > 0) {
         activeIndex.value = index - 1;
     }
 };
-const localData = ref({ ...props.data });
 
 watch(() => props.data, (newVal) => {
     if (newVal) {
         localData.value = { ...newVal };
     }
 });
-// const chosenId = computed(() => {
-//     return '@' + (router.params.ID ? router.params.ID : localStorage.getItem('userId'))
-// })
-async function postBlog() {
-    const description = localData.value.type;
-    const descriptionHeader = localData.value.offer;
-    const authorUser =  localStorage.getItem("userId");
 
-    await addPost(description, descriptionHeader, false, authorUser).then((response: any) => {
+const postBlog = async () => {
+    const { type, offer } = localData.value;
+    const authorUser = Number(localStorage.getItem("userId"));
+    const authorProject = route.params.ID
+    if (props.author = "User") {
         try {
-            console.log(response);
+            const response = await addPost(type, offer, authorUser);
             postStore.addPost(response.data.object);
             console.log(postStore.posts);
         } catch (e) {
-            console.log('error : ', e);
+            console.error('error:', e);
         }
-    });
+    }
+    if (props.author = "Project") {
+        try {
+            const response = await addPost(type, offer, authorProject);
+            postStore.addPost(response.data.object);
+            console.log(postStore.posts);
+        } catch (e) {
+            console.error('error:', e);
+        }
+    }
 }
 
 const showPhotos = ref(false);
-
 const inputIds = Array.from({ length: 5 }, (_, i) => `file-upload-${i}`);
 const imageUrls = ref(Array(5).fill(null));
 const activeIndex = ref(0);
@@ -145,48 +157,32 @@ const fileNames = ref(Array(5).fill(null));
 const handleFileChange = (event: Event, index: number) => {
     const file = (event.target as HTMLInputElement).files[0];
     if (file) {
-        if (!file.type.startsWith('image/')) {
-            console.log('Имя файла: ', file.name);
-            fileNames.value[index] = file.name;
-        } else {
-            fileNames.value[index] = null;
-        }
-        console.log('Тип файла: ', file.type);
+        fileNames.value[index] = !file.type.startsWith('image/') ? file.name : null;
         fileTypes.value[index] = file.type;
         fileTypeText.value = file.type;
-        fileNames.value[index] = file.name;
 
         const reader = new FileReader();
         reader.onload = () => {
-            if (reader.result) {
-                imageUrls.value[index] = reader.result.toString();
-                setNextActive(index);
-            }
+            imageUrls.value[index] = reader.result?.toString() || null;
+            setNextActive(index);
         };
         reader.readAsDataURL(file);
     }
 };
 
 const setNextActive = (index: number) => {
-    if (index < inputIds.length - 1) {
-        activeIndex.value = index + 1;
-    } else {
-        activeIndex.value = 0;
-    }
+    activeIndex.value = (index < inputIds.length - 1) ? index + 1 : 0;
 };
+
 const truncateFileName = (fileName: string): string => {
-    if (fileName && fileName.length > 7) {
-        return fileName.substring(0, 7) + '...';
-    }
-    return fileName;
+    return fileName && fileName.length > 7 ? `${fileName.substring(0, 7)}...` : fileName;
 };
 
-
-// Функция для проверки типа файла на изображение
 const isImageType = (type: string | null): boolean => {
-    return type ? type.startsWith('image/') : false;
+    return !!type?.startsWith('image/');
 };
 </script>
+
 
 <style lang="scss" scoped>
 .ui-vacancyPanel {

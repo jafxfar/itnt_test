@@ -2,6 +2,7 @@
   <v-row class="container pa-0 ma-0" justify="center" align="center">
     <v-col align="center">
       <img src="../../assets/img/logos/itnt.svg" />
+      {{ os }}
       <div class="mt-12 pl-2 pr-2">
         <div @click="dialog = !dialog">
           <UiButton :bgColor="'purple'" :imgSrc="'../src/assets/setting/vallet_white.svg'">Войти, используя кошелёк
@@ -9,7 +10,6 @@
         </div>
         <p class="button-purse-subtitle ma-0 mt-2 text-center">
           Зачем нужен кошелёк и где его взять?   
-          {{ os }}
           <br />
           <router-link class="button-purse-subtitle-href" to="">Узнать</router-link>
         </p>
@@ -19,8 +19,8 @@
         <v-col class="mt-6">
           <v-row class="social" justify="center">
             <UiButton @click="googleSignIn" onlyIcon imgSrc="../src/assets/icons/companies/google.svg" />
-            <UiButton v-if="showAppleButton" @click="signInWithApple" onlyIcon imgSrc="../src/assets/icons/companies/apple.svg" />
-            <UiButton onlyIcon imgSrc="../src/assets/icons/companies/facebook.svg" />
+            <UiButton  @click="signInWithApple" onlyIcon imgSrc="../src/assets/icons/companies/apple.svg" />
+            <UiButton @click="signInWithFacebook" onlyIcon imgSrc="../src/assets/icons/companies/facebook.svg" />
 
             <!-- <vue-apple-login
                             type="sign in"
@@ -79,7 +79,7 @@ import tonKeeper from '../../assets/vallet/tonkeeper.svg'
 import metamask from '../../assets/vallet/metamask.svg'
 import wallet from '../../assets/vallet/wallet-connect.svg'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider, FacebookAuthProvider    } from 'firebase/auth';
 // import { auth, provider } from '../firebaseConfig';
 
 import { useRouter } from 'vue-router'
@@ -163,6 +163,19 @@ const googleSignIn = async () => {
     console.error('Error signing in:', error);
   }
 }
+const signInWithFacebook = async () => {
+  try {
+    const auth = getAuth();
+    const provider = new FacebookAuthProvider();  // Используйте FacebookAuthProvider
+    const result = await signInWithPopup(auth, provider);
+    console.log('User signed in:', result.user.displayName);
+    console.log('User signed in:', result.user.email);
+    console.log('User signed in:', result.user);
+    router.push('/screening');
+  } catch (error) {
+    console.error('Error signing in:', error);
+  }
+};
 const signInWithApple = async () => {
   try {
     const auth = getAuth()
