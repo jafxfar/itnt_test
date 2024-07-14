@@ -5,7 +5,7 @@
       {{ os }}
       <div class="mt-12 pl-2 pr-2">
         <div @click="dialog = !dialog">
-          <UiButton :bgColor="'purple'" :imgSrc="'../src/assets/setting/vallet_white.svg'">Войти, используя кошелёк
+          <UiButton :bgColor="'purple'" :imgSrc="vallet">Войти, используя кошелёк
           </UiButton>
         </div>
         <p class="button-purse-subtitle ma-0 mt-2 text-center">
@@ -18,9 +18,9 @@
         </div>
         <v-col class="mt-6">
           <v-row class="social" justify="center">
-            <UiButton @click="googleSignIn" onlyIcon imgSrc="../src/assets/icons/companies/google.svg" />
-            <UiButton  @click="signInWithApple" onlyIcon imgSrc="../src/assets/icons/companies/apple.svg" />
-            <UiButton @click="signInWithFacebook" onlyIcon imgSrc="../src/assets/icons/companies/facebook.svg" />
+            <UiButton @click="googleSignIn" onlyIcon :imgSrc="googleIcon" />
+            <UiButton  @click="signInWithApple" onlyIcon :imgSrc="appleIcon" />
+            <UiButton @click="signInWithFacebook" onlyIcon :imgSrc="facebookIcon" />
 
             <!-- <vue-apple-login
                             type="sign in"
@@ -73,6 +73,10 @@
 </template>
 
 <script setup lang="ts">
+import googleIcon from "~/assets/icons/companies/google.svg"
+import appleIcon from "~/assets/icons/companies/apple.svg"
+import facebookIcon from "~/assets/icons/companies/facebook.svg"
+import vallet from '~/assets/setting/vallet_white.svg'
 import UiButton from '~/components/ui-kit/UiButton.vue'
 import { ref, onMounted, computed } from 'vue'
 import tonKeeper from '../../assets/vallet/tonkeeper.svg'

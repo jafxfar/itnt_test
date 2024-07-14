@@ -99,7 +99,6 @@ import { postAddUserPicture, patchUser } from '~/API/ways/user'
 import { useUserStore } from '~/store/user'
 const router = useRouter()
 const list = ref(Arr)
-const userStore = useUserStore() // используем хранилище
 
 
 const blobPic = ref('')
@@ -156,14 +155,13 @@ async function selectProfilePic() {
     let formData = new FormData()
     formData.append('file', user.pictureUrl[0])
     formData.append('mainPicture', 'true')
-    await postAddUserPicture(formData)
+    await postAddUserPicture(formData, false)
         .then((response: any) => {
             console.log(response)
         })
         .catch((e: Error) => {
             console.error('error text:', e)
         })
-        .finally(() => (pageStep.value += 1))
 }
 function addAvatar() {
     blobPic.value = URL.createObjectURL(user.pictureUrl[0])

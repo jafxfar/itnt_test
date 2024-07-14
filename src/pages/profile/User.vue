@@ -21,10 +21,9 @@
         </vue-bottom-sheet>
         <!-- {{ userInfo.projects }} -->
         <ProjectsList class="mt-12" :projects="userInfo.projects" />
-        <div class="" v-for="(prj, id) in userInfo.projects" :key="id">
-            <!-- {{ prj.relationType }} -->
+        <!-- <div class="" v-for="(prj, id) in userInfo.projects" :key="id">
             <ProjectsList v-show="prj.relationType == 'PROJECT_OWNER'" class="mt-12" :projects="[prj.project]" />
-        </div>
+        </div> -->
         <div v-for="(post, id) in posts" :key="id" class="mt-6">
             <div class="" v-for="(object, id) in post.object" :key="id">
                 <FeedPost :post="object" :id="object.id" />
