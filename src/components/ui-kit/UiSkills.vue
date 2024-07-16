@@ -8,7 +8,7 @@ export default {
     <v-card v-if="props.skillsType != 'Project'" class="ui-skills">
         <div class="ui-skills__head" v-if="props.readOnly === false">
             <p class="txt-cap2">{{ $t('me.skills') }} </p>
-            <div v-if="deleteMode === false" @click="showPopup = true" class="ui-skills__btn">
+            <div v-if="deleteMode === false" @click="showSheet = true" class="ui-skills__btn">
                 <p class="txt-body1">{{ $t('me.add') }} </p>
                 <v-icon icon="mdi-plus" size="x-small" />
             </div>
@@ -51,8 +51,8 @@ export default {
             </div>
         </v-card>
     </v-dialog>
-    <div v-if="showPopup" class="popup-overlay text-left pb-0" @click="showPopup = false">
-        <div class="popup" style="overflow-y: auto;" @click.stop>
+    <transition name="bottom-sheet">
+        <div v-if="showSheet" style="overflow-y: auto;" class="bottom-sheet bg-white text-left" @click="showPopup = false">
             <div class="txt-body1 mb-2 mx-4">Выбрано : {{ chosenSkills.length }}</div>
             <UiInput v-model="searchTerm" class="mx-4" label="Введите навык для поиска" />
             <div class="ui-skills__choser mt-2 " v-for="(skill, id) in categories" :key="id">
@@ -66,11 +66,12 @@ export default {
                             {{ name.name }}
                         </p>
                     </div>
-                    <UiAgree class="ui-skills__choser__close" @click="patchSkills" />
+                    <!-- <UiAgree class="ui-skills__choser__close" @click="patchSkills" /> -->
                 </div>
             </div>
+            <v-btn @click="showSheet = false" class="close-btn mr-2" icon="mdi-check" color="#00e676" />
         </div>
-    </div>
+    </transition>
 </template>
 <script lang="ts" setup>
 // import trashBlack from '~/assets/demo/trash_black.svg'
@@ -84,6 +85,10 @@ import { getInterestListGrouped } from '~/API/ways/dictionary'
 import { useRouter } from 'vue-router'
 import { patchUser } from '~/API/ways/user'
 const router = useRouter();
+const showSheet = ref(false);
+const handleAction = () => {
+    alert('Action button clicked!');
+};
 
 let showPopup = ref(false)
 // const snackbar = ref(false)
@@ -180,6 +185,50 @@ const patchSkills = async () => {
 </script>
 
 <style lang="scss">
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  padding: 16px 0 ;
+  max-height: 80vh; /* Example: Limit height to 80% of viewport height */
+  overflow-y: auto;
+}
+
+
+.bottom-sheet-content {
+    padding: 16px;
+    position: relative;
+}
+.close-btn {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  border-radius: 12px;
+    color:white;
+  box-shadow: 0px 9px 9px -9px #00b65d;
+    padding: 10px;
+}
+.bottom-sheet-enter-active,
+.bottom-sheet-leave-active {
+    transition: transform 0.3s ease-in-out;
+}
+
+.bottom-sheet-enter,
+.bottom-sheet-leave-to {
+    transform: translateY(100%);
+}
+
+.action-btn {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+}
+
 .snacbar {
     display: flex;
     flex-direction: row;

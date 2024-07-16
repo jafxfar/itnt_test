@@ -4,6 +4,7 @@ import { defineConfig } from 'vite'
 import path from 'node:path'
 import { VitePWA } from 'vite-plugin-pwa'
 import vuetify from 'vite-plugin-vuetify'
+// import { UnpluginVueComponentsResolver, UnpluginDirectivesResolver } from 'maz-ui/resolvers'
 
 export default defineConfig({
     plugins: [vue(), vuetify(), VitePWA()],

@@ -3,13 +3,22 @@
     <v-col class="pa-0">
         <v-row class="container pa-0 ma-0" justify="center" align="center">
             <!-- phone -->
+
             <div v-if="pageStep === 1" class="button-container">
                 <v-form @submit.prevent>
-                    <UiInput placeholder="+7 (---) --- -- --" clearable label="Ваш телефон" :mask="phoneOptions"
-                        v-model="phone" style="margin-bottom: 28px" />
+                    <div>
+                        <!-- {{ results }} -->
+                        <!-- {{ phone }} -->
+                    </div>
+                    <MazPhoneNumberInput class="w-[100%] my-4" v-model="phone" v-model:country-code="countryCode"
+                        show-code-on-list :preferred-countries="['RU', 'US', 'AE', 'CN', 'GB']"
+                        :ignored-countries="['AC']" @update="results = $event" />
+
+                    <!-- <UiInput placeholder="+7 (---) --- -- --" clearable label="Ваш телефон" :mask="phoneOptions"
+                        v-model="phone" style="margin-bottom: 28px" /> -->
 
                     <!-- Проверка на длину грязного телефона, 18 символов -->
-                    <UiButton v-if="phone.length < 18">
+                    <UiButton v-if="results && results.isValid === false">
                         <v-icon icon="mdi-arrow-up" />
                         Введите номер
                     </UiButton>
@@ -69,7 +78,10 @@ import { postUserLoginCode, postUserConfirm } from '~/API/ways/user.ts'
 import VOtpInput from 'vue3-otp-input'
 import { useUserStore } from '~/store/user'
 import { useRouter } from 'vue-router'
-
+import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput'
+const phoneNumber = ref()
+const countryCode = ref('')
+const results = ref()
 const router = useRouter()
 const user = useUserStore()
 

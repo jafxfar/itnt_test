@@ -14,7 +14,8 @@ import './assets/style/style.css';
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import messages from './i18n/main';
-
+import 'maz-ui/styles' // or import 'maz-ui/css/main.css'
+import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput'
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDl4ar41yEmR7ring6C-irndABFWvYCS74",
@@ -39,7 +40,7 @@ const i18n = createI18n({
 });
 
 const app = createApp(App);
-
+app.component('MazPhoneNumberInput', MazPhoneNumberInput)
 app.use(router);
 app.use(VueCookies);
 app.use(VueAppleLogin, appleLoginConfig);

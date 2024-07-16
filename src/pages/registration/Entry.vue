@@ -9,7 +9,7 @@
           </UiButton>
         </div>
         <p class="button-purse-subtitle ma-0 mt-2 text-center">
-          Зачем нужен кошелёк и где его взять?   
+          Зачем нужен кошелёк и где его взять?
           <br />
           <router-link class="button-purse-subtitle-href" to="">Узнать</router-link>
         </p>
@@ -19,8 +19,10 @@
         <v-col class="mt-6">
           <v-row class="social" justify="center">
             <UiButton @click="googleSignIn" onlyIcon :imgSrc="googleIcon" />
-            <UiButton  @click="signInWithApple" onlyIcon :imgSrc="appleIcon" />
-            <UiButton @click="signInWithFacebook" onlyIcon :imgSrc="facebookIcon" />
+            <UiButton @click="signInWithApple" onlyIcon :imgSrc="appleIcon" />
+            <UiButton @click="loginWithVK" onlyIcon>VK</UiButton>
+            <UiButton @click="signInWithGitHub" :disabled="loading" onlyIcon>GIT</UiButton>
+            <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 
             <!-- <vue-apple-login
                             type="sign in"
@@ -36,6 +38,7 @@
       </div>
     </v-col>
   </v-row>
+ 
   <!-- Диалоговое окно при нажатии на выбор входа по кошельку -->
   <v-dialog v-model="dialog">
     <v-card class="dialog pt-2 pb-5">
@@ -83,7 +86,8 @@ import tonKeeper from '../../assets/vallet/tonkeeper.svg'
 import metamask from '../../assets/vallet/metamask.svg'
 import wallet from '../../assets/vallet/wallet-connect.svg'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
-import { signInWithPopup, GoogleAuthProvider, FacebookAuthProvider    } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, GithubAuthProvider } from 'firebase/auth';
+import { VK_CONFIG } from '~/plugins/loginCfgs'
 // import { auth, provider } from '../firebaseConfig';
 
 import { useRouter } from 'vue-router'
@@ -122,8 +126,8 @@ const getOS = () => {
 }
 onMounted(getOS);
 const showAppleButton = computed(() => {
-      return os.value === 'iOS' || os.value === 'Mac OS';
-    });
+  return os.value === 'iOS' || os.value === 'Mac OS';
+});
 
 const email = ref('')
 const password = ref('')
@@ -193,6 +197,38 @@ const signInWithApple = async () => {
     console.error('Error signing in:', error);
   }
 }
+const loading = ref(false);
+const errorMessage = ref('');
+const signInWithGitHub = async () => {
+  if (loading.value) return;
+
+  loading.value = true;
+  errorMessage.value = '';
+  try {
+    const auth = getAuth();
+    const provider = new GithubAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+
+    console.log('User signed in:', result.user.displayName);
+    console.log('User signed in:', result.user.email);
+    console.log('User signed in:', result.user);
+
+    router.push('/screening');
+  } catch (error) {
+    if (error.code === 'auth/popup-closed-by-user') {
+      errorMessage.value = 'Popup was closed before authentication could complete. Please try again.';
+    } else {
+      errorMessage.value = 'Error signing in: ' + error.message;
+    }
+    console.error('Error signing in:', error);
+  } finally {
+    loading.value = false;
+  }
+};
+const loginWithVK = () => {
+  const authUrl = `https://oauth.vk.com/authorize?client_id=${VK_CONFIG.clientId}&display=page&redirect_uri=${VK_CONFIG.redirectUri}&scope=${VK_CONFIG.scope}&response_type=code&v=5.131`;
+  window.location.href = authUrl;
+};
 </script>
 
 <style lang="scss" scoped>

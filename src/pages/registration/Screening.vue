@@ -22,24 +22,22 @@
         </div>
         <!-- Навигация этапов -->
         <div v-show="pageStep === 2">
-            <v-col class="text-center pa-0 pt-16">
-                <p class="ma-0">{{ user.firstName }}, хотите выглядеть особенно?</p>
-            </v-col>
-            <div style="display: flex; align-items: center" class="rounded-circle mx-auto mt-6">
-                <v-file-input height="200" v-model="user.pictureUrl" accept="image/png, image/jpeg, image/bmp"
-                    class="input-file">
-                </v-file-input>
-                <img src="../../assets/img/regSteps/addProfilePic.svg" v-show="user.pictureUrl == ''"
-                    class="rounded-circle mx-auto" height="208" width="208" />
-                <!-- v-show="user.pictureUrl != ''" -->
-                <img v-if="blobPic" class="rounded-circle mx-auto" height="208" width="208" :src="blobPic" />
-            </div>
-
-            <UiButton @click="selectProfilePic" class="mb-4 mt-12" bgColor="blue"> Выбрать аватар </UiButton>
-
-            <UiButton @click="pageStep += 1" bgColor="def"> Пропустить </UiButton>
+        <v-col class="text-center pa-0 pt-16">
+            <p class="ma-0">{{ user.firstName }}, хотите выглядеть особенно?</p>
+        </v-col>
+        <div style="display: flex; align-items: center" class="rounded-circle mx-auto mt-6">
+            <v-file-input height="200" v-model="user.pictureUrl" accept="image/png, image/jpeg, image/bmp"
+                class="input-file" @change="handleFileChange">
+            </v-file-input>
+            <img src="../../assets/img/regSteps/addProfilePic.svg" v-show="!user.pictureUrl"
+                class="rounded-circle mx-auto" height="208" width="208" />
+            <img v-show="user.pictureUrl" class="rounded-circle img mx-auto max-h-[208px] max-w-[208px] min-h-[208px] min-w-[208px]" height="208" width="208" :src="blobPic" />
         </div>
-
+        <UiButton @click="selectProfilePic" class="mb-4 mt-12" bgColor="blue">
+            {{ user.pictureUrl ? 'Продолжить' : 'Выбрать аватар' }}
+        </UiButton>
+        <UiButton @click="pageStep += 1" bgColor="def"> Пропустить </UiButton>
+    </div>
         <div v-show="pageStep === 3">
             <v-col class="text-center pa-0 pt-16">
                 <p class="ma-0">Откуда вы?</p>
@@ -150,22 +148,23 @@ onMounted(async () => {
 })
 
 
+const selectProfilePic = () => {
+    if (user.pictureUrl) {
+        pageStep.value += 1;
+    } else {
+        const fileInput = document.querySelector('.input-file input[type="file"]') as HTMLInputElement;
+        fileInput.click();
+    }
+}
 
-async function selectProfilePic() {
-    let formData = new FormData()
-    formData.append('file', user.pictureUrl[0])
-    formData.append('mainPicture', 'true')
-    await postAddUserPicture(formData, false)
-        .then((response: any) => {
-            console.log(response)
-        })
-        .catch((e: Error) => {
-            console.error('error text:', e)
-        })
+const handleFileChange = (event: Event) => {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+        user.pictureUrl = input.files[0];
+        blobPic.value = URL.createObjectURL(user.pictureUrl);
+    }
 }
-function addAvatar() {
-    blobPic.value = URL.createObjectURL(user.pictureUrl[0])
-}
+
 async function saveProfile() {
     isLoading.value = true;
     patchUser(user).then((response: any) => {
@@ -195,15 +194,27 @@ watch(
     user,
     () => {
         if (user.pictureUrl) {
-            addAvatar()
+            addAvatar();
         }
     },
     { deep: true }
-)
+);
+
+function addAvatar() {
+    blobPic.value = URL.createObjectURL(user.pictureUrl);
+}
 
 </script>
 
 <style lang="scss" scoped>
+.img {
+    max-width: 208px;
+    min-width: 208px;
+    max-height: 208px;
+    min-height: 208px;
+    object-fit: cover;
+    object-position: center;
+}
 .progress-bar,
 .stepper,
 .stepper-two,
