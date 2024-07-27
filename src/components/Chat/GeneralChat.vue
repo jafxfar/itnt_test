@@ -1,90 +1,95 @@
 <template>
     <ChatFolders />
-    <div class="flex flex-row bg-white pl-[13px] pb-[13px] pt-[9px] pr-[6px] border-b-[1px]">
-        <span class="border-[3px] w-[40px] h-[40px] border-chatThird rounded-full"></span>
-        <div class="flex flex-col flex-1">
-            <div class="flex flex-row justify-between flex-1">
-                <h1>1ddsdsdsdsd</h1>
-                <div class="flex flex-row items-center gap-[6px]">
-                    <img :src="send" alt="">
-                    <h2>time</h2>
-                </div>
-            </div>
-            <h1><span class="text-gray-400">Вы:</span>Lorem ipsum dolor sit amet, consectetur adipisicing,
-                ipsa?
-            </h1>
-        </div>
-    </div>
-    <div class="flex flex-row bg-white pl-[13px] pb-[13px] pt-[9px] pr-[6px] border-b-[1px]">
-        <span class="border-[3px] w-[40px] h-[40px] border-chatThird rounded-full"></span>
-        <div class="flex flex-col flex-1">
-            <div class="flex flex-row justify-between flex-1">
-                <h1>1ddsdsdsdsd</h1>
-                <div class="flex flex-row items-center gap-[6px]">
-                    <img :src="delivered" alt="">
-                    <h2>time</h2>
-                </div>
-            </div>
-            <h1><span class="text-gray-400">Вы:</span>Lorem ipsum dolor sit amet, consectetur adipisicing,
-                ipsa?
-            </h1>
-        </div>
-    </div>
-    <div class="flex flex-row bg-white pl-[13px] pb-[13px] pt-[9px] pr-[6px] border-b-[1px]">
-        <span class="border-[3px] w-[40px] h-[40px] border-chatThird rounded-full"></span>
-        <div class="flex flex-col flex-1">
-            <div class="flex flex-row justify-between flex-1">
-                <h1>1ddsdsdsdsd</h1>
-                <div class="flex flex-row items-center gap-[6px]">
-                    <img :src="seen" alt="">
-                    <h2>time</h2>
-                </div>
-            </div>
-            <h1><span class="text-gray-400">Вы:</span>Lorem ipsum dolor sit amet, consectetur adipisicing,
-                ipsa?
-            </h1>
-        </div>
-    </div>
-    <div class="flex flex-row bg-white pl-[13px] pb-[13px] pt-[9px] pr-[6px] border-b-[1px]">
-        <span class="border-[3px] w-[40px] h-[40px] border-chatThird rounded-full"></span>
-        <div class="flex flex-col flex-1">
-            <div class="flex flex-row justify-between flex-1">
-                <h1>1ddsdsdsdsd</h1>
-                <div class="flex flex-row items-center">
-                    <img class='hidden' :src="seen" alt="">
-                    <h2>time</h2>
-                </div>
-            </div>
-            <h1>Lorem ipsum dolor sit amet, consectetur adipisicing,
-                ipsa?
-            </h1>
-        </div>
-    </div>
+    <div class="" @click="showSheet = false">
 
 
-
-    <div class="absolute bottom-20 right-6 bg-marine  rounded-[12px]">
-        <button @click="searchTeammateModal.open()" class="p-[10px]"><img :src="plus" alt=""></button>
-        <vue-bottom-sheet ref="searchTeammateModal">
-            <div class="searchTeammateModal modal">
-                <p class="mb-2">Поиск человека для добавления в проект</p>
-                <UiInput prepend-icon="magnify" label="Введите данные для поиска" v-model="searchQuery" />
-                <div class="searchTeammateModal__items">
-                    <div v-for="user in filteredUsers" :key="user.id" class="d-flex align-center"
-                    @click="() => handleUserClick(user.id)">
-                    <img class="mr-3" width="37" height="37" src="../../assets/demo/ava-small-header.svg" />
-                        <div>
-                            <div class="d-flex align-center">
-                                <p class="txt-body3">{{ user.id }}</p>
-                            </div>
-                            <p class="searchUserCard__head__subtitle txt-cap1">{{ user.login }}</p>
-                        </div>
-
+        <div class="flex flex-row bg-white pl-[13px] pb-[13px] pt-[9px] pr-[6px] border-gray-200 border-b-[1px]">
+            <span class="border-[3px] w-[40px] h-[40px] border-chatThird rounded-full"></span>
+            <div class="flex flex-col flex-1">
+                <div class="flex flex-row justify-between flex-1">
+                    <h1>1ddsdsdsdsd</h1>
+                    <div class="flex flex-row items-center gap-[6px]">
+                        <img :src="send" alt="">
+                        <h2>time</h2>
                     </div>
                 </div>
-
+                <h1><span class="text-gray-400">Вы:</span>Lorem ipsum dolor sit amet, consectetur adipisicing,
+                    ipsa?
+                </h1>
             </div>
-        </vue-bottom-sheet>
+        </div>
+        <div class="flex flex-row bg-white pl-[13px] pb-[13px] pt-[9px] pr-[6px] border-gray-200 border-b-[1px]">
+            <span class="border-[3px] w-[40px] h-[40px] border-chatThird rounded-full"></span>
+            <div class="flex flex-col flex-1">
+                <div class="flex flex-row justify-between flex-1">
+                    <h1>1ddsdsdsdsd</h1>
+                    <div class="flex flex-row items-center gap-[6px]">
+                        <img :src="delivered" alt="">
+                        <h2>time</h2>
+                    </div>
+                </div>
+                <h1><span class="text-gray-400">Вы:</span>Lorem ipsum dolor sit amet, consectetur adipisicing,
+                    ipsa?
+                </h1>
+            </div>
+        </div>
+        <div class="flex flex-row bg-white pl-[13px] pb-[13px] pt-[9px] pr-[6px] border-gray-200 border-b-[1px]">
+            <span class="border-[3px] w-[40px] h-[40px] border-chatThird rounded-full"></span>
+            <div class="flex flex-col flex-1">
+                <div class="flex flex-row justify-between flex-1">
+                    <h1>1ddsdsdsdsd</h1>
+                    <div class="flex flex-row items-center gap-[6px]">
+                        <img :src="seen" alt="">
+                        <h2>time</h2>
+                    </div>
+                </div>
+                <h1><span class="text-gray-400">Вы:</span>Lorem ipsum dolor sit amet, consectetur adipisicing,
+                    ipsa?
+                </h1>
+            </div>
+        </div>
+        <div class="flex flex-row bg-white pl-[13px] pb-[13px] pt-[9px] pr-[6px] border-gray-200 border-b-[1px]">
+            <span class="border-[3px] w-[40px] h-[40px] border-chatThird rounded-full"></span>
+            <div class="flex flex-col flex-1">
+                <div class="flex flex-row justify-between flex-1">
+                    <h1>1ddsdsdsdsd</h1>
+                    <div class="flex flex-row items-center">
+                        <img class='hidden' :src="seen" alt="">
+                        <h2>time</h2>
+                    </div>
+                </div>
+                <h1>Lorem ipsum dolor sit amet, consectetur adipisicing,
+                    ipsa?
+                </h1>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="absolute bottom-20 right-6 bg-marine  rounded-[12px]">
+        <button @click="showSheet = true" class="p-[10px]"><img :src="plus" alt=""></button>
+        <transition name="bottom-sheet">
+            <div v-if="showSheet" style="overflow-y: auto;" class="bottom-sheet bg-white text-left"
+                @click="showPopup = false">
+                <div class="searchTeammateModal modal">
+                    <h6 class="text mb-2">Создание новой беседы</h6>
+                    <UiInput prepend-icon="magnify" label="Введите данные для поиска" v-model="searchQuery" />
+                    <div class="searchTeammateModal__items">
+                        <div v-for="user in filteredUsers" :key="user.id" class="d-flex align-center"
+                            @click="() => handleUserClick(user.id)">
+                            <img class="mr-3" width="37" height="37" src="../../assets/demo/ava-small-header.svg" />
+                            <div>
+                                <div class="d-flex align-center">
+                                    <p class="txt-body3">{{ user.id }}</p>
+                                </div>
+                                <p class="searchUserCard__head__subtitle txt-cap1">{{ user.login }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <v-btn @click="showSheet = false" class="close-btn mr-2" icon="mdi-check" color="#00e676" />
+            </div>
+        </transition>
     </div>
 </template>
 <script setup lang="ts">
@@ -93,15 +98,16 @@ import seen from '~/assets/chat/seen.svg'
 import delivered from '~/assets/chat/delivered.svg'
 import ChatFolders from './ChatFolders.vue'
 import plus from '~/assets/modal_icon/plus.svg'
-import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
-import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import UiInput from '~/components/ui-kit/UiInput.vue'
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from 'vue-router'
 import { getUserSearch } from '~/API/ways/user'
 import { getDialog, createDialog } from '~/API/ways/dialog';
 const router = useRouter()
-const openUser = (id) => {
+const showSheet = ref(false)
+
+let showPopup = ref(false)
+const openUser = (id: any) => {
 
     router.push(`/messenger/chat/${id}`);
 };
@@ -114,7 +120,7 @@ const createDialogAPI = async () => {
         console.error('Error fetching users:', error);
     }
 }
-const handleUserClick = async (id) => {
+const handleUserClick = async (id: any) => {
     const dialogResponse = await createDialogAPI();
     openUser(id);
 }
@@ -126,7 +132,6 @@ const showDialog = async () => {
         console.error('Error fetching users:', error);
     }
 };
-const searchTeammateModal = ref(null)
 interface User {
     id: number;
     roles: Array<any>;
@@ -170,6 +175,12 @@ onMounted(showDialog);
 
 
 <style scoped lang="scss">
+.text {
+    font-size: 16px;
+    font-weight: 18px;
+    color: 263238;
+}
+
 h1 {
     color: var(--Background-OnBackground, #263238);
     font-size: 14px;

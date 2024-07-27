@@ -1,11 +1,21 @@
 <template>
-    <div class="flex justify-center">
-        <div class="w-1/4 date mb-4 rounded-xl">{{ $t('feed.today') }}</div>
-    </div>
     <div class="feedCard mb-4">
         <!-- head -->
-        <div class="feedCard__head"
-            :style="{ 'background-image': 'url(' + backgroundImageUrl + ')', 'height': imageHeight, 'color' : Color }">
+        <div v-if="props.withoutBg" class="feedCard__head-empty">
+            <div class="d-flex align-center">
+                <div>
+                    <div class="d-flex align-center">
+                        <span style="color: #9e9e9e" class="txt-cap1">{{ $t('feed.time') }}</span>
+                    </div>
+                    <p class="txt-body3 text-black mb-2">Save and Brave</p>
+                </div>
+            </div>
+            <button @click="modalState.open()">
+                <v-icon class="text-black" icon="mdi-dots-vertical" />
+            </button>
+        </div>
+        <div v-else class="feedCard__head"
+            :style="{ 'background-image': 'url(' + backgroundImageUrl + ')', 'height': imageHeight, 'color': Color }">
             <div class="d-flex align-center">
                 <div>
                     <div class="d-flex align-center">
@@ -26,53 +36,44 @@
                 <p class="txt-cap1">
                     {{ $t('feed.feedBack') }}
                 </p>
-                 <p class="txt-cap1 mt-4">
+                <p class="txt-cap1 mt-4">
                     192.168.0.1:27015
                 </p>
-                <p class="txt-body3 mt-1">
+                <p class="txt-cap1 mt-1">
                     Заходи, будет весело!
                 </p>
             </div>
-            
+
 
             <!-- Слайдер -->
-            <div class="feedCard__body__slider" v-if="props.feedCardType === 'newProjectPhotos'">
-                <img width="135" v-for="i in 5" height="204" src="../../assets/demo/demo-rec1.png" />
+            <div v-if="props.feedCardType === 'newProjectPhotos'">
+                <p class="txt-cap1">
+                    {{ $t('feed.feedBack') }}
+                </p>
+                <p class="txt-cap1 my-4">
+                    192.168.0.1:27015
+                </p>
+                <div class="feedCard__body__slider">
+                    <img width="135" v-for="i in 5" height="204" src="../../assets/demo/demo-rec1.png" />
+                </div>
             </div>
-
-           
-            <div v-if="props.feedCardType === 'newProjectDiscussed'"> Проект активно обсуждается</div>
         </div>
 
         <!-- footer -->
         <div class="feedCard__footer">
             <div class="d-flex align-center">
-                <UiButton
-                    v-if="props.feedCardType != 'newProjectDiscussed'"
-                    bgColor="def"
-                    class="mr-3"
-                    :imgSrc="share"
-                    style="padding: 10px 13px 9px 14px"
-                    onlyIcon
-                />
-                <UiButton
-                    v-if="props.feedCardType != 'newProjectDiscussed'"
-                    bgColor="def"
-                    class="mr-3"
-                    :imgSrc="chat"
-                    style="padding: 10px 13px 9px 14px"
-                    onlyIcon
-                    @click="$router.push('/project/' + props.prjID + '/blogComment')"
-                />
+                <UiButton bgColor="def" class="mr-3" :imgSrc="share" style="padding: 10px 13px 9px 14px" onlyIcon />
+                <UiButton bgColor="def" class="mr-3" :imgSrc="chat" style="padding: 10px 13px 9px 14px" onlyIcon
+                    @click="$router.push(props.blogID + '/blogComment')" />
             </div>
             <Fire />
         </div>
     </div>
 
-    <vue-bottom-sheet v-if="props.userType =='user'" ref="modalState">
-        <div class="modal"  >
+    <vue-bottom-sheet v-if="props.userType == 'user'" ref="modalState">
+        <div class="modal">
             <div class="modal__list">
-                <div  class="modal__list__item">
+                <div class="modal__list__item">
                     <img src="../../assets/icons/warning-red.svg" alt="" />
                     <p class="txt-body1 text-[#FF3D00]">
                         <!-- {{ item.name }} -->
@@ -80,21 +81,21 @@
                     </p>
                 </div>
             </div>
-            
+
         </div>
     </vue-bottom-sheet>
 
-    <vue-bottom-sheet v-if="props.userType =='me'" ref="modalState">
-        <div class="modal"  >
+    <vue-bottom-sheet v-if="props.userType == 'me'" ref="modalState">
+        <div class="modal">
             <div class="modal__list">
                 <div v-for="(item, id) in me" :key="id" class="modal__list__item">
-                    <img :src="`../src/assets/icons/footer/${item.icon}.svg`" alt="" />
+                    <img :src="item.icon" alt="" />
                     <p class="txt-body1">
                         {{ item.name }}
                     </p>
                 </div>
             </div>
-            
+
         </div>
     </vue-bottom-sheet>
 </template>
@@ -103,29 +104,30 @@
 import share from "~/assets/icons/share-black.svg"
 import chat from "~/assets/icons/chat-black.svg"
 import bgImage from "~/assets/Frame221.png"
+import trash from "~/assets/trash_blue.svg"
+import edit_icon from "~/assets/edit_icon.svg"
 import Fire from '../Fire.vue'
-
 import { modalActionsList } from '~/helpers/types'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import UiButton from '../ui-kit/UiButton.vue'
 import { computed, ref } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useProjectStore } from '~/store/projectStore'
 
-const { prjObject } = storeToRefs(useProjectStore())
 const props = defineProps({
     feedCardType: {
         type: String,
         default: '',
     },
-    userType:{
-        type:String,
+    userType: {
+        type: String,
         default: '',
     },
-    prjID: {
+    blogID: {
         type: Number,
     },
+    withoutBg: {
+        type: Boolean,
+    }
 })
 
 
@@ -134,11 +136,11 @@ const modalState = ref(null)
 const me: modalActionsList[] = [
     {
         name: 'Удалить запись',
-        icon: 'account',
+        icon: trash,
     },
     {
         name: 'Редактировать',
-        icon: 'account',
+        icon: edit_icon,
     }
 ]
 
@@ -148,14 +150,14 @@ const hasImage = computed(() => {
     return backgroundImageUrl.value !== bgImage;
 });
 
-const imageHeight = computed(() =>{
+const imageHeight = computed(() => {
     return hasImage.value ? '0' : '120px';
 })
 const Color = computed(() => {
     return hasImage.value ? 'black' : 'white;'
 })
 
-const userModalType = computed(() =>{
+const userModalType = computed(() => {
     if (props.userType === 'me') {
         return me
     } else if (props.userType === 'user') {
@@ -164,30 +166,15 @@ const userModalType = computed(() =>{
 })
 
 const feedCardSubtitle = computed(() => {
-    if (props.feedCardType === 'newProjectDiscussed') {
-        return 'Проект активно обсуждается'
-    } else if (props.feedCardType === 'newProjectVacancies') {
-        return 'Проекту требуются специалисты'
-    } else if (props.feedCardType === 'newProjectStage') {
+    if (props.feedCardType === 'newProjectStage') {
         return ' Перешли на новый этап:'
     } else if (props.feedCardType === 'newProjectPhotos') {
         return ' В проекте обновились фото: '
-    } else if (props.feedCardType === 'newFile') {
-        return 'Добавили вложение: '
     }
 })
 </script>
 
 <style scoped lang="scss">
-.date {
-    display: flex;
-    justify-content: center;
-    background: rgba(224, 224, 224, 0.5);
-    font-size: 13px !important;
-    letter-spacing: 0.01em !important;
-    padding: 6px 20px;
-    line-height: 14px;
-}
 .feedCard {
     padding: 0px 0px;
     border-radius: 12px;
@@ -196,37 +183,55 @@ const feedCardSubtitle = computed(() => {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    &__head {
+
+    &__head,
+    &__head-empty {
         padding: 16px 6px 16px 19px;
         background-size: cover;
         // height: 128px;
         background-position: center;
         display: flex;
         border-radius: 12px 12px 2px 2px;
-        align-items:flex-start;
+        align-items: flex-start;
         color: #ffffff;
         justify-content: space-between;
+
         &__subtitle {
             color: #9e9e9e;
             margin-top: 1px;
             text-align: initial;
         }
     }
+
+    &__head {
+        padding: 16px 6px 16px 19px;
+    }
+
+    &__head-empty {
+        padding: 16px 6px 0px 19px;
+
+    }
+
     &__body {
         padding: 0px 14px;
 
         text-align: left;
+
         &__slider {
             display: flex;
             gap: 16px;
-            -ms-overflow-style: none; /* Internet Explorer 10+ */
+            -ms-overflow-style: none;
+            /* Internet Explorer 10+ */
             scrollbar-width: none;
             overflow-x: scroll;
+
             &::-webkit-scrollbar {
-                display: none; /* Safari and Chrome */
+                display: none;
+                /* Safari and Chrome */
             }
         }
     }
+
     &__vacancy {
         &__head {
             padding: 10px 20px;
@@ -238,11 +243,13 @@ const feedCardSubtitle = computed(() => {
             background: #e1f5fe;
         }
     }
+
     &__footer {
         padding: 12px 14px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+
         &__button {
             padding: 14.5px 20px;
             box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.2) inset, 0px 23px 10px -23px rgba(0, 0, 0, 0.15);
@@ -256,14 +263,17 @@ const feedCardSubtitle = computed(() => {
     .v-expansion-panel__shadow {
         display: none;
     }
+
     .v-expansion-panel-title__overlay {
         opacity: 0;
     }
+
     .v-expansion-panel-text__wrapper {
         padding: 23px 20px;
         padding-top: 8px;
     }
 }
+
 .v-expansion-panel--active {
     border-radius: 12px !important;
     background: #ffffff;

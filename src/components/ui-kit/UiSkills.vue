@@ -52,7 +52,8 @@ export default {
         </v-card>
     </v-dialog>
     <transition name="bottom-sheet">
-        <div v-if="showSheet" style="overflow-y: auto;" class="bottom-sheet bg-white text-left" @click="showPopup = false">
+        <div v-if="showSheet" style="overflow-y: auto;" class="bottom-sheet bg-white text-left"
+            @click="showPopup = false">
             <div class="txt-body1 mb-2 mx-4">Выбрано : {{ chosenSkills.length }}</div>
             <UiInput v-model="searchTerm" class="mx-4" label="Введите навык для поиска" />
             <div class="ui-skills__choser mt-2 " v-for="(skill, id) in categories" :key="id">
@@ -86,10 +87,6 @@ import { useRouter } from 'vue-router'
 import { patchUser } from '~/API/ways/user'
 const router = useRouter();
 const showSheet = ref(false);
-const handleAction = () => {
-    alert('Action button clicked!');
-};
-
 let showPopup = ref(false)
 // const snackbar = ref(false)
 // const timeout = 1000
@@ -186,17 +183,18 @@ const patchSkills = async () => {
 
 <style lang="scss">
 .bottom-sheet {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out;
-  padding: 16px 0 ;
-  max-height: 80vh; /* Example: Limit height to 80% of viewport height */
-  overflow-y: auto;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    padding: 16px 0;
+    max-height: 80vh;
+    /* Example: Limit height to 80% of viewport height */
+    overflow-y: auto;
 }
 
 
@@ -204,15 +202,17 @@ const patchSkills = async () => {
     padding: 16px;
     position: relative;
 }
+
 .close-btn {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
-  border-radius: 12px;
-    color:white;
-  box-shadow: 0px 9px 9px -9px #00b65d;
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    border-radius: 12px;
+    color: white;
+    box-shadow: 0px 9px 9px -9px #00b65d;
     padding: 10px;
 }
+
 .bottom-sheet-enter-active,
 .bottom-sheet-leave-active {
     transition: transform 0.3s ease-in-out;

@@ -47,11 +47,11 @@ const addComment = (projectID: number, userID: number, message: string) => {
         "message": message
     });
 };
-const addComplaint = (projectId: number, userId: number,complaint: String) => {
+const addComplaint = (projectId: number, userId: number, complaint: String) => {
 
 
     return API.post(`${prefix}/addComplaint`, {
-        "complaintInfo": complaint,   
+        "complaintInfo": complaint,
         "project": {
             "id": projectId
         },
@@ -78,19 +78,9 @@ const addProjectAvatar = (avatarUrl: FormData, projectID: number) => {
     });
 }
 
-// const addProjectFile = (picLink: string, projectID: number) => {
-//     return API.post(`${prefix}/addProjectFile?projectId=${projectID}`, { link: picLink });
-// };
-const addProjectFile = (file:FormData, projectID: number) => {
-    const formData = new FormData();
 
-    // if (fileOrLink instanceof File) {
-    //     formData.append('file', fileOrLink);
-    // } else {
-    //     formData.append('link', fileOrLink);
-    // }
-
-    return API.post(`${prefix}/addProjectFile?projectId=${projectID}`, formData, {
+const addProjectFile = (file: FormData, projectID: number, link: String) => {
+    return API.post(`${prefix}/addProjectFile?projectId=${projectID}`, link, file, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }

@@ -2,7 +2,7 @@
     <Header showID :showUserMinify="true" />
     <ProfileHeader :read-only="true" :bg-pic="fullBannerUrl" :ava-pic="fullAvatarUrl" />
     <v-container style="padding: 0 20px; margin-bottom: 48px">
-        <ProfileInfo :read-only="true" />
+        <ProfileInfo :proposition="userInfo.openedForProposition" :user-description="userInfo.fullDescription" :user-name="userInfo.firstName" :user-surname="userInfo.lastName" :read-only="true" />
         <UiSkills />
 
         <UiButton class="mt-4" @click="$router.push('/project/new')" bgColor="blue">Создать проект</UiButton>
@@ -61,17 +61,8 @@ const getPosts = async () => {
         console.error(error);
     }
 };
-let stat = ref()
-// const projectStatByIDAPI = async () => {
-//     try {
-//         const data = await projectStatByID('sds',10, 'sdsd');
-//         stat.value = data;
-//     } catch (error) {
-//         console.error(error);
-//     }
-// };
+
 onMounted(getPosts);
-// onMounted(projectStatByIDAPI)
 const modalState = ref(null);
 
 isAuth();
@@ -87,9 +78,6 @@ onMounted(async () => {
         }
     })
 })
-const ownerProjects = computed(() => {
-    return userInfo.value?.projects?.filter(project => project.relationType === 'PROJECT_OWNER') || [];
-});
 const baseURL = 'http://62.217.181.172/';
 
 const fullAvatarUrl = computed(() => {

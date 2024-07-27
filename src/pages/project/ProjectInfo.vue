@@ -5,8 +5,11 @@
         <ProjectCard readOnly class="mt-12" :prj-desc-body="data.description" :prj-desc-head="data.descriptionHeader" />
         <ProjectTeam :team="data.users" class="mt-12" readOnly />
         <ProjectVacancys class="mt-12" readOnly />
-        <ProjectMedia class="mt-12"  readOnly />
-        <!-- <img :src="fullFileUrl" alt="1" /> -->
+        <!-- <ProjectMedia class="mt-12"  readOnly :link="data.projectFiles[3]" :adress="data.projectFiles[3].pictureUrl" /> -->
+        <!-- {{ data.projectFiles[3].pictureUrl }} -->
+        <ProjectMedia class="mt-12" :files="data.projectFiles" readOnly />
+        <!-- <img :src="data.projectFiles[1].pictureUrl" alt="1"> -->
+        <!-- {{ data.projectFiles[1] }} -->
     </v-container>
     <Footer />
 </template>
@@ -33,11 +36,8 @@ const baseURL = 'http://62.217.181.172/';
 const fullAvatarUrl = computed(() => {
     return data.value.avatarUrl ? `${baseURL}files/${data.value.avatarUrl}` : '';
 });
-const fullFileUrl = computed(() => {
-    return data.value.projectFiles[1] ? `${baseURL}var/itnt/${data.value.projectFiles[1]}` : '';
-});
 console.log(data);
-console.log(fullFileUrl)
+console.log(fullAvatarUrl)
 import Footer from '~/components/Footer.vue'
 import Header from '~/components/Header.vue'
 

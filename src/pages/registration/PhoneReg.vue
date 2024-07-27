@@ -49,7 +49,9 @@
                         margin-top: 40px;
                         margin-bottom: 35px;
                     ">
-                    <v-otp-input ref="otpInput" input-classes="otp-input" separator="" :num-inputs="4"
+                    <!-- <v-otp-input v-model="otp" input-classes="otp-input"  class="mt-3 ms-n2" length="4" placeholder="0"
+                        variant="underlined"></v-otp-input>  -->
+                        <v-otp-input ref="otpInput" input-classes="otp-input" separator="" :num-inputs="4"
                         v-model:value="otpCode" :should-auto-focus="true" input-type="number" @on-complete="sendCode"
                         :class="{
                 'otp-input--has-value': otpCode.length > 0,
@@ -151,14 +153,16 @@ async function sendCode() {
     padding: 5px;
     margin: 0 10px;
     font-size: 20px;
+    outline:none;
     border-radius: 4px;
     border-bottom: 4px solid #E0E0E0;
-    box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.1),
-        /* Тень сверху */
-        1px 0px 3px rgba(0, 0, 0, 0.1),
-        /* Тень справа */
-        -1px 0px 3px rgba(0, 0, 0, 0.1);
-    /* Тень слева */
+    box-shadow: 
+    0px 1px -3px rgba(0, 0, 0, 0.1);
+    //     /* Тень сверху */
+    //     // 1px 0px 3px rgba(0, 0, 0, 0.1),
+    //     /* Тень справа */
+    //     // -1px 0px 3px rgba(0, 0, 0, 0.1);
+    // /* Тень слева */
     text-align: center;
 
     &__error {

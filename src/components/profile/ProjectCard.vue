@@ -14,7 +14,8 @@ export default {
                     <p class="project-card__info__position">{{ props.projectInfo.project.slogan }}</p>
                 </div>
             </div>
-            <img class="project-card__img" :src="fullAvatarUrl" alt=" " />
+            <img v-if="fullAvatarUrl !== `${baseURL}files/string` && fullAvatarUrl !== `${baseURL}files/`"
+                class="project-card__img" :src="fullAvatarUrl" alt=" " />
         </div>
     </div>
     <div v-else class="">
@@ -42,13 +43,13 @@ export default {
 </template>
 
 <script setup lang="ts">
-import hidden from "~/assets/Profile/hideProjectCard.svg"
+// import hidden from "~/assets/Profile/hideProjectCard.svg"
 
 import anonimus from "~/assets/project_modal/annonimus.svg"
 import hide from "~/assets/project_modal/hide.svg"
 import project from "~/assets/project_modal/project.svg"
 import share from "~/assets/project_modal/share.svg"
-import plus from "~/assets/project_modal/plus.svg"
+// import plus from "~/assets/project_modal/plus.svg"
 
 import { useRouter } from 'vue-router';
 import { ref, computed } from 'vue'
@@ -63,10 +64,6 @@ const props = defineProps({
     prjID: {
         type: Number,
     },
-    defaultAvatarUrl: {
-        type: String,
-        default:  "~/assets/project_modal/project.svg"
-    }
 })
 
 const router = useRouter();
@@ -120,11 +117,7 @@ const modalItems: modalActionsList[] = [
 const baseURL = 'http://62.217.181.172/';
 
 const fullAvatarUrl = computed(() => {
-    if (props.projectInfo.project.avatarUrl) {
-        return `${baseURL}files/${props.projectInfo.project.avatarUrl}`;
-    } else {
-        return props.defaultAvatarUrl;
-    }
+    return `${baseURL}files/${props.projectInfo.project.avatarUrl}`;
 })
 
 </script>
@@ -149,8 +142,7 @@ const fullAvatarUrl = computed(() => {
     width: 100%;
     background-color: white;
     margin-bottom: 2px;
-    border-top-left-radius: 12px;
-    border-bottom-right-radius: 12px;
+    border-radius: 4px;
     overflow: hidden;
 
     &__info {
@@ -195,8 +187,15 @@ const fullAvatarUrl = computed(() => {
         border-bottom-right-radius: 8px;
     }
 
+    :first-child {
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
 
-    // &:last-child {}
+    &:last-child {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
 }
 
 .project-anonim {
@@ -245,8 +244,11 @@ const fullAvatarUrl = computed(() => {
         top: 30%;
     }
 
-
-    // &:last-child {}
+    
+    &:last-child {
+        border-bottom-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
 
 }
 

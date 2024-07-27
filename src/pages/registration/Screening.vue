@@ -22,22 +22,24 @@
         </div>
         <!-- Навигация этапов -->
         <div v-show="pageStep === 2">
-        <v-col class="text-center pa-0 pt-16">
-            <p class="ma-0">{{ user.firstName }}, хотите выглядеть особенно?</p>
-        </v-col>
-        <div style="display: flex; align-items: center" class="rounded-circle mx-auto mt-6">
-            <v-file-input height="200" v-model="user.pictureUrl" accept="image/png, image/jpeg, image/bmp"
-                class="input-file" @change="handleFileChange">
-            </v-file-input>
-            <img src="../../assets/img/regSteps/addProfilePic.svg" v-show="!user.pictureUrl"
-                class="rounded-circle mx-auto" height="208" width="208" />
-            <img v-show="user.pictureUrl" class="rounded-circle img mx-auto max-h-[208px] max-w-[208px] min-h-[208px] min-w-[208px]" height="208" width="208" :src="blobPic" />
+            <v-col class="text-center pa-0 pt-16">
+                <p class="ma-0">{{ user.firstName }}, хотите выглядеть особенно?</p>
+            </v-col>
+            <div style="display: flex; align-items: center" class="rounded-circle mx-auto mt-6">
+                <v-file-input height="200" v-model="user.pictureUrl" accept="image/png, image/jpeg, image/bmp"
+                    class="input-file" @change="handleFileChange">
+                </v-file-input>
+                <img src="../../assets/img/regSteps/addProfilePic.svg" v-show="!user.pictureUrl"
+                    class="rounded-circle mx-auto" height="208" width="208" />
+                <img v-show="user.pictureUrl"
+                    class="rounded-circle img mx-auto max-h-[208px] max-w-[208px] min-h-[208px] min-w-[208px]"
+                    height="208" width="208" :src="blobPic" />
+            </div>
+            <UiButton @click="selectProfilePic" class="mb-4 mt-12" bgColor="blue">
+                {{ user.pictureUrl ? 'Продолжить' : 'Выбрать аватар' }}
+            </UiButton>
+            <UiButton @click="pageStep += 1" bgColor="def"> Пропустить </UiButton>
         </div>
-        <UiButton @click="selectProfilePic" class="mb-4 mt-12" bgColor="blue">
-            {{ user.pictureUrl ? 'Продолжить' : 'Выбрать аватар' }}
-        </UiButton>
-        <UiButton @click="pageStep += 1" bgColor="def"> Пропустить </UiButton>
-    </div>
         <div v-show="pageStep === 3">
             <v-col class="text-center pa-0 pt-16">
                 <p class="ma-0">Откуда вы?</p>
@@ -69,21 +71,24 @@
                 <UiButton bgColor="blue" @click="saveProfile" class="mt-6"> Продолжить </UiButton>
             </v-col>
         </div>
+        <!-- <Loading /> -->
         <div v-if="isLoading" class="loader-overlay loader-active">
-            <div class="loader"></div>
+            <div class="loader-container">
+                <div class="loader"></div>
+            </div>
         </div>
         <div v-if="showCheckmark" class="checkmark-overlay">
-            <div class="checkmark-icon"><img src="/src/assets/LoadingIcon.svg" alt=""></div>
+            <div class="checkmark"><img src="/src/assets/LoadingIcon.svg" alt=""></div>
         </div>
         <transition name="fade">
-            <div v-if="showOverlay" style="background-color: #29b6f6;"></div>
+            <div v-if="showOverlay" class="overlay animate-overlay"></div>
         </transition>
     </v-col>
-
 </template>
 
 <script setup lang="ts">
 // ui-kit
+import Loading from '~/components/loading.vue'
 import UiButton from '~/components/ui-kit/UiButton.vue'
 import UiInput from '~/components/ui-kit/UiInput.vue'
 import UiPrompt from '~/components/ui-kit/UiPrompt.vue'
@@ -92,12 +97,10 @@ import Header from '~/components/Header.vue'
 import Arr from '~/helpers/set.ts'
 import { getCountryList } from '~/API/ways/dictionary'
 import { useRouter } from 'vue-router'
-import { reactive, ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { postAddUserPicture, patchUser } from '~/API/ways/user'
-import { useUserStore } from '~/store/user'
 const router = useRouter()
 const list = ref(Arr)
-
 
 const blobPic = ref('')
 const pageStep = ref(1)
@@ -109,14 +112,27 @@ const showOverlay = ref(false);
 const setPageStep = (step: number) => {
     if (step <= maxReachedStep.value) {
         pageStep.value = step;
-        if (step === 4) { // Предполагаем, что 4 - это последний шаг
+        if (step === 4) {
             startLoading();
         }
     }
 };
+
 const startLoading = () => {
+    isLoading.value = true;
     setTimeout(() => {
-        isLoading.value = false; // Прекратить загрузку после имитации задержки
+        isLoading.value = false;
+        showCheckmark.value = true;
+
+        setTimeout(() => {
+            showCheckmark.value = false;
+            showOverlay.value = true;
+
+            setTimeout(() => {
+                showOverlay.value = false;
+                router.push('/me');
+            }, 1500);
+        }, 1000);
     }, 3000); // Задержка в миллисекундах
 };
 
@@ -131,22 +147,19 @@ const getProgressBarStyle = (step: number) => {
     };
 };
 
-
-const user = reactive({
-    city: '',
-    country: '',
-    pictureUrl: '',
-    firstEntry: false,
-    firstName: '',
+const user = ref({
     id: localStorage.getItem('userId'),
-    roles: [''],
-})
+    city: '',
+    country: "",
+    firstName: '',
+    pictureUrl: '',
+});
+
 onMounted(async () => {
     await getCountryList().then((response: any) => {
         console.log(response)
     })
-})
-
+});
 
 const selectProfilePic = () => {
     if (user.pictureUrl) {
@@ -155,7 +168,7 @@ const selectProfilePic = () => {
         const fileInput = document.querySelector('.input-file input[type="file"]') as HTMLInputElement;
         fileInput.click();
     }
-}
+};
 
 const handleFileChange = (event: Event) => {
     const input = event.target as HTMLInputElement;
@@ -163,11 +176,11 @@ const handleFileChange = (event: Event) => {
         user.pictureUrl = input.files[0];
         blobPic.value = URL.createObjectURL(user.pictureUrl);
     }
-}
+};
 
 async function saveProfile() {
     isLoading.value = true;
-    patchUser(user).then((response: any) => {
+    await patchUser(user.value).then((response: any) => {
         try {
             console.log(response)
             if (response.data.operationResult === 'OK') {
@@ -180,14 +193,18 @@ async function saveProfile() {
                         setTimeout(() => {
                             showOverlay.value = false;
                             router.push('/me');
-                        }, 500);
+                        }, 1500);
                     }, 1000);
                 }, 3000);
             }
         } catch (error) {
             console.log(error)
+            isLoading.value = false;  // Stop loading if there's an error
         }
-    })
+    }).catch(error => {
+        console.log(error)
+        isLoading.value = false;  // Stop loading if there's an error
+    });
 }
 
 watch(
@@ -200,10 +217,6 @@ watch(
     { deep: true }
 );
 
-function addAvatar() {
-    blobPic.value = URL.createObjectURL(user.pictureUrl);
-}
-
 </script>
 
 <style lang="scss" scoped>
@@ -215,6 +228,7 @@ function addAvatar() {
     object-fit: cover;
     object-position: center;
 }
+
 .progress-bar,
 .stepper,
 .stepper-two,
@@ -330,34 +344,25 @@ function addAvatar() {
     opacity: 0;
 }
 
-.loader-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+.loader-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 9999;
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0s, opacity 0.5s linear;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
 }
 
 .loader {
-    border: 3px solid #f3f3f3;
-    border-top-color: #29b6f6;
+    border: 2.5px solid #f3f3f3;
+    border-top: 2.5px solid #3498db;
     border-radius: 50%;
-    width: 46px;
-    height: 46px;
-    animation: spin 1s linear infinite;
-}
-
-.loader-active {
-    visibility: visible;
-    opacity: 1;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
 }
 
 @keyframes spin {
@@ -371,37 +376,67 @@ function addAvatar() {
 }
 
 .checkmark-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 10000;
-    /* Подберите подходящее значение */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: auto;
+    z-index: 1000;
 }
 
-.checkmark-icon {
-    background-color: #29b6f6;
-    padding: 6px;
+.checkmark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3498db;
+    padding: 12px;
     border-radius: 50%;
-    font-size: 24px;
-    color: #fff;
+    width: 50px;
+    height: 50px;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.5s;
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #3498db;
+    z-index: 1;
+    clip-path: circle(0% at 50% 50%);
+    transition: clip-path 1.5s ease-out;
 }
 
-.fade-enter,
-.fade-leave-to
+.overlay.animate-overlay {
+    display: block;
+    animation: fillScreenClockwise 1.5s forwards;
+}
 
-/* .fade-leave-active в версиях 2.1.8+ */
-    {
-    opacity: 0;
+@keyframes fillScreenClockwise {
+    from {
+        clip-path: circle(0% at 50% 50%);
+    }
+
+    to {
+        clip-path: circle(150% at 50% 50%);
+    }
+}
+
+.loader-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
 }
 </style>

@@ -51,13 +51,18 @@ const messages = ref([]);
 const socket = ref(null);
 
 const initializeSocket = () => {
-    socket.value = io('http://62.217.181.172/dialog', {
+    socket.value = io('ws://62.217.181.172:8080/user/5', {
         query: {
             userId: 1,
             dialogId: 9,
         },
     });
-
+    // socket.value = io('http://62.217.181.172/dialog', {
+    //     query: {
+    //         userId: 1,
+    //         dialogId: 9,
+    //     },
+    // });
     socket.value.on('connect', () => {
         console.log('Connected to the server.');
     });

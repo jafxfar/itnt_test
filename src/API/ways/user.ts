@@ -2,12 +2,12 @@ import { API } from '../main'
 // import ComplaintData from "~/helpers/types"
 const prefix = '/user'
 
-export const addPost =(description:String, descriptionHeader:String, authorProject:any, authorUser:any) => {
+export const addPost = (description: String, descriptionHeader: String, authorProject: any, authorUser: any) => {
     let requestBody = {
-        "authorProject":{
+        "authorProject": {
             "id": authorProject
         },
-        "authorUser":{
+        "authorUser": {
             "id": authorUser
         },
         description,
@@ -31,16 +31,20 @@ const postUserConfirm = (phone: String, token: String) => {
     })
 }
 
-const postAddUserPicture = (formData: FormData, mainPicture: boolean ,) => {
-    return API.post(`http://62.217.181.172:8080/api/user/addUserPicture?mainPicture=${mainPicture}` ,formData, {
+const postAddUserPicture = (file: FormData, mainPicture: boolean) => {
+    return API.post(`${prefix}/addUserPicture?mainPicture=${mainPicture}`, file, {
         headers: {
-            'Content-Type': 'multipart/form-data'
-        }
+            'Content-Type': 'multipart/form-data',
+        },
     });
 };
-const postAddBackgroundPicture = (picLink: FormData) => {
-    return API.post(`${prefix}/addBackgroundPicture`, picLink)
-}
+const postAddBackgroundPicture = (file: FormData) => {
+    return API.post(`${prefix}/addBackgroundPicture`, file, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+};
 
 const postAddComplaint = (id: number, userId: number, complaint: String) => {
 
@@ -79,8 +83,8 @@ const putUser = (user: Object) => {
 }
 
 // PATCH
-const patchUser = (data: any) => {
-    return API.patch(`${prefix}/`, { data })
+const patchUser = (data: Object) => {
+    return API.patch(`${prefix}/`, data)
 }
 
 export {

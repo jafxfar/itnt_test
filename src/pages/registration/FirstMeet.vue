@@ -1,6 +1,6 @@
 <template>
     <v-row class="container pa-0 ma-0" justify="center" align="center">
-        <v-col align="center" class="pa-0">
+        <v-col  align="center" class="pa-0">
             <img src="../../assets/img/logos/itnt.svg" />
             <div>
                 <v-row align="center" justify="center" class="mt-12">

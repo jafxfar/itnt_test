@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 
 // user
@@ -78,19 +78,19 @@ const routes: Array<routes> = [
         component: UserFollowed,
     },
     {
-        path:'/me/notification',
+        path: '/me/notification',
         component: UserNotification,
     },
     {
-        path:'/me/settings',
+        path: '/me/settings',
         component: UserSetting,
     },
     {
-        path:'/me/invite',
+        path: '/me/invite',
         component: UserInvite,
     },
     {
-        path:'/me/vallet',
+        path: '/me/vallet',
         component: UserVallet,
     },
     // Проекты
@@ -143,6 +143,10 @@ const routes: Array<routes> = [
 ]
 
 export const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes,
-})
+    scrollBehavior() {
+        return { top: 0 };
+    }
+});
+

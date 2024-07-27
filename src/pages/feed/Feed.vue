@@ -11,33 +11,39 @@
         </v-container>
 
         <!-- <v-container class="pa-6 pt-0"> -->
-            <!-- Дата -->
-            <!-- <div class="date mb-4 rounded-xl d-inline-block">{{ $t('feed.yesterday') }}</div> -->
+        <!-- Дата -->
+        <!-- <div class="date mb-4 rounded-xl d-inline-block">{{ $t('feed.yesterday') }}</div> -->
 
-            <!-- <div class="feed__column"> -->
-                <!-- Карточка с документом на 7.5мб -->
-                <!-- <FeedCard feedCardType="newFile" />
+        <!-- <div class="feed__column"> -->
+        <!-- Карточка с документом на 7.5мб -->
+        <!-- <FeedCard feedCardType="newFile" />
                 <FeedCard feedCardType="newProjectVacancies" /> -->
-            <!-- </div> -->
+        <!-- </div> -->
         <!-- </v-container> -->
 
         <v-container class="pa-6 pt-0">
 
             <div class="feed__column">
                 <!-- Карточка с двумя слайдами в одном carousel-item -->
-
-                <div v-for="(post, id) in posts" :key="id" class="mt-6">
+                {{posts}}
+                <!-- <div v-for="(post, id) in posts" :key="id" class="mt-6">
                     <div class="" v-for="(object, id) in post.object" :key="id">
-                        <FeedPost :post="object" :id="object.id" />
+                        <FeedPost :post="object" />
                     </div>
-                </div>  
+                </div> -->
             </div>
+
+            <ProjectBlog user-type="me" withoutBg feedCardType="newProjectStage" />
+            <ProjectBlog user-type="me" feedCardType="newProjectStage" />
+            <ProjectBlog user-type="user" withoutBg feedCardType="newProjectPhotos" />
+            <ProjectBlog user-type="user" feedCardType="newProjectPhotos" />
         </v-container>
     </v-col>
     <Footer />
 </template>
 
 <script lang="ts" setup>
+import ProjectBlog from '~/components/projects/ProjectBlog.vue'
 import { onMounted, ref } from 'vue';
 import { getPost } from '~/API/ways/user';
 import Footer from '~/components/Footer.vue';

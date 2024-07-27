@@ -1,128 +1,128 @@
 <template>
     <Header showUserMinify showID />
-    <ProfileHeader />
+    <ProfileHeader  :bg-pic="fullBannerUrl" :ava-pic="fullAvatarUrl" />
     <v-container>
-        <ProfileInfo :read-only="false" />
-        <!-- <div class="mb-[48px] mt-[32px]">
-            <UiCoop v-model="newStatus" :items="items" @changeValue="updateUserStatus" />
-        </div> -->
-
-        <div class="about">
-            <UiTextArea :rules="[(v) => v.length <= 300 || 'Max 300 characters']" label="О себе"
-                v-model="userObj.description" />
+        <div class="userEdit my-4">
+            <UiInput v-model="user.firstName" class="mb-4" label="Имя" :required="true" />
+            <UiInput v-model="user.lastName" class="mb-4" label="Фамилия" :required="true" />
+            <v-select v-model="user.country" variant="outlined" label="Страна" rounded="" class="mb-2" color="active"
+                :items="Object.keys(list)" hide-details></v-select>
+            <v-select v-model="user.city" :disabled="user.country ? false : true" variant="outlined" color="active"
+                label="Выберите город" :items="(list as any)[user.country]"></v-select>
         </div>
-
+       
+        <div class="props mb-12">
+            <div class="props__inner" :class="{ 'props__inner--selected': user.openedForProposition === false }">
+                <label>
+                    <input type="radio" v-model="user.openedForProposition" :value="false" />
+                    <v-icon icon="mdi-check" v-if="user.openedForProposition === false" class="checkmark" />
+                    <span>Мне не интересно сотрудничество</span>
+                </label>
+            </div>
+            <div class="props__inner" :class="{ 'props__inner--selected': user.openedForProposition === true }">
+                <label>
+                    <input type="radio" v-model="user.openedForProposition" :value="true" />
+                    <v-icon icon="mdi-check" v-if="user.openedForProposition === true" class="checkmark" />
+                    <span>Я хочу получать предложения о сотрудничестве</span>
+                </label>
+            </div>
+        </div>
+        <div clas8s="about">
+            <UiTextArea :rules="[(v) => v.length <= 300 || 'Max 300 characters']" label="О себе"
+                v-model="user.fullDescription" />
+        </div>
         <div class="userEdit__components">
             <UiSkills />
-            <div>
-                <div class="flex justify-between">
-                    <p>Учасьте в проектах</p>
-                    <div class="ui-skills__btn">
-                        <p @click="$router.push('/project/new')" class="txt-body1">Новый </p>
-                        <v-icon icon="mdi-plus" size="x-small" />
-                    </div>
-                </div>
-
-                <UiSwitch @change-value="projectsType = $event" :items="['Текущие', 'Прошлые']" />
-                <ProjectsList class="mt-12" :projects="userInfo.projects" />
-            </div>
-
-            <div v-if="projectsInfo" v-for="(project, id) in projectsInfo" :key="id" class="mt-6">
-                <RatingProjectCard :listID="++id" :projectInfoSet="project" />
-            </div>
-
-            <ProjectsList showAdder />
+            <ProjectsList showAdder class="mt-12" :projects="user.projects" />
         </div>
-
-        <div class="date mb-4 color-white rounded-xl d-inline-block">{{ $t('feed.today') }}</div>
-
-        <div class="mt-[48px]">
-            <p>Что у меня нового:</p>
-            <UiButton @click="modalState.open()" bgColor="def">Расскажите, чем запомнился день</UiButton>
-        </div>
-        <vue-bottom-sheet ref="modalState">
-            <div class="min-h-[350px]">
-                <div class="searchTeammateModal__items">
-                    <UiPost card :data="demoVacancy" />
-                </div>
-            </div>
-
-        </vue-bottom-sheet>
-        <div class="date color-white mb-8 rounded-xl d-inline-block">{{ $t('feed.today') }}</div>
-
-        <div class="mb-16">
-
-            <ProjectBlog user-type="me" feedCardType="newProjectStage" />
-
-            <ProjectBlog user-type="me" feedCardType="newProjectPhotos" />
-        </div>
-
-
     </v-container>
-
-    <UiAgree @click="patchUserInfo()" />
+    <UiAgree @click="changeUser" />
 </template>
 
 <script setup lang="ts">
-import UiPost from '~/components/ui-kit/UiPost.vue'
-import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
-import '@webzlodimir/vue-bottom-sheet/dist/style.css'
-import UiButton from '~/components/ui-kit/UiButton.vue'
 import Header from '~/components/Header.vue'
-import UiAgree from '~/components/ui-kit/UiAgree.vue'
 import ProfileHeader from '~/components/profile/ProfileHeader.vue'
 import ProjectsList from '~/components/profile/ProjectsList.vue'
-import ProfileInfo from '~/components/profile/ProfileInfo.vue'
 import UiSkills from '~/components/ui-kit/UiSkills.vue'
+import UiAgree from '~/components/ui-kit/UiAgree.vue'
 import UiTextArea from '~/components/ui-kit/UiTextArea.vue'
-// import UiCoop from '~/components/ui-kit/UiCoop.vue'
-import UiSwitch from '~/components/ui-kit/UiSwitch.vue'
-import ProjectBlog from '~/components/projects/ProjectBlog.vue'
-import RatingProjectCard from '~/components/projects/RatingProjectCard.vue'
-// import Arr from '~/helpers/set'
-import { ref, onMounted } from 'vue'
-import { getUserByID, patchUser } from '~/API/ways/user'
-import { useRouter } from 'vue-router'
-import { useUserStore } from '~/store/user'
-const { userObj } = useUserStore()
-const userStore = useUserStore()
+// import star from "~/assets/modal_icon/star-filled.svg"
+// import follow from "~/assets/modal_icon/follow.svg"
+import Arr from '~/helpers/set'
+import UiInput from "~/components/ui-kit/UiInput.vue";
+import { ref, onMounted, computed } from 'vue';
+import { patchUser, getUserByID } from '~/API/ways/user';
+import { useRouter } from 'vue-router';
+const list = ref(Arr)
 const router = useRouter()
+const user = ref({
+    id: localStorage.getItem('userId'),
+    city: '',
+    country: "",
+    firstName: '',
+    lastName: "",
+    nickName: "",
+    fullDescription: '',
+    pictureUrl:'',
+    projects:[],
+    backgroundPictureUrl:''
+    // openedForProposition: false,
+});
 
-let projectsType = '';
-// const items = ['Мне интересно сотрудничество', 'Мне не интересно сотрудничество'];
-let userInfo = ref({})
-const modalState = ref(null)
-
-
-let projectsInfo = ref({})
 onMounted(async () => {
-    await getUserByID(Number(localStorage.getItem('userId'))).then((response) => {
+    try {
+        const response = await getUserByID(Number(localStorage.getItem('userId')));
+        user.value = {
+            ...user.value,
+            ...response.data.object
+        };
+        console.log(response);
+    } catch (e) {
+        console.error('error:', e);
+    }
+});
+const changeUser = async () => {
+    console.log('click');
+    await patchUser(user.value).then(() => {
         try {
-            userStore.$state.userObj.firstName = response.data.object.firstName
-            userStore.$state.userObj.lastName = response.data.object.lastName
-            userStore.$state.userObj.country = response.data.object.country
-            userStore.$state.userObj.description = response.data.object.description
-            userStore.$state.userObj.pictureUrl = response.data.object.pictureUrl
-        } catch (e) {
-            console.error('error:', e)
-        }
-    })
-})
-async function patchUserInfo() {
-    userStore.$state.userObj.id = Number(localStorage.getItem('userId'))
-    await patchUser(userStore.$state.userObj).then(() => {
-        try {
-            console.log('patching user ', userStore.$state.userObj)
             router.push('/me')
         } catch (e) {
-            console.error('error :', e)
+            console.error('error :', e);
         }
-    })
-}
-console.log(userInfo.value)
+    });
+};
+const baseURL = 'http://62.217.181.172/';
+
+const fullAvatarUrl = computed(() => {
+    return user.value.pictureUrl ? `${baseURL}files/${user.value.pictureUrl}` : '';
+});
+const fullBannerUrl = computed(() => {
+    return user.value.backgroundPictureUrl ? `${baseURL}files/${user.value.backgroundPictureUrl}` : '';
+});
 </script>
 
 <style lang="scss" scoped>
+.userInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 24px;
+
+    &__status {
+        padding: 5.5px 14px;
+        align-items: center;
+        display: flex;
+        max-width: fit-content;
+        border: 1.5px solid #29b6f6;
+        border-radius: 8px;
+        gap: 9px;
+
+        &__title {
+            color: #29b6f6;
+        }
+    }
+}
+
 .userEdit {
     display: flex;
     flex-direction: column;
@@ -145,6 +145,49 @@ console.log(userInfo.value)
     position: absolute;
     bottom: -37px;
     right: 10px;
+}
+
+.props {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: center;
+    gap: 20px;
+
+    &__inner {
+        width: 50%;
+        border-radius: 12px;
+        background: #fff;
+        padding: 20px 7px;
+        border: 1px solid #dcdcdc;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+
+        label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+    }
+
+    input {
+        display: none;
+    }
+
+    .props__inner--selected {
+        border-color: #29B6F6;
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
+    }
+
+    .checkmark {
+        font-size: 18px;
+        color: #29B6F6;
+        margin-right: 5px;
+    }
 }
 
 .ui-skills {

@@ -2,7 +2,7 @@
   <v-row class="container pa-0 ma-0" justify="center" align="center">
     <v-col align="center">
       <img src="../../assets/img/logos/itnt.svg" />
-      {{ os }}
+      <!-- {{ o?s }} -->
       <div class="mt-12 pl-2 pr-2">
         <div @click="dialog = !dialog">
           <UiButton :bgColor="'purple'" :imgSrc="vallet">Войти, используя кошелёк
@@ -23,7 +23,6 @@
             <UiButton @click="loginWithVK" onlyIcon>VK</UiButton>
             <UiButton @click="signInWithGitHub" :disabled="loading" onlyIcon>GIT</UiButton>
             <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-
             <!-- <vue-apple-login
                             type="sign in"
                             color="black"

@@ -9,9 +9,8 @@
     </div>
 
     <div v-else class="userPics">
-        <div @click="openModal" v-if="uploadedBgImageUrl" class="userPics__bg">
-            <img v-if="uploadedBgImageUrl" :src="props.bgPic" />
-            <img v-else-if="props.bgPic" :src="props.bgPic" />
+        <div class="userPics__bg">
+            <img v-show="props.bgPic" class="hidden" :src="props.bgPic" />
         </div>
 
         <v-dialog v-model="avaModal" width="100%">
@@ -27,7 +26,6 @@
         </v-dialog>
 
         <div class="userPics__ava">
-            <img :src="uploadedAvaImageUrl" />
             <img v-if="uploadedAvaImageUrl" :src="uploadedAvaImageUrl" />
         </div>
 
@@ -48,7 +46,6 @@
 </template>
 
 <script setup lang="ts">
-import bg from "~/assets/demo/project-head.svg"
 import ava from "~/assets/Profile/Photo.svg"
 import { ref } from 'vue'
 import { postAddUserPicture, postAddBackgroundPicture, deleteUserPicture } from '~/API/ways/user';
@@ -60,7 +57,6 @@ const props = defineProps({
     },
     bgPic: {
         type: String,
-        default: bg
     },
     avaPic: {
         type: String,
@@ -148,7 +144,8 @@ const removeBackgroundPicture = async (id: Number) => {
         width: 100%;
         background-size: cover;
         background-position: center;
-
+        min-height: 117px;
+        max-height: 117px;
         img {
             width: 100%;
             min-height: 117px;
