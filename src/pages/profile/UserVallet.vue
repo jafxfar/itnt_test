@@ -1,42 +1,40 @@
 <template>
-    <Header showID showUserMinify />
-    <div class="m-4 flex flex-col gap-4">
-        <UiPrompt>
-            <p class="part1">
-                Для того, чтобы создавать свои проекты, или комментировать чужие - вам нужно заручиться поддержкой
-                участников сообщества.
-            </p>
-            <p class="part2">
-                Вы можете запросить приглашение напрямую у нас, для этого пришлите описание вашего проекта на нашу
-                почту:<span class="text-[#29B6F6]"> invites@itnt-app.com.</span> Или дождитесь, пока кто нибудь из
-                участников сообщества iTalent Founders
-                пригласит вас.
-            </p>
-        </UiPrompt>
-    </div>
-    <v-container style="padding: 0 20px; margin-bottom: 48px">
-        <div class="card">
-            <h3 style="font-weight: 500;"> Подключить кошелёк</h3>
-            <div class="card__item" :class="item.addClass" v-for="(item, index) in walletItems" :key="index"
-                :style="{ borderColor: item.color }">
-                <img :src="item.src" :alt="item.alt">
-                <p style="font-weight: 500;"> {{ item.alt }}</p>
+    <!-- <Header showID showUserMinify /> -->
+    <MazPullToRefresh header-class="maz-bg-bg-dark maz-text-color-light"
+        class="maz-flex maz-min-h-screen maz-w-full maz-flex-col" :action="pullToRefreshAction" spinner-color="white"
+        standalone-mode :disabled="false">
+        <!-- <v-container style="margin-bottom: 48px">
+            <div class="card">
+                <h3 style="font-weight: 500;"> Подключить кошелёк</h3>
+                <div @click="pageStep += 1" class="card__item" :class="item.addClass"
+                    v-for="(item, index) in walletItems" :key="index" :style="{ borderColor: item.color }">
+                    <img :src="item.src" :alt="item.alt">
+                    <p style="font-weight: 500;"> {{ item.alt }}</p>
+                </div>
+                <div class="help">Мне нужна помощь</div>
             </div>
-            <div class="help">Мне нужна помощь</div>
-        </div>
-    </v-container>
+        </v-container> -->
+        <div>
+                App Content
+            </div>
+    </MazPullToRefresh>
 </template>
 
 <script setup lang="ts">
 import tonKeeper from '../../assets/vallet/tonkeeper.svg'
 import metamask from '../../assets/vallet/metamask.svg'
 import wallet from '../../assets/vallet/wallet-connect.svg'
-
+import { ref } from 'vue'
 
 // ui-kit
-import UiPrompt from '~/components/ui-kit/UiPrompt.vue';
-import Header from '../../components/Header.vue'
+import MazPullToRefresh from 'maz-ui/components/MazPullToRefresh'
 
+// import UiPrompt from '~/components/ui-kit/UiPrompt.vue';
+import Header from '../../components/Header.vue'
+async function pullToRefreshAction() {
+    window.location.reload()
+}
+const pageStep = ref(1)
 const walletItems = [
     { src: tonKeeper, alt: 'Tonkeeper', color: '#7BB3E3' },
     { src: metamask, alt: 'Metamask', color: '#F89D35' },

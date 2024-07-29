@@ -25,7 +25,7 @@ import Header from '~/components/Header.vue'
 
 import UiButton from '~/components/ui-kit/UiButton.vue'
 import ProjectHeader from '~/components/projects/ProjectHeader.vue'
-import ProjectMedia from '~/components/projects/ProjectMedia.vue'
+// import ProjectMedia from '~/components/projects/ProjectMedia.vue'
 import ProjectTeam from '~/components/projects/ProjectTeam.vue'
 import ProjectCard from '~/components/projects/ProjectCard.vue'
 import ProjectVacancys from '~/components/projects/ProjectVacancys.vue'
@@ -34,7 +34,7 @@ import ProjectStage from '~/components/projects/ProjectStage.vue'
 
 import { getProjectByID, patchProject } from '~/API/ways/project'
 
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useProjectStore } from '~/store/projectStore'
 
@@ -68,20 +68,4 @@ async function changeProject() {
         }
     })
 }
-// const baseURL = 'http://62.217.181.172/';
-
-// Предположим, что у вас есть объект project с информацией о проекте
-// const project = ref(/* ваш объект проекта */);
-
-// // Создаем вычисляемое свойство для получения полных URL изображений проекта
-// const projectImageUrls = computed(() => {
-//     if (!prj.value || !prj.value.projectFiles) {
-//         return [];
-//     }
-
-//     return project.value.projectFiles.map(file => ({
-//         id: file.id,
-//         fullUrl: `${baseURL}files/${file.pictureUrl}`
-//     }));
-// });
 </script>

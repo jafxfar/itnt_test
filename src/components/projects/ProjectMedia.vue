@@ -73,7 +73,6 @@ import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import UiInput from '../ui-kit/UiInput.vue'
 import UiButton from '../ui-kit/UiButton.vue'
 import { addProjectFile } from '~/API/ways/project';
-import { router } from '~/router';
 import { useRoute } from 'vue-router'
 const router = useRoute()
 const uploadedFile = ref<string | null>(null)
