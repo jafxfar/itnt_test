@@ -3,47 +3,6 @@
 
     <v-container style="padding: 0 20px">
         <!-- {{ ProjectSearch() }} -->
-        <v-stepper non-linear>
-            <v-stepper-header>
-                <v-stepper-item value="1" class="white-background" editable>
-                    <template v-slot:icon>
-                        <img class="" src="../assets/icons/projectStages/A.svg" alt="">
-                        <!-- <v-icon >mdi-progress-clock</v-icon> -->
-                    </template>
-                    Select campaign settings
-                </v-stepper-item>
-                <v-stepper-item editable>
-                    <template v-slot:default="{ active, complete }">
-                        <span style="display: none;">{{ value }}</span>
-                        <v-icon v-if="complete">mdi-check-circle</v-icon>
-                        <v-icon v-else-if="active">mdi-progress-clock</v-icon>
-                        <v-icon v-else>mdi-checkbox-blank-circle-outline</v-icon>
-                        Create an ad
-                    </template>
-                </v-stepper-item>
-                <!-- <v-divider></v-divider> -->
-
-                <v-stepper-item value="2" editable>
-                    <template v-slot:default="{ active, complete }">
-                        <!-- <v-icon v-if="complete">mdi-check</v-icon>
-        <v-icon v-else-if="active">mdi-settings</v-icon>
-        <v-icon v-else>mdi-settings</v-icon> -->
-                        Create an ad group
-                    </template>
-                </v-stepper-item>
-
-                <!-- <v-divider></v-divider> -->
-
-                <v-stepper-item value="3" editable>
-                    <template v-slot:default="{ active, complete }">
-                        <!-- <v-icon v-if="complete">mdi-check</v-icon>
-        <v-icon v-else-if="active">mdi-settings</v-icon>
-        <v-icon v-else>mdi-settings</v-icon> -->
-                        Create an ad
-                    </template>
-                </v-stepper-item>
-            </v-stepper-header>
-        </v-stepper>
 
         <UiSwitch @changeValue="searchPageSwitchState = $event" :items="['Проекты', 'Люди']" />
         <UiInput v-model="searchQuery" placeholder="Поиск..." />
