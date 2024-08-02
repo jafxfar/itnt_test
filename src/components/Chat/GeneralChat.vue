@@ -2,68 +2,79 @@
     <ChatFolders />
     <div class="" @click="showSheet = false">
 
-
-        <div class="flex flex-row bg-white pl-[13px] pb-[13px] pt-[9px] pr-[6px] border-gray-200 border-b-[1px]">
-            <span class="border-[3px] w-[40px] h-[40px] border-chatThird rounded-full"></span>
+        <div class="card shadow-none">
+            <span class="card__image  border-chatThird">
+                <img :src="avatar" alt="User Avatar" />
+            </span>
             <div class="flex flex-col flex-1">
                 <div class="flex flex-row justify-between flex-1">
-                    <h1>1ddsdsdsdsd</h1>
-                    <div class="flex flex-row items-center gap-[6px]">
-                        <img :src="send" alt="">
-                        <h2>time</h2>
-                    </div>
-                </div>
-                <h1><span class="text-gray-400">Вы:</span>Lorem ipsum dolor sit amet, consectetur adipisicing,
-                    ipsa?
-                </h1>
-            </div>
-        </div>
-        <div class="flex flex-row bg-white pl-[13px] pb-[13px] pt-[9px] pr-[6px] border-gray-200 border-b-[1px]">
-            <span class="border-[3px] w-[40px] h-[40px] border-chatThird rounded-full"></span>
-            <div class="flex flex-col flex-1">
-                <div class="flex flex-row justify-between flex-1">
-                    <h1>1ddsdsdsdsd</h1>
+                    <p class="card__name">Евгений Анисимов</p>
                     <div class="flex flex-row items-center gap-[6px]">
                         <img :src="delivered" alt="">
-                        <h2>time</h2>
+                        <p class="card__time">15:12</p>
                     </div>
                 </div>
-                <h1><span class="text-gray-400">Вы:</span>Lorem ipsum dolor sit amet, consectetur adipisicing,
-                    ipsa?
-                </h1>
+                <p class="card__message"><span class="card__message__you">Вы:</span> Это не критично, давай через
+                    недельку вернёмся к этому
+                    вопросу👍
+                </p>
             </div>
         </div>
-        <div class="flex flex-row bg-white pl-[13px] pb-[13px] pt-[9px] pr-[6px] border-gray-200 border-b-[1px]">
-            <span class="border-[3px] w-[40px] h-[40px] border-chatThird rounded-full"></span>
+        <div class="card shadow-none">
+            <span class="card__v2">
+                <v-chip class="card__v2__chip">
+                    27
+                </v-chip>
+                <img width="40" src="../../assets/demo/ava-small-header.svg" />
+            </span>
             <div class="flex flex-col flex-1">
                 <div class="flex flex-row justify-between flex-1">
-                    <h1>1ddsdsdsdsd</h1>
+                    <p class="card__name">Николай Аверин</p>
+                    <div class="flex flex-row items-center gap-[6px]">
+                        <img :src="send" alt="">
+                        <p class="card__time">15:12</p>
+                    </div>
+                </div>
+                <p class="card__message">Приветствую! Есть супер-предложение, хотел обсудить с вами. Если вкратце, то...
+                </p>
+            </div>
+        </div>
+        <div class="card shadow-none">
+            <span class="card__image  border-chatThird">
+                <img :src="avatar" alt="User Avatar" />
+            </span>
+            <div class="flex flex-col flex-1">
+                <div class="flex flex-row justify-between flex-1">
+                    <p class="card__name">Евгений Анисимов</p>
                     <div class="flex flex-row items-center gap-[6px]">
                         <img :src="seen" alt="">
-                        <h2>time</h2>
+                        <p class="card__time">15:12</p>
                     </div>
                 </div>
-                <h1><span class="text-gray-400">Вы:</span>Lorem ipsum dolor sit amet, consectetur adipisicing,
-                    ipsa?
-                </h1>
+                <p class="card__message"><span class="card__message__you">Вы:</span> Это не критично, давай через
+                    недельку вернёмся к этому
+                    вопросу👍
+                </p>
             </div>
         </div>
-        <div class="flex flex-row bg-white pl-[13px] pb-[13px] pt-[9px] pr-[6px] border-gray-200 border-b-[1px]">
-            <span class="border-[3px] w-[40px] h-[40px] border-chatThird rounded-full"></span>
+        <div class="card shadow-none">
+            <span class="card__image  border-chatThird">
+                <img :src="avatar" alt="User Avatar" />
+            </span>
             <div class="flex flex-col flex-1">
                 <div class="flex flex-row justify-between flex-1">
-                    <h1>1ddsdsdsdsd</h1>
-                    <div class="flex flex-row items-center">
-                        <img class='hidden' :src="seen" alt="">
-                        <h2>time</h2>
+                    <p class="card__name">Евгений Анисимов</p>
+                    <div class="flex flex-row items-center gap-[6px]">
+                        <!-- <img :src="send" alt=""> -->
+                        <p class="card__time">15:12</p>
                     </div>
                 </div>
-                <h1>Lorem ipsum dolor sit amet, consectetur adipisicing,
-                    ipsa?
-                </h1>
+                <p class="card__message"><span class="card__message__you">Вы:</span> Это не критично, давай через
+                    недельку вернёмся к этому
+                    вопросу👍
+                </p>
             </div>
         </div>
-
     </div>
 
     <div class="absolute bottom-20 right-6 bg-marine  rounded-[12px]">
@@ -93,6 +104,8 @@
     </div>
 </template>
 <script setup lang="ts">
+
+import avatar from '~/assets/Profile/Photo.svg'
 import send from '~/assets/chat/send.svg'
 import seen from '~/assets/chat/seen.svg'
 import delivered from '~/assets/chat/delivered.svg'
@@ -175,41 +188,83 @@ onMounted(showDialog);
 
 
 <style scoped lang="scss">
-.text {
-    font-size: 16px;
-    font-weight: 18px;
-    color: 263238;
-}
+.card {
+    // font-family: Roboto;
+    display: flex;
+    flex-direction: row;
+    background-color: #fff;
+    padding: 9px 6px 13px 13px;
+    border-bottom: 1px solid gainsboro;
+    border-radius: 0px;
 
-h1 {
-    color: var(--Background-OnBackground, #263238);
-    font-size: 14px;
-    font-style: medium;
-    font-weight: 500;
-    line-height: 18px;
-    letter-spacing: 0.14px;
-    padding-left: 13px;
-    padding-right: 13px;
-}
+    &__image {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border: 3px solid #C7EDFF;
+        border-radius: 100%;
+        margin-right: 13px;
 
-h2 {
-    color: var(--Optional-Optional2, #9E9E9E);
+        &__chip {
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+        }
+    }
 
-    /* Caption/Caption1 Roboto Regular */
-    /* font-family: Roboto; */
-    font-size: 13px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 14px;
-    /* 107.692% */
-    letter-spacing: 0.13px;
-}
+    &__v2 {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        margin-right: 13px;
+        border: 3px solid #85CFAB;
+        border-radius: 99%;
+        z-index: 99;
 
-p {
-    font-size: 13px;
-    font-style: normal;
-    line-height: 14px;
-    letter-spacing: 1%;
+        &__chip {
+            z-index: 999;
+            position: absolute;
+            bottom: -10px;
+            // left:2px;
+            text-align:center;
+            display:flex;
+            justify-content: center;
+            padding: 0;
+            width: 29px;
+            height:22px;
+            color:white;
+            left: 2px;
+            background-color: #00E676;
+        }
+    }
+
+    &__name {
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 1%;
+        line-height: 18px;
+    }
+
+    &__time {
+        font-size: 13px;
+        font-weight: 400;
+        letter-spacing: 1%;
+        line-height: 14px;
+        color: #9E9E9E;
+    }
+
+    &__message {
+        font-size: 13px;
+        font-weight: 400;
+        letter-spacing: 1%;
+        line-height: 14px;
+        color: black;
+
+        &__you {
+            color: #9E9E9E;
+
+        }
+    }
 }
 
 .searchTeammateModal {

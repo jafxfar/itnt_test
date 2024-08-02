@@ -5,24 +5,25 @@ export default {
 </script>
 
 <template>
-    <div v-if="!isHidden" @click="modalState.open()" class="project-card">
+    <div v-if="!isHidden" class="project-card">
         <div v-if="!isAnonimus" class="">
+            <v-icon @click="modalState.open()" icon="mdi-dots-vertical" color="#263238" class="absolute  p-0 m-0" />
             <div :style="props.projectInfo.isAnon === false ? 'padding-left: 52px' : ''" class="project-card__info">
                 <img v-if="props.projectInfo.isAnon" width="41" height="38" src="../../assets/icons/anonProject.svg" />
                 <div class="text-start px-4">
-                    <p class="project-card__info__name">{{ props.projectInfo.project.name }}</p>
+                    <p @click="router.push('/project/' + props.projectInfo.project.id)" class="project-card__info__name cursor-pointer">{{ props.projectInfo.project.name }}</p>
                     <p class="project-card__info__position">{{ props.projectInfo.project.slogan }}</p>
                 </div>
             </div>
-            <img v-if="fullAvatarUrl !== `${baseURL}files/string` && fullAvatarUrl !== `${baseURL}files/`"
-                class="project-card__img" :src="fullAvatarUrl" alt=" " />
+            <img @click="router.push('/project/' + props.projectInfo.project.id)" v-if="fullAvatarUrl !== `${baseURL}files/string` && fullAvatarUrl !== `${baseURL}files/`"
+            class="project-card__img cursor-pointer" :src="fullAvatarUrl" alt=" " />
         </div>
     </div>
     <div v-else class="">
         <div :style="props.projectInfo.isAnon === false ? 'padding-left: 52px' : ''" class="project-card__info">
             <img v-if="props.projectInfo.isAnon" width="41" height="38" src="../../assets/icons/anonProject.svg" />
             <div class="text-start px-4">
-                <p class="project-card__info__name">{{ props.projectInfo.project.name }}</p>
+                <p class="project-card__info__name ">{{ props.projectInfo.project.name }}</p>
                 <p class="project-card__info__position">{{ props.projectInfo.project.slogan }}</p>
             </div>
         </div>

@@ -38,12 +38,14 @@ import ProfileHeader from '~/components/profile/ProfileHeader.vue'
 import ProjectBlog from '~/components/projects/ProjectBlog.vue'
 import { onMounted, ref, computed } from 'vue'
 import { getUserByID, patchUser } from '~/API/ways/user.ts'
-// import { useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
+const route = useRoute();
 let data = ref({})
 
 onMounted(async () => {
     try {
-        const response = await getUserByID(5);
+        const userId = route.params.id;
+        const response = await getUserByID(Number(userId));
         data.value = response.data.object;
         // data.value.firstName = '';
         // data.value.lastName = '';

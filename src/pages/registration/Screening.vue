@@ -45,11 +45,12 @@
                 <p class="ma-0">Откуда вы?</p>
             </v-col>
             <v-col class="mt-6">
-                <v-select v-model="user.country" variant="outlined" label="Страна" class="rounded-lg mb-2"
+                <v-select v-model="user.country" rounded="lg" color="active" menu-icon="mdi-chevron-down"
+                    variant="outlined" label="Страна" class="mb-2"
                     :items="Object.keys(list)" :item-text="'name'" :menu-props="{ bottom: true, offsetY: true }"
                     hide-details></v-select>
-                <v-select v-model="user.city" :disabled="user.country ? false : true" variant="outlined"
-                    label="Выберите город" class="rounded-lg" :item-text="'name'"
+                <v-select v-model="user.city" rounded="lg" color="active" menu-icon="mdi-chevron-down" :disabled="user.country ? false : true" variant="outlined"
+                    label="Выберите город" :item-text="'name'"
                     :menu-props="{ bottom: true, offsetY: true, maxHeight: '300' }"
                     :items="(list as any)[user.country]"></v-select>
 

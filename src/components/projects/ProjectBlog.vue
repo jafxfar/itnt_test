@@ -61,12 +61,18 @@
 
         <!-- footer -->
         <div class="feedCard__footer">
+            <UiButton bgColor="def" class="feedCard__footer__button"
+                @click="$router.push(props.blogID + '/blogComment')" fit>
+                <p class="txt-cap1">Обсудить этот пост</p>
+            </UiButton>
+            <!-- <UiButton bgColor="def"></UiButton> -->
             <div class="d-flex align-center">
-                <UiButton bgColor="def" class="mr-3" :imgSrc="share" style="padding: 10px 13px 9px 14px" onlyIcon />
-                <UiButton bgColor="def" class="mr-3" :imgSrc="chat" style="padding: 10px 13px 9px 14px" onlyIcon
-                    @click="$router.push(props.blogID + '/blogComment')" />
+                <UiButton @click="shareBlog" bgColor="def" class="mr-3" :imgSrc="share"
+                    style="padding: 10px 13px 9px 14px" onlyIcon />
+
+                <!-- <Fire :id="props.blogID" /> -->
+                <Fire :id="1" />
             </div>
-            <Fire />
         </div>
     </div>
 
@@ -143,7 +149,17 @@ const me: modalActionsList[] = [
         icon: edit_icon,
     }
 ]
-
+const shareBlog = () => {
+    try {
+        navigator.share({
+            title: 'ITNT',
+            text: 'Откройте для себя ITNT.',
+            url: 'http://62.113.105.220/post/' + 'post',
+        })
+    } catch (error) {
+        console.log('error :' + error)
+    }
+}
 const backgroundImageUrl = ref(bgImage);
 
 const hasImage = computed(() => {

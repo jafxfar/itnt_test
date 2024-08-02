@@ -5,10 +5,10 @@
         <div class="userEdit my-4">
             <UiInput v-model="user.firstName" class="mb-4" label="Имя" :required="true" />
             <UiInput v-model="user.lastName" class="mb-4" label="Фамилия" :required="true" />
-            <v-select v-model="user.country" variant="outlined" label="Страна" rounded="" class="mb-2" color="active"
+            <v-select menu-icon="mdi-chevron-down" v-model="user.country" variant="outlined" label="Страна" rounded="lg" class="mb-2" color="active"
                 :items="Object.keys(list)" hide-details></v-select>
-            <v-select v-model="user.city" :disabled="user.country ? false : true" variant="outlined" color="active"
-                label="Выберите город" :items="(list as any)[user.country]"></v-select>
+            <v-select menu-icon="mdi-chevron-down" v-model="user.city" :disabled="user.country ? false : true" variant="outlined" color="active"
+                label="Выберите город" rounded="lg" :items="(list as any)[user.country]"></v-select>
         </div>
        
         <div class="props mb-12">

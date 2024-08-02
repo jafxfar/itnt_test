@@ -12,8 +12,8 @@
                     </div>
 
                     <p class="feedCard__head__subtitle txt-cap1">
-                        <!-- {{ post.offer }} -->
-                        <!-- <span v-if="props.feedCardType === 'newProjectStage'" class="color-blue">{{post.type}}</span> -->
+                        {{ feedCardSubtitle }}
+                        <span v-if="props.feedCardType === 'newProjectStage'" class="color-blue">MVP</span>
                     </p>
                 </div>
             </div>
@@ -50,25 +50,28 @@
             <!-- Проекту требуются специалисты -->
             <div v-if="props.feedCardType === 'newProjectVacancies'">
                 <UiVacancyPanel readOnly :data="demoVacancy" />
+                <UiVacancyPanel readOnly :data="demoVacancy" />
             </div>
 
             <!-- Проект активно обсуждается -->
-            <div v-if="props.feedCardType === 'newProjectDiscussed'"></div>
+            <div v-if="props.feedCardType === 'newProjectDiscussed'">
+            </div>
         </div>
 
         <!-- footer -->
-        
-        <div class="feedCard__footer">
-            <!-- <UiButton bgColor="def" class="feedCard__footer__button" fit>
-                <p v-if="props.feedCardType != 'newProjectDiscussed'" class="txt-cap1">{{ $t('feed.GoTo') }}</p>
-                <p v-else class="txt-cap1">{{ $t('feed.comments') }}</p>
-            </UiButton> -->
-            <UiButton  onlyIcon :imgSrc="chat" is-Xsmall="true" @click="$router.push('/project/'+ props.postID + '/comment')" bgColor="def"/>
-            <div class="d-flex align-center">
-                <UiButton v-if="props.feedCardType != 'newProjectDiscussed'" bgColor="def" class="mr-3" :imgSrc="share"
-                    style="padding: 10px 13px 9px 14px" onlyIcon />
 
-                <Fire :id="props.postID" />
+        <div class="feedCard__footer">
+            <UiButton bgColor="def" class="feedCard__footer__button" fit>
+                <p @click="$router.push('project/' + 1)" v-if="props.feedCardType != 'newProjectDiscussed'"
+                    class="txt-cap1">{{ $t('feed.GoTo') }}</p>
+                <p @click="$router.push('/' + 1 + '/blogComment')" v-else class="txt-cap1">{{ $t('feed.comments') }}</p>
+            </UiButton>
+            <!-- <UiButton bgColor="def"></UiButton> -->
+            <div class="d-flex align-center">
+                <UiButton @click="sharePost" v-if="props.feedCardType != 'newProjectDiscussed'" bgColor="def"
+                    class="mr-3" :imgSrc="share" style="padding: 10px 13px 9px 14px" onlyIcon />
+
+                <Fire :id="1" />
             </div>
         </div>
     </div>
@@ -87,12 +90,12 @@
 <script lang="ts" setup>
 import warning from "~/assets/icons/warning-red.svg"
 
-import chat from "~/assets/icons/chat-black.svg"
+// import chat from "~/assets/icons/chat-black.svg"
 import share from "~/assets/icons/share-black.svg";
 import Fire from '../Fire.vue'
 import UiButton from '../ui-kit/UiButton.vue'
 import UiVacancyPanel from '../ui-kit/UiVacancyPanel.vue'
-import { computed,ref } from 'vue'
+import { computed, ref } from 'vue'
 import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import { modalActionsList } from '~/helpers/types'
@@ -156,6 +159,23 @@ const feedCardSubtitle = computed(() => {
         return 'Добавили вложение: '
     }
 })
+const demoVacancy = {
+    type: 'Driver',
+    description: `Ищем надёжного джентельмена, со своим транспортным средством, желательно без растительности на голове, c суровым взглядом и парой пушек в багажнике. 
+Вам можно доверить доставку любого груза/человека в любую точку земного шара.`,
+    offer: 'Доля в компании + ЗП + оплата расходников на авто и парикмахера',
+}
+const sharePost = () => {
+    try {
+        navigator.share({
+            title: 'ITNT',
+            text: 'Откройте для себя ITNT.',
+            url: 'http://62.113.105.220/post/' + 1,
+        })
+    } catch (error) {
+        console.log('error :' + error)
+    }
+}
 </script>
 
 <style scoped lang="scss">

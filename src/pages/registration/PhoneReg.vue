@@ -51,27 +51,30 @@
                     ">
                     <!-- <v-otp-input v-model="otp" input-classes="otp-input"  class="mt-3 ms-n2" length="4" placeholder="0"
                         variant="underlined"></v-otp-input>  -->
-                        <v-otp-input ref="otpInput" input-classes="otp-input" separator="" :num-inputs="4"
+                    <v-otp-input ref="otpInput" input-classes="otp-input" separator="" :num-inputs="4"
                         v-model:value="otpCode" :should-auto-focus="true" input-type="number" @on-complete="sendCode"
                         :class="{
                 'otp-input--has-value': otpCode.length > 0,
-                'blue-bottom-border': otpCode.length === inputIndex + 1
+                'red-bottom-border': codeError,
+                'blue-bottom-border': !codeError && otpCode.length === inputIndex + 1,
+                'blur-bottom-border': !codeError && otpCode.length !== inputIndex + 1
             }" />
                 </div>
                 <v-chip v-show="codeError" class="chip mt-4"> Неверный код </v-chip>
                 <v-progress-circular v-if="isLoading" width="2" class="loading mx-auto text-center mt-4" color="active"
                     indeterminate></v-progress-circular>
                 <v-col v-if="!isLoading" class="text-left mt-2">
-                    <p class="text-code ma-0">Не пришла смс в течении 2 минут?</p>
+                    <p class="text-code ma-0">Не пришла смс в течении {{ formattedTime }} ?</p>
                     <a @click="sendPhoneInfo" class="text-code-href ma-0">Отправить снова</a>
                 </v-col>
             </div>
         </v-row>
+
     </v-col>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onUnmounted, onMounted } from 'vue'
 import { vMaska } from 'maska'
 import UiButton from '~/components/ui-kit/UiButton.vue'
 import UiInput from '~/components/ui-kit/UiInput.vue'
@@ -139,11 +142,42 @@ async function sendCode() {
             .finally(() => (isLoading.value = false))
     }
 }
+const remainingTime = ref(120); // 2 минуты в секундах
+
+const startTimer = () => {
+    const interval = setInterval(() => {
+        if (remainingTime.value > 0) {
+            remainingTime.value -= 1;
+        } else {
+            clearInterval(interval);
+        }
+    }, 1000);
+
+    // Очищаем интервал при размонтировании компонента
+    onUnmounted(() => {
+        clearInterval(interval);
+    });
+};
+
+onMounted(startTimer);
+const formattedTime = computed(() => {
+    const minutes = Math.floor(remainingTime.value / 60);
+    const seconds = remainingTime.value % 60;
+    return `${minutes}:${seconds} минут`;
+});
 </script>
 
 <style lang="scss">
+.nohover:hover{
+    background-color: white;
+}
 .blue-bottom-border input {
     border-bottom-color: #29b6f6 !important;
+    /* устанавливаем синюю границу */
+}
+
+.red-bottom-border input {
+    border-bottom-color: red !important;
     /* устанавливаем синюю границу */
 }
 
@@ -153,11 +187,11 @@ async function sendCode() {
     padding: 5px;
     margin: 0 10px;
     font-size: 20px;
-    outline:none;
+    outline: none;
     border-radius: 4px;
     border-bottom: 4px solid #E0E0E0;
-    box-shadow: 
-    0px 1px -3px rgba(0, 0, 0, 0.1);
+    box-shadow:
+        0px 1px -3px rgba(0, 0, 0, 0.1);
     //     /* Тень сверху */
     //     // 1px 0px 3px rgba(0, 0, 0, 0.1),
     //     /* Тень справа */

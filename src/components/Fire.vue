@@ -11,11 +11,11 @@ export default {
         </transition>
         <transition name="fade">
             <!-- <img v-if="status === 'loading'" src="../assets/icons/chat-black.svg" alt="Loading" /> -->
-            <v-progress-circular v-if="status === 'loading'" width="2" class="loading mx-auto text-center" color="white"
+            <v-progress-circular v-if="status === 'loading'" width="2" class="loading m-0 p-0 text-center" color="white"
                 indeterminate></v-progress-circular>
         </transition>
-        <transition name="fade">
-            <img width="38" v-if="status === 'success'" :src="sucess" alt="Success" />
+        <transition class="m-0 p-0" name="fade">
+            <img width="28" v-if="status === 'success'" :src="sucess" alt="Success" />
         </transition>
     </button>
 </template>

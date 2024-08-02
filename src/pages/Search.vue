@@ -3,6 +3,47 @@
 
     <v-container style="padding: 0 20px">
         <!-- {{ ProjectSearch() }} -->
+        <v-stepper non-linear>
+            <v-stepper-header>
+                <v-stepper-item value="1" class="white-background" editable>
+                    <template v-slot:icon>
+                        <img class="" src="../assets/icons/projectStages/A.svg" alt="">
+                        <!-- <v-icon >mdi-progress-clock</v-icon> -->
+                    </template>
+                    Select campaign settings
+                </v-stepper-item>
+                <v-stepper-item editable>
+                    <template v-slot:default="{ active, complete }">
+                        <span style="display: none;">{{ value }}</span>
+                        <v-icon v-if="complete">mdi-check-circle</v-icon>
+                        <v-icon v-else-if="active">mdi-progress-clock</v-icon>
+                        <v-icon v-else>mdi-checkbox-blank-circle-outline</v-icon>
+                        Create an ad
+                    </template>
+                </v-stepper-item>
+                <!-- <v-divider></v-divider> -->
+
+                <v-stepper-item value="2" editable>
+                    <template v-slot:default="{ active, complete }">
+                        <!-- <v-icon v-if="complete">mdi-check</v-icon>
+        <v-icon v-else-if="active">mdi-settings</v-icon>
+        <v-icon v-else>mdi-settings</v-icon> -->
+                        Create an ad group
+                    </template>
+                </v-stepper-item>
+
+                <!-- <v-divider></v-divider> -->
+
+                <v-stepper-item value="3" editable>
+                    <template v-slot:default="{ active, complete }">
+                        <!-- <v-icon v-if="complete">mdi-check</v-icon>
+        <v-icon v-else-if="active">mdi-settings</v-icon>
+        <v-icon v-else>mdi-settings</v-icon> -->
+                        Create an ad
+                    </template>
+                </v-stepper-item>
+            </v-stepper-header>
+        </v-stepper>
 
         <UiSwitch @changeValue="searchPageSwitchState = $event" :items="['Проекты', 'Люди']" />
         <UiInput v-model="searchQuery" placeholder="Поиск..." />
@@ -62,6 +103,7 @@ import { ref, computed, onMounted } from 'vue';
 import { getAllProjects } from '~/API/ways/project'
 import { getUserSearch } from '~/API/ways/user'
 import { useRoute } from 'vue-router';
+import ava from '../assets/Coop.svg'
 const route = useRoute();
 onMounted(() => {
     searchQuery.value = route.query.skill as string || '';
@@ -82,12 +124,6 @@ interface Project {
     avatarUrl: string;
     slogan: string;
 }
-// const openProject = (id) => {
-//     router.push(`/project/${id}`);
-// };
-// const openUser = (id) => {
-//     router.push(`/user/${id}`);
-// };
 const users = ref<User[]>([]);
 const projects = ref<Project[]>([]);
 const searchQuery = ref('');
@@ -152,6 +188,19 @@ onMounted(fetchUsers);
 </script>
 
 <style lang="scss" scoped>
+.v-stepper-item--selected .v-stepper-item__avatar.v-avatar {
+    background: none;
+    color: white;
+}
+.v-avatar .v-theme--itntTheme .v-avatar--density-default .v-avatar--variant-flat .v-stepper-item__avatar{
+    background: white;
+
+}
+.v-stepper-item__avatar.v-avatar {
+    background: none;
+    color: none;
+}
+
 .details {
     margin-top: 8px;
     margin-bottom: 24px;

@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-    <v-card v-if="props.skillsType != 'Project'" class="ui-skills">
+    <v-card v-if="props.skillsType != 'Project'" class="ui-skills shadow-sm p-4">
         <div class="ui-skills__head" v-if="props.readOnly === false">
             <p class="txt-cap2">{{ $t('me.skills') }} </p>
             <div v-if="deleteMode === false" @click="showSheet = true" class="ui-skills__btn">
@@ -61,7 +61,7 @@ export default {
                     <p class="text-[#29b6f6] text-lg mx-5 ml-[3%] ui-skills__choser__title">
                         {{ interest.name }}
                     </p>
-                    <div class="m-0 p-0" v-for="(name, id) in interest.interests" :key="id">
+                    <div class="m-0 p-0 cursor-pointer" v-for="(name, id) in interest.interests" :key="id">
                         <p @click="addSkill(name.name)" v-if="name.name" class="txt-body1 ui-skills__choser__skill"
                             :class="{ 'skill-chosen': chosenSkills.includes(name.name) }">
                             {{ name.name }}
@@ -70,7 +70,7 @@ export default {
                     <!-- <UiAgree class="ui-skills__choser__close" @click="patchSkills" /> -->
                 </div>
             </div>
-            <v-btn @click="showSheet = false" class="close-btn mr-2" icon="mdi-check" color="#00e676" />
+            <v-btn @click="showSheet = false" class="close-btn mr-2 text-white" icon="mdi-check" color="#00e676" />
         </div>
     </transition>
 </template>

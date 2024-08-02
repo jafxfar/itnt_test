@@ -2,9 +2,11 @@
     <div class="searchProjectCard mt-4">
         <div class="searchProjectCard__head">
             <div class="d-flex align-center">
-                <img class="mr-3" width="37" height="37" src="../../assets/demo/ava-small-header.svg" />
+                <img @click="$router.push('/project/' + props.projectInfoSet.id)" class="mr-3 cursor-pointer" width="37"
+                    height="37" src="../../assets/demo/ava-small-header.svg" />
                 <div>
-                    <div class="d-flex align-center">
+                    <div @click="$router.push('/project/' + props.projectInfoSet.id)"
+                        class="d-flex cursor-pointer align-center">
                         <p class="txt-body3">{{ props.projectInfoSet.name }}</p>
                     </div>
                     <p class="searchProjectCard__head__subtitle txt-cap1">
@@ -32,33 +34,41 @@
             <UiButton bgColor="def" class="searchProjectCard__footer__button" fit
                 @click="$router.push('/project/' + props.projectInfoSet.id)">Открыть проект
             </UiButton>
-            <UiButton @click="shareProject" bgColor="def" :imgSrc="share" style="padding: 10px 13px 9px 14px" onlyIcon />
+            <UiButton @click="shareProject" bgColor="def" :imgSrc="share" style="padding: 10px 13px 9px 14px"
+                onlyIcon />
         </div>
         <vue-bottom-sheet max-height="270px" full-screen ref="modalState">
             <div class="modal">
                 <div class="modal__list">
                     <div v-for="(item, id) in modalItems" @click="item?.func" :key="id" class="modal__list__item">
                         <img :src="item.icon" alt="" />
-                        <p @click="complainState.open()" :class="item.name === 'Пожаловаться' && 'error-txt'"
-                         class="txt-body1">{{ item.name }}</p>
+                        <p v-on:click.native="item.name === 'Пожаловаться' ? complainState.open() : null"
+                            :class="{ 'error-txt': item.name === 'Пожаловаться' }" class="txt-body1">
+                            {{ item.name }}
+                        </p>
                     </div>
                 </div>
             </div>
         </vue-bottom-sheet>
-        <vue-bottom-sheet max-height="380px" full-screen ref="complainState">
+        <vue-bottom-sheet max-height="480px" full-screen ref="complainState">
             <div class="searchTeammateModal modal">
-                <p class="mb-2">Выберите причину жалобы на пользователя:</p>
-                <div class="searchTeammateModal__item">
-                    <input type="radio" name="complaint" id=""> Спам
+                <p class="mb-[24px]">Выберите причину жалобы на пользователя:</p>
+                <div class="d-flex align-center mb-[24px]">
+                    <img @click="$router.push('/user/' + props.projectInfoSet.id)" class="mr-3 cursor-pointer" width="37"
+                        height="37" src="../../assets/demo/ava-small-header.svg" />
+                    <div>
+                        <div class="d-flex cursor-pointer align-center">
+                            <p class="txt-body3">{{ props.projectInfoSet.name }}</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="searchTeammateModal__item">
-                    <input type="radio" name="complaint" id=""> Агрессивное поведение
-                </div>
-                <div class="searchTeammateModal__item">
-                    <input type="radio" name="complaint" id=""> Взрослый контент (ссылки, картинки, видео и
-                    т.п.)
-                </div>
-                <UiTextArea v-model="complaint" />
+                <v-radio-group v-model="complaint" color="#29b6f6">
+                    <v-radio class="mb-[20px]" base-color="#29b6f6" label="Спам" value="Спам"></v-radio>
+                    <v-radio class="mb-[20px]" base-color="#29b6f6" label="Агрессивное поведение"
+                        value="Агрессивное поведение"></v-radio>
+                    <v-radio class="mb-[20px]" base-color="#29b6f6"
+                        label="Взрослый контент (ссылки, картинки, видео и т.п.)" value="Взрослый контент"></v-radio>
+                </v-radio-group>
                 <UiButton bg-color="blue" @click="sendComplaint">Отправить жалобу</UiButton>
             </div>
         </vue-bottom-sheet>

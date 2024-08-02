@@ -42,31 +42,36 @@ export default {
 
             </div>
         </vue-bottom-sheet>
-        <vue-bottom-sheet ref="invite">
+        <vue-bottom-sheet max-height="980px" ref="invite">
             <div class="searchTeammateModal modal">
                 <p class="mb-2">Выберите проект, в который хотите пригласить участника:</p>
-                <div class="searchTeammateModal__items">
-                    <div v-for="(project, idx) in followed" :key="idx" class="gap-2">
-                        <input type="radio" name="project" id="">{{ project.project.name }}
-                    </div>
-                    <UiTextArea v-model="props.textarea" />
-                    <UiButton bg-color="blue" @click="sendProp">Отправить приглашение</UiButton>
-                </div>
+                <v-radio-group v-model="selectedProject" color="#29b6f6">
+                    <v-radio v-for="(project, idx) in followed" :key="idx" class="" base-color="#29b6f6"
+                        :label="project.project.name" :value="project.project.name"></v-radio>
+                </v-radio-group>
+                <UiTextArea label="Сопроводительное письмо*" v-model="props.textarea" />
+                <UiButton bg-color="blue" @click="sendProp">Отправить приглашение</UiButton>
             </div>
         </vue-bottom-sheet>
-        <vue-bottom-sheet ref="chat">
+        <vue-bottom-sheet max-height="480px" full-screen ref="chat">
             <div class="searchTeammateModal modal">
-                <p class="mb-2">Выберите причину жалобы на пользователя:</p>
-                <div class="searchTeammateModal__item">
-                    <input type="radio" name="complaint" id=""> Спам
+                <p class="mb-[24px]">Выберите причину жалобы на пользователя:</p>
+                <div class="d-flex align-center mb-[48px]">
+                    <img @click="$router.push('/user/' + lastPart)" class="mr-3 cursor-pointer" width="37" height="37"
+                        :src="ava" />
+                    <div>
+                        <div class="d-flex cursor-pointer align-center">
+                            <p class="txt-body3"> {{ lastPart }}</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="searchTeammateModal__item">
-                    <input type="radio" name="complaint" id=""> Агрессивное поведение
-                </div>
-                <div class="searchTeammateModal__item">
-                    <input type="radio" name="complaint" id=""> Взрослый контент (ссылки, картинки, видео и т.п.)
-                </div>
-                <UiTextArea v-model="complaint" />
+                <v-radio-group v-model="complaint" color="#29b6f6">
+                    <v-radio class="searchTeammateModal__item" base-color="#29b6f6" label="Спам" value="Спам"></v-radio>
+                    <v-radio class="searchTeammateModal__item" base-color="#29b6f6" label="Агрессивное поведение"
+                        value="Агрессивное поведение"></v-radio>
+                    <v-radio class="searchTeammateModal__item" base-color="#29b6f6"
+                        label="Взрослый контент (ссылки, картинки, видео и т.п.)" value="Взрослый контент"></v-radio>
+                </v-radio-group>
                 <UiButton bg-color="blue" @click="sendComplaint">Отправить жалобу</UiButton>
             </div>
         </vue-bottom-sheet>
@@ -82,6 +87,7 @@ export default {
 </template>
 
 <script lang="ts" setup>
+import ava from '../assets/demo/ava-small-header.svg'
 import complain from '../assets/icons/warning-red.svg'
 import plus from '../assets/project_modal/plus.svg'
 import dots from "~/assets/icons/dots-black.svg"
@@ -100,6 +106,7 @@ import { getUserByID, postAddComplaint } from '~/API/ways/user'
 import { sendProposition } from '~/API/ways/notifications'
 const lastPart = ref(null);
 const router = useRoute()
+const selectedProject = ref('');
 
 onMounted(() => {
     const fullPath = window.location.origin + router.fullPath;
@@ -207,12 +214,12 @@ function copyID() {
 
 <style scoped lang="scss">
 .searchTeammateModal {
+    min-height: 350px;
     &__items {
         display: flex;
         flex-direction: column;
         gap: 10px;
         margin-top: 20px;
-        min-height: 350px;
     }
 
     &__item {
@@ -226,10 +233,11 @@ function copyID() {
     max-width: 62px;
     max-height: 58px;
     padding: 0;
-    margin:0;
+    margin: 0;
+
     img {
-        width:62px;
-        height:58px;
+        width: 62px;
+        height: 58px;
         border-radius: 100%;
     }
 }

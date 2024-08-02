@@ -2,9 +2,11 @@
     <div class="searchUserCard mb-2">
         <div class="searchUserCard__head">
             <div class="d-flex align-center">
-                <img class="mr-3" width="37" height="37" src="../../assets/demo/ava-small-header.svg" />
+                <img @click="$router.push('/user/' + props.userInfoSet.id)" class="mr-3 cursor-pointer" width="37"
+                    height="37" src="../../assets/demo/ava-small-header.svg" />
                 <div>
-                    <div class="d-flex align-center">
+                    <div @click="$router.push('/user/' + props.userInfoSet.id)"
+                        class="d-flex cursor-pointer align-center">
                         <p class="txt-body3">{{ props.userInfoSet.id }}</p>
                     </div>
                     <!-- <p class="searchUserCard__head__subtitle txt-cap1">г. Санкт-Петербург</p> -->
@@ -33,26 +35,33 @@
                 <div class="modal__list">
                     <div v-for="(item, id) in modalItems" @click="item?.func" :key="id" class="modal__list__item">
                         <img :src="item.icon" alt="" />
-                        <p @click="complainState.open()" :class="item.name === 'Пожаловаться' && 'error-txt'"
-                            class="txt-body1">{{ item.name }}</p>
+                        <p v-on:click.native="item.name === 'Пожаловаться' ? complainState.open() : null"
+                            :class="{ 'error-txt': item.name === 'Пожаловаться' }" class="txt-body1">
+                            {{ item.name }}
+                        </p>
                     </div>
                 </div>
             </div>
         </vue-bottom-sheet>
-        <vue-bottom-sheet max-height="380px" full-screen ref="complainState">
+        <vue-bottom-sheet max-height="480px" full-screen ref="complainState">
             <div class="searchTeammateModal modal">
-                <p class="mb-2">Выберите причину жалобы на пользователя:</p>
-                <div class="searchTeammateModal__item">
-                    <input type="radio" name="complaint" id=""> Спам
+                <p class="mb-[24px]">Выберите причину жалобы на пользователя:</p>
+                <div class="d-flex align-center mb-[48px]">
+                    <img @click="$router.push('/user/' + props.userInfoSet.id)" class="mr-3 cursor-pointer" width="37"
+                        height="37" src="../../assets/demo/ava-small-header.svg" />
+                    <div>
+                        <div class="d-flex cursor-pointer align-center">
+                            <p class="txt-body3">{{ props.userInfoSet.id }}</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="searchTeammateModal__item">
-                    <input type="radio" name="complaint" id=""> Агрессивное поведение
-                </div>
-                <div class="searchTeammateModal__item">
-                    <input type="radio" name="complaint" id=""> Взрослый контент (ссылки, картинки, видео и
-                    т.п.)
-                </div>
-                <UiTextArea v-model="complaint" />
+                <v-radio-group v-model="complaint" color="#29b6f6">
+                    <v-radio class="searchTeammateModal__item" base-color="#29b6f6" label="Спам" value="Спам"></v-radio>
+                    <v-radio class="searchTeammateModal__item" base-color="#29b6f6" label="Агрессивное поведение"
+                        value="Агрессивное поведение"></v-radio>
+                    <v-radio class="searchTeammateModal__item" base-color="#29b6f6"
+                        label="Взрослый контент (ссылки, картинки, видео и т.п.)" value="Взрослый контент"></v-radio>
+                </v-radio-group>
                 <UiButton bg-color="blue" @click="sendComplaint">Отправить жалобу</UiButton>
             </div>
         </vue-bottom-sheet>
@@ -74,7 +83,7 @@ import { VueBottomSheet } from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import { modalActionsList } from '~/helpers/types'
 import { useRouter } from 'vue-router'
-import {postAddComplaint} from '~/API/ways/user.ts'
+import { postAddComplaint } from '~/API/ways/user.ts'
 const modalState = ref(false)
 const complainState = ref(false)
 const complaint = ref('')
@@ -127,10 +136,10 @@ const modalItems: modalActionsList[] = [
             }
         },
     },
-    // {
-    //     name: 'Статистика проекта',
-    //     icon: statistic,
-    // },
+    {
+        name: 'Заблокирвать',
+        icon: share,
+    },
     {
         name: 'Пожаловаться',
         icon: warning,
@@ -198,6 +207,7 @@ const demoSkills = ['User Experience Designer (UX)', 'Team Lead', 'Product Owner
         }
     }
 }
+
 .searchTeammateModal {
     &__items {
         display: flex;
@@ -210,7 +220,8 @@ const demoSkills = ['User Experience Designer (UX)', 'Team Lead', 'Product Owner
     &__item {
         display: flex;
         align-items: center;
-        gap: 16px;
+        margin-bottom: 20px;
+
     }
 }
 </style>

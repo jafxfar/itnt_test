@@ -20,7 +20,31 @@
           <v-row class="social" justify="center">
             <UiButton @click="googleSignIn" onlyIcon :imgSrc="googleIcon" />
             <UiButton @click="signInWithApple" onlyIcon :imgSrc="appleIcon" />
-            <UiButton @click="loginWithVK" onlyIcon>VK</UiButton>
+            <UiButton  onlyIcon>VK
+              <v-dialog activator="parent" max-width="500">
+                <template v-slot:default="{ isActive }">
+                  <v-card rounded="xl">
+                    <v-card-title class="nohover p-4 d-flex justify-end align-center">
+                      <v-icon size="24px" color="#9e9e9e" icon="mdi-close" @click="isActive.value = false"></v-icon>
+                    </v-card-title>
+
+                    <v-card-text>
+                      <div class="text-h6 mb-4 flex flex-row justify-center items-center">
+                        <img class="mr-[16px]" src="../../assets/icons/warn.svg" alt="">
+                        Авторизация не удалась
+                      </div>
+                      <div class="text-[#9e9e9e] mb-4">
+                        Авторизация не удалась. Код ошибки: <span class="text-[#29b6f6]">Тыры-пыры.</span> Попробуйте
+                        снова или
+                        выйдите из матрицы. </div>
+                      <UiButton @click="isActive.value = false" class="mb-4">Повторить попытку</UiButton>
+                      <UiButton @click="isActive.value = false">Вернуться назад</UiButton>
+
+                    </v-card-text>
+                  </v-card>
+                </template>
+              </v-dialog>
+            </UiButton>
             <UiButton @click="signInWithGitHub" :disabled="loading" onlyIcon>GIT</UiButton>
             <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
             <!-- <vue-apple-login
@@ -37,7 +61,7 @@
       </div>
     </v-col>
   </v-row>
- 
+
   <!-- Диалоговое окно при нажатии на выбор входа по кошельку -->
   <v-dialog v-model="dialog">
     <v-card class="dialog pt-2 pb-5">
